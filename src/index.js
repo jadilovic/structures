@@ -1,17 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// src/index.js
 
-ReactDOM.render(
-  <React.StrictMode>
+import React from "react";
+import { render } from "react-dom";
+import { Provider } from "react-redux";
+import store from "./store/cloud";
+import App from "./App";
+
+render(
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </Provider>,
+  document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+/*
+import { createStructure } from "./actions/creator";
+import store from "./store/cloud";
+import index from "./store/methods";
+
+console.log(store.getState());
+store.subscribe(() => console.log("Look ma, Redux!!"));
+store.dispatch(
+  createStructure({ title: "React Redux Tutorial for Beginners", id: 1 })
+);
+console.log(store.getState());
+*/
