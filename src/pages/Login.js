@@ -86,6 +86,7 @@ export default function SignIn(props) {
             successMessage: "Login successful. Redirecting to home page..",
           }));
         }
+        console.log("LoGGED IN");
         localStorage.setItem("user", JSON.stringify(response.data));
         // REDIRECTING TO DASHBOARD console.log("redirect");
         history.push("/");
@@ -100,6 +101,15 @@ export default function SignIn(props) {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <Typography
+          component="h3"
+          variant="h4"
+          align="center"
+          color="textPrimary"
+          gutterBottom
+        >
+          Tika Technologies
+        </Typography>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>

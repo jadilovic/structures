@@ -1,10 +1,15 @@
 // src/reducers/reducer.js
 
-import { CREATE_STRUCTURE, DATA_LOADED } from "../constants/action-types";
+import {
+  CREATE_STRUCTURE,
+  DATA_LOADED,
+  LOG_OUT,
+} from "../constants/action-types";
 
 const initialState = {
   structures: [],
   remoteStructures: [],
+  isAuth: false,
 };
 
 let count = 0;
@@ -22,6 +27,13 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       remoteStructures: state.remoteStructures.concat(action.payload),
+      isAuth: true,
+    };
+  } else if (action.type === LOG_OUT) {
+    localStorage.removeItem("user");
+    return {
+      ...state,
+      isAuth: false,
     };
   }
   return state;

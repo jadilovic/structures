@@ -8,10 +8,13 @@ export class Post extends Component {
   }
 
   componentDidMount() {
+    console.log("GET DATA CALLED");
     this.props.getData();
   }
 
   render() {
+    console.log("GET DATA TEST");
+
     return (
       <ul>
         {this.props.structures.map((el, index) => (
@@ -25,6 +28,7 @@ export class Post extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log(state);
   return {
     structures: state.remoteStructures.slice(0, 10),
   };

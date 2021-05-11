@@ -1,6 +1,10 @@
 // src/actions/creator.js
 
-import { CREATE_STRUCTURE, DATA_LOADED } from "../constants/action-types";
+import {
+  CREATE_STRUCTURE,
+  DATA_LOADED,
+  LOG_OUT,
+} from "../constants/action-types";
 import axios from "axios";
 import authHeader from "../service/auth-header";
 
@@ -22,4 +26,8 @@ export function getData() {
         dispatch({ type: DATA_LOADED, payload: response.data });
       });
   };
+}
+
+export function logout() {
+  return { type: LOG_OUT };
 }

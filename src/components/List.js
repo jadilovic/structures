@@ -7,6 +7,7 @@ const mapStateToProps = (state) => {
   return { structures: state.structures };
 };
 
+console.log("First TESTING");
 const ConnectedList = ({ structures }) => (
   <ul>
     {structures.map((el) => (
