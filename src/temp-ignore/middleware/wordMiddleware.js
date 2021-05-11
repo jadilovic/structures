@@ -1,6 +1,6 @@
 // src/middleware/wordMiddleware.js
 
-import { CREATE_STRUCTURE, FOUND_BAD_WORD } from "../constants/action-types";
+import { CREATE_STRUCTURE, FOUND_BAD_WORD } from "../../constants/action-types";
 
 const forbiddenWords = ["spam", "money"];
 

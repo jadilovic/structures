@@ -10,12 +10,12 @@ import {
   BrowserRouter,
   useHistory,
 } from "react-router-dom";
-import TableStructures from "../components/TableStructures";
-import TableMachines from "../components/TableMachines";
-import TableSensors from "../components/TableSensors";
+import LoadStructures from "../components/LoadStructures";
+//import TableMachines from "../components/LoadStructures";
+//import TableSensors from "../components/TableSensors";
 import FormStructure from "../components/FormStructure";
-import FormMachine from "../components/FormMachine";
-import FormSensor from "../components/FormSensor";
+//import FormMachine from "../temp-folder/FormMachine";
+//import FormSensor from "../components/FormSensor";
 import { AppBar } from "@material-ui/core";
 
 import "./styles.css";
@@ -24,11 +24,11 @@ function Home() {
   const routes = [
     "/",
     "/form-str",
-    "/tbl-mach",
-    "/mach-form",
-    "/sens-tbl",
-    "/frm-sensor",
-    "/login",
+    // "/tbl-mach",
+    // "/mach-form",
+    // "/sens-tbl",
+    // "/frm-sensor",
+    //  "/login",
   ];
   const history = useHistory();
 
@@ -58,6 +58,7 @@ function Home() {
                     component={Link}
                     to="/form-str"
                   />
+                  {/*
                   <Tab
                     value={routes[2]}
                     label="Machines Table"
@@ -82,8 +83,9 @@ function Home() {
                     component={Link}
                     to="/frm-sensor"
                   />
+                    */}
                   <Tab
-                    value={routes[6]}
+                    value={routes[2]}
                     label="LOGOUT"
                     component={Link}
                     to="/login"
@@ -92,12 +94,14 @@ function Home() {
                 </Tabs>
               </AppBar>
               <Switch>
+                <Route path="/form-str" component={FormStructure} />
+                <Route path="/" component={LoadStructures} />
+                {/*
                 <Route path="/frm-sensor" component={FormSensor} />
                 <Route path="/sens-tbl" component={TableSensors} />
                 <Route path="/mach-form" component={FormMachine} />
                 <Route path="/tbl-mach" component={TableMachines} />
-                <Route path="/form-str" component={FormStructure} />
-                <Route path="/" component={TableStructures} />
+                  */}
               </Switch>
             </Fragment>
           )}

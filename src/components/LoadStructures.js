@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import authHeader from "../service/auth-header";
-import Table from "../tables/Table";
+import StructuresTable from "../tables/StructuresTable";
 
-export default function TableMachines() {
+export default function LoadStructures() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,9 +31,8 @@ export default function TableMachines() {
 
   return (
     <>
-      <h1 style={{ marginTop: "10vh" }}>Table Structures</h1>
-      <p>{data[0].description}</p>
-      <Table props={data} />
+      <h3 style={{ marginTop: "12vh" }}>Structures Table</h3>
+      <StructuresTable props={data} />
     </>
   );
 }
