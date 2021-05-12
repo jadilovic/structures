@@ -4,6 +4,7 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Login, Home, PrivateRoute, Error } from "./pages";
+import IndividualStru from "./components/IndividualStru";
 
 function App() {
   return (
@@ -11,6 +12,9 @@ function App() {
       <Switch>
         <PrivateRoute path="/" exact={true}>
           <Home></Home>
+        </PrivateRoute>
+        <PrivateRoute path="/structure">
+          <IndividualStru />
         </PrivateRoute>
         <Route path="/login">
           <Login />

@@ -4,12 +4,18 @@ import {
   CREATE_STRUCTURE,
   DATA_LOADED,
   LOG_OUT,
+  INDIVIDUAL_STRUCTURE,
 } from "../constants/action-types";
 import axios from "axios";
 import authHeader from "../service/auth-header";
 
 export function createStructure(payload) {
   return { type: CREATE_STRUCTURE, payload };
+}
+
+export function individualStructure(payload) {
+  console.log(payload);
+  return { type: INDIVIDUAL_STRUCTURE, payload };
 }
 
 export function getData() {

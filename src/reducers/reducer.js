@@ -3,12 +3,14 @@
 import {
   CREATE_STRUCTURE,
   DATA_LOADED,
+  INDIVIDUAL_STRUCTURE,
   LOG_OUT,
 } from "../constants/action-types";
 
 const initialState = {
   structures: [],
   remoteStructures: [],
+  individualStru: {},
   isAuth: false,
 };
 
@@ -22,6 +24,12 @@ function rootReducer(state = initialState, action) {
         ...action.payload,
         id: count++,
       }),
+    };
+  } else if (action.type === INDIVIDUAL_STRUCTURE) {
+    console.log(action.payload);
+    return {
+      ...state,
+      individualStru: action.payload,
     };
   } else if (action.type === DATA_LOADED) {
     return {

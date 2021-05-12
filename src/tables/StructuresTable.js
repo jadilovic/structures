@@ -1,6 +1,8 @@
 import * as React from "react";
 import { DataGrid } from "@material-ui/data-grid";
-//import { useDemoData } from "@material-ui/x-grid-data-generator";
+// import { useDemoData } from "@material-ui/x-grid-data-generator";
+import { individualStructure } from "../actions/creator";
+import IndividualStru from "../components/IndividualStru";
 
 export default function BasicFilteringGrid(props) {
   const dataArray = props.props;
@@ -38,8 +40,8 @@ export default function BasicFilteringGrid(props) {
   ];
 
   const structures = { columns: dataHeaders, rows: dataArray };
-
   console.log(structures);
+
   /*
   const { data } = useDemoData({
     dataSet: "Commodity",
@@ -49,10 +51,19 @@ export default function BasicFilteringGrid(props) {
   console.log(data);
 */
 
+  function DisplayStructure(data) {
+    console.log("what");
+    return <IndividualStru />;
+  }
+
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid
         {...structures}
+        onRowClick={(props) => {
+          console.log(props.row);
+          DisplayStructure(props.row);
+        }}
         filterModel={{
           items: [
             {

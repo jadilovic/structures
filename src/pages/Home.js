@@ -19,11 +19,13 @@ import FormStructure from "../components/FormStructure";
 import { AppBar } from "@material-ui/core";
 
 import "./styles.css";
+import IndividualStru from "../components/IndividualStru";
 
 function Home() {
   const routes = [
     "/",
     "/form-str",
+    "/individualStr",
     // "/tbl-mach",
     // "/mach-form",
     // "/sens-tbl",
@@ -91,9 +93,11 @@ function Home() {
                     to="/login"
                     onClick={logout}
                   />
+                  <Tab value={routes[3]} />
                 </Tabs>
               </AppBar>
               <Switch>
+                <Route path="/individualStr" component={IndividualStru} />
                 <Route path="/form-str" component={FormStructure} />
                 <Route path="/" component={LoadStructures} />
                 {/*
