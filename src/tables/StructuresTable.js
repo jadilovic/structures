@@ -1,3 +1,73 @@
+import * as React from "react";
+import { DataGrid } from "@material-ui/data-grid";
+//import { useDemoData } from "@material-ui/x-grid-data-generator";
+
+export default function BasicFilteringGrid(props) {
+  const dataArray = props.props;
+  const dataHeaders = [
+    {
+      field: "name",
+      headerName: "Name",
+      width: 110,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 110,
+    },
+    {
+      field: "city",
+      headerName: "City",
+      width: 110,
+    },
+    {
+      field: "country",
+      headerName: "Country",
+      width: 110,
+    },
+    {
+      field: "timezone",
+      headerName: "Timezone",
+      width: 110,
+    },
+    {
+      field: "isActive",
+      headerName: "Active",
+      width: 110,
+    },
+  ];
+
+  const structures = { columns: dataHeaders, rows: dataArray };
+
+  console.log(structures);
+  /*
+  const { data } = useDemoData({
+    dataSet: "Commodity",
+    rowLength: 100,
+    maxColumns: 6,
+  });
+  console.log(data);
+*/
+
+  return (
+    <div style={{ height: 400, width: "100%" }}>
+      <DataGrid
+        {...structures}
+        filterModel={{
+          items: [
+            {
+              columnField: "description",
+              operatorValue: "contains",
+              value: "",
+            },
+          ],
+        }}
+      />
+    </div>
+  );
+}
+
+/*
 import React from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -71,3 +141,4 @@ export default function BasicTable(props) {
     </TableContainer>
   );
 }
+*/
