@@ -3,9 +3,13 @@ import { DataGrid } from "@material-ui/data-grid";
 // import { useDemoData } from "@material-ui/x-grid-data-generator";
 import { individualStructure } from "../actions/creator";
 import IndividualStru from "../components/IndividualStru";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function BasicFilteringGrid(props) {
   const dataArray = props.props;
+  const history = useHistory();
+  const dispatch = useDispatch();
   const dataHeaders = [
     {
       field: "name",
@@ -51,9 +55,10 @@ export default function BasicFilteringGrid(props) {
   console.log(data);
 */
 
-  function DisplayStructure(data) {
+  function displayStructure(data) {
     console.log("what");
-    return <IndividualStru />;
+    dispatch(individualStructure(data));
+    history.push("/individualStr", data);
   }
 
   return (
@@ -62,7 +67,7 @@ export default function BasicFilteringGrid(props) {
         {...structures}
         onRowClick={(props) => {
           console.log(props.row);
-          DisplayStructure(props.row);
+          displayStructure(props.row);
         }}
         filterModel={{
           items: [

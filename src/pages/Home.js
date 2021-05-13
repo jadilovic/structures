@@ -60,6 +60,12 @@ function Home() {
                     component={Link}
                     to="/form-str"
                   />
+                  <Tab
+                    value={routes[2]}
+                    label="Single Structure"
+                    component={Link}
+                    to="/individualStr"
+                  />
                   {/*
                   <Tab
                     value={routes[2]}
@@ -87,13 +93,12 @@ function Home() {
                   />
                     */}
                   <Tab
-                    value={routes[2]}
+                    value={routes[3]}
                     label="LOGOUT"
                     component={Link}
                     to="/login"
                     onClick={logout}
                   />
-                  <Tab value={routes[3]} />
                 </Tabs>
               </AppBar>
               <Switch>

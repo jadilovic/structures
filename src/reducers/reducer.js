@@ -17,6 +17,7 @@ const initialState = {
 let count = 0;
 
 function rootReducer(state = initialState, action) {
+  console.log(action);
   if (action.type === CREATE_STRUCTURE) {
     return {
       ...state,
@@ -32,18 +33,21 @@ function rootReducer(state = initialState, action) {
       individualStru: action.payload,
     };
   } else if (action.type === DATA_LOADED) {
+    console.log(action);
     return {
       ...state,
       remoteStructures: state.remoteStructures.concat(action.payload),
       isAuth: true,
     };
   } else if (action.type === LOG_OUT) {
+    console.log(action);
     localStorage.removeItem("user");
     return {
       ...state,
       isAuth: false,
     };
   }
+  console.log(action);
   return state;
 }
 
