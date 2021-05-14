@@ -3,7 +3,6 @@
 import {
   CREATE_STRUCTURE,
   DATA_LOADED,
-  LOG_OUT,
   INDIVIDUAL_STRUCTURE,
 } from "../constants/action-types";
 import axios from "axios";
@@ -29,8 +28,4 @@ export function getData() {
         dispatch({ type: DATA_LOADED, payload: response.data });
       });
   };
-}
-
-export function logout() {
-  return { type: LOG_OUT };
 }

@@ -17,7 +17,6 @@ import FormStructure from "../components/FormStructure";
 //import FormMachine from "../temp-folder/FormMachine";
 //import FormSensor from "../components/FormSensor";
 import { AppBar } from "@material-ui/core";
-
 import "./styles.css";
 import IndividualStru from "../components/IndividualStru";
 
@@ -25,7 +24,7 @@ function Home() {
   const routes = [
     "/",
     "/form-str",
-    "/individualStr",
+    //"/individualStr",
     // "/tbl-mach",
     // "/mach-form",
     // "/sens-tbl",
@@ -60,13 +59,14 @@ function Home() {
                     component={Link}
                     to="/form-str"
                   />
+                  {/*
+                  
                   <Tab
-                    value={routes[2]}
+                    value={false}
                     label="Single Structure"
                     component={Link}
                     to="/individualStr"
                   />
-                  {/*
                   <Tab
                     value={routes[2]}
                     label="Machines Table"
@@ -93,7 +93,7 @@ function Home() {
                   />
                     */}
                   <Tab
-                    value={routes[3]}
+                    value={routes[2]}
                     label="LOGOUT"
                     component={Link}
                     to="/login"
