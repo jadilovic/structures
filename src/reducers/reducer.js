@@ -15,7 +15,7 @@ const initialState = {
 };
 
 function RootReducer(state = initialState, action) {
-  // CREATING STRUCTURE BUT GETTING BAD REQUEST ERROR
+  // CREATING STRUCTURE IN API
   if (action.type === CREATE_STRUCTURE) {
     axios
       .post("/api/structures", action.payload, {

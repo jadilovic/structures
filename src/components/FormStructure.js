@@ -56,6 +56,7 @@ export default function CreateStructure() {
 
   const [values, setValues] = useState(initialValues);
   const [submitted, setSubmitted] = useState(false);
+  const [notValid, setNotValid] = useState(false);
   const dispatch = useDispatch();
 
   const handleInputChange = (event) => {
@@ -68,9 +69,18 @@ export default function CreateStructure() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (
+      values.city === "" ||
+      values.country === "" ||
+      values.name === "" ||
+      values.timezone === ""
+    ) {
+      setNotValid(true);
+      return;
+    }
+    setSubmitted(true);
     console.log(values);
     dispatch(createStructure(values));
-    setSubmitted(true);
   };
 
   useEffect(() => {
@@ -78,8 +88,9 @@ export default function CreateStructure() {
     setValues(initialValues);
     setTimeout(() => {
       setSubmitted(false);
+      setNotValid(false);
     }, 3000);
-  }, [submitted]);
+  }, [submitted, notValid]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -93,6 +104,9 @@ export default function CreateStructure() {
         </Typography>
         {submitted && (
           <Alert severity="success">New Structure Was Created</Alert>
+        )}
+        {notValid && (
+          <Alert severity="error">Required Field Must Be Completed</Alert>
         )}
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
@@ -110,9 +124,9 @@ export default function CreateStructure() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required={true}
                 name="name"
                 variant="outlined"
-                required
                 fullWidth
                 id="name"
                 label="Structure Name"
@@ -133,9 +147,9 @@ export default function CreateStructure() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required={true}
                 name="city"
                 variant="outlined"
-                required
                 fullWidth
                 id="city"
                 label="City"
@@ -145,9 +159,9 @@ export default function CreateStructure() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required={true}
                 name="country"
                 variant="outlined"
-                required
                 fullWidth
                 id="country"
                 label="Country"
@@ -157,9 +171,9 @@ export default function CreateStructure() {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required={true}
                 name="timezone"
                 variant="outlined"
-                required
                 fullWidth
                 id="timezone"
                 label="Timezone"
