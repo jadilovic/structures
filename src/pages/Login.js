@@ -57,12 +57,6 @@ export default function SignIn(props) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const [state, setState] = useState({
-    email: "",
-    password: "",
-    successMessage: null,
-  });
-
   const handleSubmitClick = (e) => {
     e.preventDefault();
 
@@ -79,16 +73,7 @@ export default function SignIn(props) {
     axios
       .post("/api/public/login", payload)
       .then(function (response) {
-        console.log(response.status);
-        if (response.status === 200) {
-          setState((prevState) => ({
-            ...prevState,
-            successMessage: "Login successful. Redirecting to home page..",
-          }));
-        }
-        console.log("LoGGED IN");
         localStorage.setItem("user", JSON.stringify(response.data));
-        // REDIRECTING TO DASHBOARD console.log("redirect");
         history.push("/");
       })
       .catch(function (error) {

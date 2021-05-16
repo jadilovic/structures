@@ -6,6 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -33,18 +34,62 @@ export default function SimpleCard() {
   return (
     <Card className={classes.root} style={{ marginTop: "12vh" }}>
       <CardContent>
-        <Typography component="h2">
+        <Typography
+          className={"MuiTypography--heading"}
+          variant={"h5"}
+          gutterBottom
+        >
+          Structure Home View
+        </Typography>
+        <Typography variant="h6" align="left">
+          Name: <b>{value.name}</b>
+        </Typography>
+        <Typography variant="h6" align="left">
+          City: <b>{value.city}</b>
+        </Typography>
+        <Typography variant="h6" align="left">
+          Country: <b>{value.country}</b>
+        </Typography>
+        <Typography variant="h6" align="left">
           Description: <b>{value.description}</b>
         </Typography>
-        <Typography className={classes.pos}>{value.description}</Typography>
-        <Typography variant="body2" component="p">
-          well meaning and kindly.
-          <br />
-          {'"a benevolent smile"'}
+        <Typography variant="h6" align="left">
+          Timezone: <b>{value.timezone}</b>
+        </Typography>
+        <Typography variant="h6" align="left">
+          Machines:
+        </Typography>
+        <Typography variant="h6" align="left">
+          <div>
+            {value.machines.map((mach) => {
+              return (
+                <p key={mach.id}>
+                  <Button
+                    fullWidth={true}
+                    key={mach.id}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      alert(
+                        "Once Machine Individual Display Created This Button Link Will Take It There"
+                      );
+                    }}
+                  >
+                    {mach.name}
+                  </Button>
+                </p>
+              );
+            })}
+            <b>
+              {value.machines.length > 0 ? "" : "No Machines in the Structure"}
+            </b>
+          </div>
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        <Button size="big">
+          <Link to="/">Return to Structures</Link>
+        </Button>
       </CardActions>
     </Card>
   );

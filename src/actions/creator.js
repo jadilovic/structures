@@ -5,8 +5,6 @@ import {
   DATA_LOADED,
   INDIVIDUAL_STRUCTURE,
 } from "../constants/action-types";
-import axios from "axios";
-import authHeader from "../service/auth-header";
 
 export function createStructure(payload) {
   return { type: CREATE_STRUCTURE, payload };
@@ -17,15 +15,6 @@ export function individualStructure(payload) {
   return { type: INDIVIDUAL_STRUCTURE, payload };
 }
 
-export function getData() {
-  return function (dispatch) {
-    return axios
-      .get("/api/structures", {
-        headers: authHeader(),
-      })
-      .then(function (response) {
-        console.log(response.data);
-        dispatch({ type: DATA_LOADED, payload: response.data });
-      });
-  };
+export function setStructures(payload) {
+  return { type: DATA_LOADED, payload };
 }

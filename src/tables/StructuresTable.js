@@ -18,7 +18,7 @@ export default function BasicFilteringGrid(props) {
     {
       field: "description",
       headerName: "Description",
-      width: 110,
+      width: 210,
     },
     {
       field: "city",
@@ -33,11 +33,12 @@ export default function BasicFilteringGrid(props) {
     {
       field: "timezone",
       headerName: "Timezone",
-      width: 110,
+      width: 210,
     },
     {
       field: "isActive",
       headerName: "Active",
+      valueFormatter: (params) => (params.value ? "Yes" : "No"),
       width: 110,
     },
   ];
