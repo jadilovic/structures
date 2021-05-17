@@ -1,29 +1,44 @@
 // src/pages/Error.js
-
 import React from "react";
 import { Link } from "react-router-dom";
-import Alert from "@material-ui/lab/Alert";
-import { Button } from "@material-ui/core";
+import { Button, CardMedia } from "@material-ui/core";
+import image from "../service/404-error.jpg";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
 
-const Error = () => {
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345,
+  },
+});
+
+export default function Error() {
+  const classes = useStyles();
   return (
-    <div>
-      <Alert p={3} variant="filled" severity="error">
-        This is an error alert!
-      </Alert>
-      <Alert variant="filled" severity="warning">
-        <h1>404</h1>
-        <h3>sorry, the page you tried cannot be found</h3>
-      </Alert>
-      <Alert variant="filled" severity="success">
-        <Link to="/" className="btn">
-          <Button variant="contained" color="primary" disableElevation>
-            back home or login page
-          </Button>
-        </Link>
-      </Alert>
-    </div>
+    <Grid
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justify="center"
+      style={{ minHeight: "100vh" }}
+    >
+      <Grid item xs={6} spacing={3}>
+        <CardMedia
+          component="img"
+          alt="Error Page"
+          height="140"
+          src={image}
+          alt="test"
+          style={{ width: "100%", height: "100%" }}
+          title="Error Page"
+        />
+      </Grid>
+      <Link to="/" className="btn">
+        <Button size="large" variant="contained" color="primary" p={3}>
+          back home or login page
+        </Button>
+      </Link>
+    </Grid>
   );
-};
-
-export default Error;
+}
