@@ -5,7 +5,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Available Scripts
 
 To run in Netifly must have script:
-STOP "build": "CI= react-scripts build",
+STOP: "build": "CI= react-scripts build",
+ALSO: To configure Netlify for your SPA; first add a file in your public/root folder called \_redirects (e.g. public/\_redirects). Then add the following contents to that file:
+/\* /index.html 200
+
 In the project directory, you can run:
 
 ### `npm start`
