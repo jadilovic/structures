@@ -41,7 +41,7 @@ function RootReducer(state = initialState, action) {
     console.log(action.payload);
     return {
       ...state,
-      structures: state.structures.concat(action.payload),
+      structures: action.payload,
       isAuth: true,
     };
   }

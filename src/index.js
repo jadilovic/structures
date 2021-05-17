@@ -12,16 +12,3 @@ render(
   </Provider>,
   document.getElementById("root")
 );
-
-/*
-import { createStructure } from "./actions/creator";
-import store from "./store/cloud";
-import index from "./store/methods";
-
-console.log(store.getState());
-store.subscribe(() => console.log("Look ma, Redux!!"));
-store.dispatch(
-  createStructure({ title: "React Redux Tutorial for Beginners", id: 1 })
-);
-console.log(store.getState());
-*/
