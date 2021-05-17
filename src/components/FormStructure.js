@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { green } from "@material-ui/core/colors";
 import { createStructure } from "../actions/creator";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -58,6 +58,7 @@ export default function CreateStructure() {
   const [submitted, setSubmitted] = useState(false);
   const [notValid, setNotValid] = useState(false);
   const dispatch = useDispatch();
+  const getStructures = useSelector();
 
   const handleInputChange = (event) => {
     event.persist();
@@ -85,7 +86,7 @@ export default function CreateStructure() {
 
   useEffect(() => {
     console.log("useEffect");
-    setValues(initialValues);
+    //setValues(initialValues);
     setTimeout(() => {
       setSubmitted(false);
       setNotValid(false);
@@ -178,6 +179,18 @@ export default function CreateStructure() {
                 id="timezone"
                 label="Timezone"
                 value={values.timezone}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required={true}
+                name="structure"
+                variant="outlined"
+                fullWidth
+                id="structure"
+                label="Structure"
+                value={values.structure}
                 onChange={handleInputChange}
               />
             </Grid>

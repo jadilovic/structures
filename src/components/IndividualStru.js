@@ -27,7 +27,6 @@ const useStyles = makeStyles({
 
 export default function SimpleCard() {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
   const value = useSelector((state) => state.individualStru);
   console.log(value);
 
@@ -87,7 +86,7 @@ export default function SimpleCard() {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="big">
+        <Button size="large">
           <Link to="/">Return to Structures</Link>
         </Button>
       </CardActions>
