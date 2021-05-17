@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { green } from "@material-ui/core/colors";
 import { createStructure } from "../actions/creator";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -58,7 +58,8 @@ export default function CreateStructure() {
   const [submitted, setSubmitted] = useState(false);
   const [notValid, setNotValid] = useState(false);
   const dispatch = useDispatch();
-  //const getStructures = useSelector();
+  const structures = useSelector((state) => state.structures);
+  console.log(structures);
 
   const handleInputChange = (event) => {
     event.persist();
