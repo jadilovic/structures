@@ -77,7 +77,8 @@ export default function SignIn(props) {
         history.push("/");
       })
       .catch(function (error) {
-        setError("Password or Email incorrect");
+        console.log(error.toString());
+        setError("Invalid Email or Password" + error.toString());
         return;
       });
   };
