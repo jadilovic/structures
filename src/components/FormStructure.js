@@ -4,7 +4,6 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Typography from "@material-ui/core/Typography";
@@ -13,6 +12,7 @@ import Container from "@material-ui/core/Container";
 import { green } from "@material-ui/core/colors";
 import { createStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -93,6 +93,12 @@ export default function CreateStructure() {
       setNotValid(false);
     }, 3000);
   }, [submitted, notValid]);
+
+  const history = useHistory();
+
+  function backHome() {
+    history.push("/");
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -208,12 +214,12 @@ export default function CreateStructure() {
             Submit New Structure Data
           </Button>
         </form>
-        <Grid container justify="flex-end">
-          <Grid item>
-            <Link href="/" variant="body2" component="button">
-              Return Home
-            </Link>
-          </Grid>
+        <Grid item xs={12}>
+          <Link to="/" className="btn">
+            <Button variant="contained" color="default" p={3}>
+              return home
+            </Button>
+          </Link>
         </Grid>
       </div>
     </Container>

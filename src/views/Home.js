@@ -23,7 +23,7 @@ import IndividualStructure from "../components/IndividualStructures";
 function Home() {
   const routes = [
     "/",
-    "/form-str",
+    "/form-structure",
     //"/individualStr",
     // "/tbl-mach",
     // "/mach-form",
@@ -57,7 +57,7 @@ function Home() {
                     value={routes[1]}
                     label="Structure Form"
                     component={Link}
-                    to="/form-str"
+                    to="/form-structure"
                   />
                   {/*
                   
@@ -102,8 +102,11 @@ function Home() {
                 </Tabs>
               </AppBar>
               <Switch>
-                <Route path="/individualStr" component={IndividualStructure} />
-                <Route path="/form-str" component={FormStructure} />
+                <Route
+                  path="/individual-structure"
+                  component={IndividualStructure}
+                />
+                <Route path="/form-structure" component={FormStructure} />
                 <Route path="/" component={StructuresTable} />
                 {/*
                 <Route path="/frm-sensor" component={FormSensor} />

@@ -56,7 +56,7 @@ export default function BasicFilteringGrid() {
 
   function displayStructureRow(data) {
     dispatch(displayStructure(data));
-    history.push("/individualStr");
+    history.push("/individual-structure");
   }
 
   if (loading) {
