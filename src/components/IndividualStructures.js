@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 
 export default function SimpleCard() {
   const classes = useStyles();
-  const value = useSelector((state) => state.individualStru);
+  const value = useSelector((state) => state.individualStructure);
   console.log(value);
 
   return (

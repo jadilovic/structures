@@ -207,14 +207,14 @@ export default function CreateStructure() {
           >
             Submit New Structure Data
           </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link href="/" variant="body2" component="button">
-                Return Home
-              </Link>
-            </Grid>
-          </Grid>
         </form>
+        <Grid container justify="flex-end">
+          <Grid item>
+            <Link href="/" variant="body2" component="button">
+              Return Home
+            </Link>
+          </Grid>
+        </Grid>
       </div>
     </Container>
   );

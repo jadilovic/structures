@@ -3,7 +3,7 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Login, Home, PrivateRoute, Error } from "./pages";
+import { Login, Home, PrivateRoute, Error } from "./views";
 
 function App() {
   return (

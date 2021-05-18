@@ -10,7 +10,7 @@ import {
   BrowserRouter,
   useHistory,
 } from "react-router-dom";
-import LoadStructures from "../components/LoadStructures";
+import StructuresTable from "../components/StructuresTable";
 //import TableMachines from "../components/LoadStructures";
 //import TableSensors from "../components/TableSensors";
 import FormStructure from "../components/FormStructure";
@@ -18,7 +18,7 @@ import FormStructure from "../components/FormStructure";
 //import FormSensor from "../components/FormSensor";
 import { AppBar } from "@material-ui/core";
 import "./styles.css";
-import IndividualStru from "../components/IndividualStru";
+import IndividualStructure from "../components/IndividualStructures";
 
 function Home() {
   const routes = [
@@ -46,7 +46,7 @@ function Home() {
           render={({ location }) => (
             <Fragment>
               <AppBar>
-                <Tabs value={location.pathname}>
+                <Tabs value={location.pathname} variant="fullWidth">
                   <Tab
                     value={routes[0]}
                     label="Structures Table"
@@ -102,9 +102,9 @@ function Home() {
                 </Tabs>
               </AppBar>
               <Switch>
-                <Route path="/individualStr" component={IndividualStru} />
+                <Route path="/individualStr" component={IndividualStructure} />
                 <Route path="/form-str" component={FormStructure} />
-                <Route path="/" component={LoadStructures} />
+                <Route path="/" component={StructuresTable} />
                 {/*
                 <Route path="/frm-sensor" component={FormSensor} />
                 <Route path="/sens-tbl" component={TableSensors} />

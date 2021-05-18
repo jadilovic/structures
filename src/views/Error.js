@@ -2,18 +2,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button, CardMedia } from "@material-ui/core";
-import image from "../service/404-error.jpg";
-import { makeStyles } from "@material-ui/core/styles";
+import image from "../images/Error404.png";
 import Grid from "@material-ui/core/Grid";
 
-const useStyles = makeStyles({
-  root: {
-    maxWidth: 345,
-  },
-});
-
 export default function Error() {
-  const classes = useStyles();
   return (
     <Grid
       container
@@ -29,11 +21,11 @@ export default function Error() {
           alt="Error Page"
           height="140"
           src={image}
-          alt="test"
           style={{ width: "100%", height: "100%" }}
           title="Error Page"
         />
       </Grid>
+      <p></p>
       <Link to="/" className="btn">
         <Button size="large" variant="contained" color="primary" p={3}>
           back home or login page

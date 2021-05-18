@@ -1,6 +1,7 @@
 // src/store/cloud.js
 
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore } from "redux";
+// applyMiddleware, compose
 import rootReducer from "../reducers/reducer";
 //import { forbiddenWordsMiddleware } from "../middleware/wordMiddleware";
 //import thunk from "redux-thunk";

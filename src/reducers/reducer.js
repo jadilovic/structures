@@ -4,14 +4,16 @@ import axios from "axios";
 import {
   CREATE_STRUCTURE,
   DATA_LOADED,
-  INDIVIDUAL_STRUCTURE,
+  DISPLAY_STRUCTURE,
 } from "../constants/action-types";
 import authHeader from "../service/auth-header";
 
 const initialState = {
   structures: [],
-  individualStru: {},
+  individualStructure: {},
   isAuth: false,
+  loading: true,
+  error: null,
 };
 
 function RootReducer(state = initialState, action) {
@@ -30,11 +32,11 @@ function RootReducer(state = initialState, action) {
         return;
       });
     // SELECTING INDIVIDUAL STRUCTURE SAVING IN STORE
-  } else if (action.type === INDIVIDUAL_STRUCTURE) {
+  } else if (action.type === DISPLAY_STRUCTURE) {
     console.log(action.payload);
     return {
       ...state,
-      individualStru: action.payload,
+      individualStructure: action.payload,
     };
     // SAVING API DATA IN STORE
   } else if (action.type === DATA_LOADED) {
@@ -43,6 +45,7 @@ function RootReducer(state = initialState, action) {
       ...state,
       structures: action.payload,
       isAuth: true,
+      loading: false,
     };
   }
   return state;
