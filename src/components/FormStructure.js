@@ -13,6 +13,7 @@ import { green } from "@material-ui/core/colors";
 import { createStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
+import timeZone from "../service/timeZone";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,6 +40,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateStructure() {
+  const zone = timeZone();
+  console.log(zone.value);
   const classes = useStyles();
   const initialValues = {
     businessId: "",
