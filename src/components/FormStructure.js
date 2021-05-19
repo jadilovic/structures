@@ -13,7 +13,8 @@ import { green } from "@material-ui/core/colors";
 import { createStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import timeZone from "../service/timeZone";
+import TimezoneSelect from "react-timezone-select";
+import { useForm, Controller } from "react-hook-form";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,9 +41,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateStructure() {
-  const zone = timeZone();
-  console.log(zone.value);
+  const [selectedTimezone, setSelectedTimezone] = useState("");
   const classes = useStyles();
+  const { handleSubmit, control } = useForm();
+  const [submitted, setSubmitted] = useState(false);
+  const [timezoneError, setTimezoneError] = useState(false);
+
   const initialValues = {
     businessId: "",
     name: "",
@@ -57,13 +61,30 @@ export default function CreateStructure() {
     machines: [],
   };
 
+  const onSubmit = (data) => {
+    setTimezoneError(false);
+    if (selectedTimezone === "") {
+      console.log("Timezone error");
+      setTimezoneError(true);
+      return;
+    }
+    console.log(selectedTimezone);
+    console.log(data);
+    setSubmitted(true);
+  };
+
+  /*
   const [values, setValues] = useState(initialValues);
-  const [submitted, setSubmitted] = useState(false);
-  const [notValid, setNotValid] = useState(false);
+  const [notValidCity, setNotValidCity] = useState(false);
+  const [notValidCountry, setNotValidCountry] = useState(false);
+  const [notValidName, setNotValidName] = useState(false);
+  const [notValidTimezone, setNotValidTimezone] = useState(false);
+*/
   const dispatch = useDispatch();
   const structures = useSelector((state) => state.structures);
   console.log(structures);
 
+  /*
   const handleInputChange = (event) => {
     event.persist();
     setValues((values) => ({
@@ -74,35 +95,26 @@ export default function CreateStructure() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      values.city === "" ||
-      values.country === "" ||
-      values.name === "" ||
-      values.timezone === ""
-    ) {
-      setNotValid(true);
+    values.timezone = selectedTimezone.value;
+    if (values.city === "") {
+      setNotValidCity(true);
       return;
+    } else if (values.country === "") {
+      setNotValidCountry(true);
+      return;
+    } else if (values.name === "") {
+      setNotValidName(true);
+      return;
+    } else if (values.timezone === undefined) {
+      setNotValidTimezone(true);
+      return;
+    } else {
+      setSubmitted(true);
+      console.log(values);
+      dispatch(createStructure(values));
     }
-    setSubmitted(true);
-    console.log(values);
-    dispatch(createStructure(values));
   };
-
-  useEffect(() => {
-    console.log("useEffect");
-    setValues(initialValues);
-    setTimeout(() => {
-      setSubmitted(false);
-      setNotValid(false);
-    }, 3000);
-  }, [submitted, notValid]);
-
-  const history = useHistory();
-
-  function backHome() {
-    history.push("/");
-  }
-
+*/
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -116,80 +128,121 @@ export default function CreateStructure() {
         {submitted && (
           <Alert severity="success">New Structure Was Created</Alert>
         )}
-        {notValid && (
-          <Alert severity="error">Required Field Must Be Completed</Alert>
-        )}
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
+              <Controller
                 name="businessId"
-                variant="outlined"
-                fullWidth
-                id="businessId"
-                label="Business ID"
-                value={values.businessId}
-                onChange={handleInputChange}
-                autoFocus={true}
+                control={control}
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    name="businessId"
+                    variant="outlined"
+                    fullWidth
+                    id="businessId"
+                    label="Business ID"
+                    value={value}
+                    onChange={onChange}
+                    autoFocus={true}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required={true}
+              <Controller
                 name="name"
-                variant="outlined"
-                fullWidth
-                id="name"
-                label="Structure Name"
-                value={values.name}
-                onChange={handleInputChange}
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    name="name"
+                    variant="outlined"
+                    fullWidth
+                    id="name"
+                    label="Structure Name"
+                    value={value}
+                    onChange={onChange}
+                    error={!!error}
+                    helperText={error ? error.message : null}
+                  />
+                )}
+                rules={{ required: "Name is required" }}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              <Controller
                 name="description"
-                variant="outlined"
-                fullWidth
-                id="description"
-                label="Description"
-                value={values.description}
-                onChange={handleInputChange}
+                control={control}
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    name="description"
+                    variant="outlined"
+                    fullWidth
+                    id="description"
+                    label="Description"
+                    value={value}
+                    onChange={onChange}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required={true}
+              <Controller
                 name="city"
-                variant="outlined"
-                fullWidth
-                id="city"
-                label="City"
-                value={values.city}
-                onChange={handleInputChange}
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    name="city"
+                    variant="outlined"
+                    fullWidth
+                    id="city"
+                    label="City"
+                    value={value}
+                    onChange={onChange}
+                    error={!!error}
+                    helperText={error ? error.message : null}
+                  />
+                )}
+                rules={{ required: "City is required" }}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required={true}
+              <Controller
                 name="country"
-                variant="outlined"
-                fullWidth
-                id="country"
-                label="Country"
-                value={values.country}
-                onChange={handleInputChange}
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    name="country"
+                    variant="outlined"
+                    fullWidth
+                    id="country"
+                    label="Country"
+                    value={value}
+                    onChange={onChange}
+                    error={!!error}
+                    helperText={error ? error.message : null}
+                  />
+                )}
+                rules={{ required: "Country is required" }}
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required={true}
-                name="timezone"
-                variant="outlined"
-                fullWidth
-                id="timezone"
-                label="Timezone"
-                value={values.timezone}
-                onChange={handleInputChange}
+              <TimezoneSelect
+                value={selectedTimezone}
+                onChange={setSelectedTimezone}
               />
             </Grid>
             {/*
