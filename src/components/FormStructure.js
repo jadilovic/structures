@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
+import { FormControl, FormHelperText } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
@@ -41,7 +42,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateStructure() {
-  const [selectedTimezone, setSelectedTimezone] = useState("");
+  const [selectedTimezone, setSelectedTimezone] = useState({
+    value: "America/Juneau",
+    label: "(GMT-8:00) Alaska",
+    abbrev: "AHST",
+    altName: "Alaskan Standard Time",
+  });
   const classes = useStyles();
   const { handleSubmit, control } = useForm();
   const [submitted, setSubmitted] = useState(false);
@@ -53,7 +59,7 @@ export default function CreateStructure() {
     description: "",
     city: "",
     country: "",
-    timezone: "",
+    timezone: "Europe/Amsterdam",
     isActive: false,
     sortIndex: 0,
     structure: null,
@@ -61,8 +67,16 @@ export default function CreateStructure() {
     machines: [],
   };
 
+  const timezone = {
+    value: "America/Juneau",
+    label: "(GMT-8:00) Alaska",
+    abbrev: "AHST",
+    altName: "Alaskan Standard Time",
+  };
+
   const onSubmit = (data) => {
     setTimezoneError(false);
+    console.log(selectedTimezone);
     if (selectedTimezone === "") {
       console.log("Timezone error");
       setTimezoneError(true);
@@ -240,6 +254,7 @@ export default function CreateStructure() {
               />
             </Grid>
             <Grid item xs={12}>
+              <FormHelperText id="timezone">Timezone required</FormHelperText>
               <TimezoneSelect
                 value={selectedTimezone}
                 onChange={setSelectedTimezone}
