@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import { FormControl, FormHelperText } from "@material-ui/core";
+import { FormControl, FormHelperText, MenuItem } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import TimezoneSelect from "react-timezone-select";
 import { useForm, Controller } from "react-hook-form";
+import { InputLabel, Select } from "@material-ui/core";
+import NativeSelect from "@material-ui/core/NativeSelect";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -48,10 +50,13 @@ export default function CreateStructure() {
     abbrev: "AHST",
     altName: "Alaskan Standard Time",
   });
+
+  const dispatch = useDispatch();
+  const structures = useSelector((state) => state.structures);
   const classes = useStyles();
-  const { handleSubmit, control } = useForm();
+  const { register, handleSubmit, control } = useForm();
   const [submitted, setSubmitted] = useState(false);
-  const [timezoneError, setTimezoneError] = useState(false);
+  const [structure, setStructure] = React.useState("");
 
   const initialValues = {
     businessId: "",
@@ -59,44 +64,35 @@ export default function CreateStructure() {
     description: "",
     city: "",
     country: "",
-    timezone: "Europe/Amsterdam",
+    timezone: "",
     isActive: false,
     sortIndex: 0,
-    structure: null,
+    structure: "",
     structures: [],
     machines: [],
   };
 
-  const timezone = {
-    value: "America/Juneau",
-    label: "(GMT-8:00) Alaska",
-    abbrev: "AHST",
-    altName: "Alaskan Standard Time",
+  const [initialStructure, setInitialStructure] = useState(initialValues);
+
+  const handleChange = (event) => {
+    setStructure(event.target.value);
   };
 
   const onSubmit = (data) => {
-    setTimezoneError(false);
-    console.log(selectedTimezone);
-    if (selectedTimezone === "") {
-      console.log("Timezone error");
-      setTimezoneError(true);
-      return;
+    let newStructure = initialValues;
+    newStructure.businessId = data.businessId;
+    newStructure.name = data.name;
+    newStructure.description = data.description;
+    newStructure.city = data.city;
+    newStructure.country = data.country;
+    newStructure.timezone = selectedTimezone.value;
+    if (structure === "No parent structure") {
+      newStructure.structure = null;
     }
-    console.log(selectedTimezone);
-    console.log(data);
+
+    console.log(newStructure);
     setSubmitted(true);
   };
-
-  /*
-  const [values, setValues] = useState(initialValues);
-  const [notValidCity, setNotValidCity] = useState(false);
-  const [notValidCountry, setNotValidCountry] = useState(false);
-  const [notValidName, setNotValidName] = useState(false);
-  const [notValidTimezone, setNotValidTimezone] = useState(false);
-*/
-  const dispatch = useDispatch();
-  const structures = useSelector((state) => state.structures);
-  console.log(structures);
 
   /*
   const handleInputChange = (event) => {
@@ -106,29 +102,8 @@ export default function CreateStructure() {
       [event.target.id]: event.target.value,
     }));
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    values.timezone = selectedTimezone.value;
-    if (values.city === "") {
-      setNotValidCity(true);
-      return;
-    } else if (values.country === "") {
-      setNotValidCountry(true);
-      return;
-    } else if (values.name === "") {
-      setNotValidName(true);
-      return;
-    } else if (values.timezone === undefined) {
-      setNotValidTimezone(true);
-      return;
-    } else {
-      setSubmitted(true);
-      console.log(values);
-      dispatch(createStructure(values));
-    }
-  };
 */
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -260,20 +235,27 @@ export default function CreateStructure() {
                 onChange={setSelectedTimezone}
               />
             </Grid>
-            {/*
             <Grid item xs={12}>
               <TextField
-                required={true}
-                name="structure"
-                variant="outlined"
+                id="outlined-select-currency-native"
                 fullWidth
-                id="structure"
-                label="Structure"
-                value={values.structure}
-                onChange={handleInputChange}
-              />
+                select
+                value={structure}
+                onChange={handleChange}
+                SelectProps={{
+                  native: true,
+                }}
+                helperText="Please select parent structure"
+                variant="outlined"
+              >
+                <option>No parent structure</option>
+                {structures.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}
+              </TextField>
             </Grid>
-              */}
           </Grid>
           <Button
             type="submit"
