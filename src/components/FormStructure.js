@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import { FormControl, FormHelperText, MenuItem } from "@material-ui/core";
+import { FormHelperText } from "@material-ui/core";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Alert from "@material-ui/lab/Alert";
@@ -13,11 +13,9 @@ import Container from "@material-ui/core/Container";
 import { green } from "@material-ui/core/colors";
 import { createStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TimezoneSelect from "react-timezone-select";
 import { useForm, Controller } from "react-hook-form";
-import { InputLabel, Select } from "@material-ui/core";
-import NativeSelect from "@material-ui/core/NativeSelect";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -86,7 +84,6 @@ export default function CreateStructure() {
     newStructure.timezone = selectedTimezone.value;
     newStructure.structure = structure;
     console.log(newStructure);
-    newStructure = JSON.parse(newStructure);
     dispatch(createStructure(newStructure));
     setSubmitted(true);
   };

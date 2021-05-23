@@ -1,6 +1,5 @@
 // src/actions/creator.js
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import {
   CREATE_STRUCTURE,
   DATA_LOADED,
@@ -9,6 +8,7 @@ import {
 } from "../constants/action-types";
 
 export function createStructure(payload) {
+  console.log(payload);
   return { type: CREATE_STRUCTURE, payload };
 }
 

@@ -8,12 +8,11 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
+import { Button, Link } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { deleteStructure } from "../actions/creator";
-
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -22,9 +21,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function BasicTable() {
-  const rows = useSelector((state) => state.individualStructure);
-  console.log(rows);
-
+  const structure = useSelector((state) => state.individualStructure);
+  const dispatch = useDispatch();
+  const history = useHistory();
   const classes = useStyles();
 
   return (
@@ -47,31 +46,31 @@ export default function BasicTable() {
                 <TableCell component="th" scope="row">
                   Name:
                 </TableCell>
-                <TableCell>{rows.name}</TableCell>
+                <TableCell>{structure.name}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   City:
                 </TableCell>
-                <TableCell>{rows.city}</TableCell>
+                <TableCell>{structure.city}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Country:
                 </TableCell>
-                <TableCell>{rows.country}</TableCell>
+                <TableCell>{structure.country}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Description:
                 </TableCell>
-                <TableCell>{rows.description}</TableCell>
+                <TableCell>{structure.description}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Timezone:
                 </TableCell>
-                <TableCell>{rows.timezone}</TableCell>
+                <TableCell>{structure.timezone}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -82,7 +81,8 @@ export default function BasicTable() {
           className={classes.button}
           startIcon={<DeleteIcon />}
           onClick={() => {
-            deleteStructure(rows.id);
+            dispatch(deleteStructure(structure.id));
+            history.push("/");
           }}
         >
           Delete Structure
@@ -100,7 +100,7 @@ export default function BasicTable() {
             </TableHead>
             <TableBody>
               <div>
-                {rows.machines.map((mach) => {
+                {structure.machines.map((mach) => {
                   return (
                     <TableRow key={mach.id}>
                       <TableCell>
@@ -122,7 +122,7 @@ export default function BasicTable() {
                   );
                 })}
                 <b>
-                  {rows.machines.length > 0
+                  {structure.machines.length > 0
                     ? ""
                     : "No Machines in the Structure"}
                 </b>
@@ -134,91 +134,3 @@ export default function BasicTable() {
     </Grid>
   );
 }
-
-/*
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
-
-export default function SimpleCard() {
-  const classes = useStyles();
-  const value = useSelector((state) => state.individualStructure);
-  console.log(value);
-
-  return (
-    <Card className={classes.root} style={{ marginTop: "12vh" }}>
-      <CardContent>
-        <Typography
-          className={"MuiTypography--heading"}
-          variant={"h5"}
-          gutterBottom
-        >
-          Structure Home View
-        </Typography>
-        <Typography variant="h6" align="left">
-          Name: <b>{value.name}</b>
-        </Typography>
-        <Typography variant="h6" align="left">
-          City: <b>{value.city}</b>
-        </Typography>
-        <Typography variant="h6" align="left">
-          Country: <b>{value.country}</b>
-        </Typography>
-        <Typography variant="h6" align="left">
-          Description: <b>{value.description}</b>
-        </Typography>
-        <Typography variant="h6" align="left">
-          Timezone: <b>{value.timezone}</b>
-        </Typography>
-        <Typography variant="h6" align="left">
-          Machines:
-        </Typography>
-        <Typography variant="h6" align="left">
-          <div>
-            {value.machines.map((mach) => {
-              return (
-                <p key={mach.id}>
-                  <Button
-                    fullWidth={true}
-                    key={mach.id}
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      alert(
-                        "Once Machine Individual Display Created This Button Link Will Take It There"
-                      );
-                    }}
-                  >
-                    {mach.name}
-                  </Button>
-                </p>
-              );
-            })}
-            <b>
-              {value.machines.length > 0 ? "" : "No Machines in the Structure"}
-            </b>
-          </div>
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="large">
-          <Link to="/">Return to Structures</Link>
-        </Button>
-      </CardActions>
-    </Card>
-  );
-}
-*/

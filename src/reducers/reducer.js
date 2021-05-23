@@ -18,21 +18,8 @@ const initialState = {
 };
 
 function RootReducer(state = initialState, action) {
-  if (action.type === DELETE_STRUCTURE) {
-    console.log(action.payload);
-    axios
-      .delete("https://reqres.in/invalid-url")
-      .then((response) => {
-        // setStatus("Delete successful");
-        console.log("Delete successful");
-      })
-      .catch((error) => {
-        //setErrorMessage(error.message);
-        console.log("There was an error!", error);
-      });
-  }
   // CREATING STRUCTURE IN API
-  else if (action.type === CREATE_STRUCTURE) {
+  if (action.type === CREATE_STRUCTURE) {
     axios
       .post("/api/structures", action.payload, {
         headers: authHeader(),
@@ -61,6 +48,21 @@ function RootReducer(state = initialState, action) {
       isAuth: true,
       loading: false,
     };
+    // DELETING SELECTED STRUCTURE
+  } else if (action.type === DELETE_STRUCTURE) {
+    console.log(action.payload);
+    axios
+      .delete("/api/structures/" + action.payload, {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        // setStatus("Delete successful");
+        console.log("Delete successful");
+      })
+      .catch((error) => {
+        //setErrorMessage(error.message);
+        console.log("There was an error!", error);
+      });
   }
   return state;
 }
