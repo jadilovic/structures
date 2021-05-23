@@ -5,6 +5,7 @@ import {
   CREATE_STRUCTURE,
   DATA_LOADED,
   DISPLAY_STRUCTURE,
+  DELETE_STRUCTURE,
 } from "../constants/action-types";
 import authHeader from "../service/auth-header";
 
@@ -17,8 +18,21 @@ const initialState = {
 };
 
 function RootReducer(state = initialState, action) {
+  if (action.type === DELETE_STRUCTURE) {
+    console.log(action.payload);
+    axios
+      .delete("https://reqres.in/invalid-url")
+      .then((response) => {
+        // setStatus("Delete successful");
+        console.log("Delete successful");
+      })
+      .catch((error) => {
+        //setErrorMessage(error.message);
+        console.log("There was an error!", error);
+      });
+  }
   // CREATING STRUCTURE IN API
-  if (action.type === CREATE_STRUCTURE) {
+  else if (action.type === CREATE_STRUCTURE) {
     axios
       .post("/api/structures", action.payload, {
         headers: authHeader(),
@@ -28,7 +42,7 @@ function RootReducer(state = initialState, action) {
       })
       .catch(function (error) {
         console.log("ERROR CRATING STRUCTURE");
-        console.log(error);
+        console.log(error.response.data);
         return;
       });
     // SELECTING INDIVIDUAL STRUCTURE SAVING IN STORE

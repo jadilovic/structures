@@ -54,7 +54,7 @@ export default function CreateStructure() {
   const dispatch = useDispatch();
   const structures = useSelector((state) => state.structures);
   const classes = useStyles();
-  const { register, handleSubmit, control } = useForm();
+  const { handleSubmit, control } = useForm();
   const [submitted, setSubmitted] = useState(false);
   const [structure, setStructure] = React.useState("");
 
@@ -72,8 +72,6 @@ export default function CreateStructure() {
     machines: [],
   };
 
-  const [initialStructure, setInitialStructure] = useState(initialValues);
-
   const handleChange = (event) => {
     setStructure(event.target.value);
   };
@@ -86,23 +84,18 @@ export default function CreateStructure() {
     newStructure.city = data.city;
     newStructure.country = data.country;
     newStructure.timezone = selectedTimezone.value;
-    if (structure === "No parent structure") {
-      newStructure.structure = null;
-    }
-
+    newStructure.structure = structure;
     console.log(newStructure);
+    newStructure = JSON.parse(newStructure);
+    dispatch(createStructure(newStructure));
     setSubmitted(true);
   };
 
-  /*
-  const handleInputChange = (event) => {
-    event.persist();
-    setValues((values) => ({
-      ...values,
-      [event.target.id]: event.target.value,
-    }));
-  };
-*/
+  useEffect(() => {
+    setTimeout(() => {
+      setSubmitted(false);
+    }, 3000);
+  }, [submitted]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -248,7 +241,7 @@ export default function CreateStructure() {
                 helperText="Please select parent structure"
                 variant="outlined"
               >
-                <option>No parent structure</option>
+                <option value="">No parent structure</option>
                 {structures.map((option) => (
                   <option key={option.id} value={option.id}>
                     {option.name}

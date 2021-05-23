@@ -5,6 +5,7 @@ import {
   CREATE_STRUCTURE,
   DATA_LOADED,
   DISPLAY_STRUCTURE,
+  DELETE_STRUCTURE,
 } from "../constants/action-types";
 
 export function createStructure(payload) {
@@ -19,4 +20,9 @@ export function displayStructure(payload) {
 export function setStructures(payload) {
   console.log(payload);
   return { type: DATA_LOADED, payload };
+}
+
+export function deleteStructure(payload) {
+  console.log(payload);
+  return { type: DELETE_STRUCTURE, payload };
 }

@@ -9,13 +9,23 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { deleteStructure } from "../actions/creator";
 
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
+const useStyles = makeStyles((theme) => ({
+  button: {
+    margin: theme.spacing(3),
+  },
+}));
+
 export default function BasicTable() {
   const rows = useSelector((state) => state.individualStructure);
   console.log(rows);
+
+  const classes = useStyles();
 
   return (
     <Grid container spacing={3} style={{ marginTop: "12vh" }}>
@@ -66,6 +76,17 @@ export default function BasicTable() {
             </TableBody>
           </Table>
         </TableContainer>
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          startIcon={<DeleteIcon />}
+          onClick={() => {
+            deleteStructure(rows.id);
+          }}
+        >
+          Delete Structure
+        </Button>
       </Grid>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
