@@ -1,6 +1,6 @@
 import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { displayStructure } from "../actions/creator";
+import { displayStructure, loadStructures } from "../actions/creator";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -10,12 +10,12 @@ import useStructures from "../actions/useStructures";
 
 export default function BasicFilteringGrid() {
   useStructures();
+  const dispatch = useDispatch();
   const dataArray = useSelector((state) => state.structures);
   const loading = useSelector((state) => state.loading);
   const error = useSelector((state) => state.error);
-  console.log(dataArray);
+
   const history = useHistory();
-  const dispatch = useDispatch();
 
   const dataHeaders = [
     {
@@ -52,7 +52,6 @@ export default function BasicFilteringGrid() {
   ];
 
   const structures = { columns: dataHeaders, rows: dataArray };
-  console.log(structures);
 
   function displayStructureRow(data) {
     dispatch(displayStructure(data));

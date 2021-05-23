@@ -65,7 +65,7 @@ export default function CreateStructure() {
     timezone: "",
     isActive: false,
     sortIndex: 0,
-    structure: "",
+    structure: null,
     structures: [],
     machines: [],
   };
@@ -82,7 +82,9 @@ export default function CreateStructure() {
     newStructure.city = data.city;
     newStructure.country = data.country;
     newStructure.timezone = selectedTimezone.value;
-    newStructure.structure = structure;
+    if (structure !== "") {
+      newStructure.structure = structure;
+    }
     console.log(newStructure);
     dispatch(createStructure(newStructure));
     setSubmitted(true);

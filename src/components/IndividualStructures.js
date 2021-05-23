@@ -8,9 +8,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import { Button, Link } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { deleteStructure } from "../actions/creator";
+import { deleteStructure, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -81,6 +81,7 @@ export default function BasicTable() {
           className={classes.button}
           startIcon={<DeleteIcon />}
           onClick={() => {
+            dispatch(clearData());
             dispatch(deleteStructure(structure.id));
             history.push("/");
           }}

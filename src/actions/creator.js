@@ -2,10 +2,12 @@
 
 import {
   CREATE_STRUCTURE,
-  DATA_LOADED,
+  LOAD_STRUCTURES,
+  CLEAR_DATA,
   DISPLAY_STRUCTURE,
   DELETE_STRUCTURE,
 } from "../constants/action-types";
+import useStructures from "./useStructures";
 
 export function createStructure(payload) {
   console.log(payload);
@@ -17,12 +19,16 @@ export function displayStructure(payload) {
   return { type: DISPLAY_STRUCTURE, payload };
 }
 
-export function setStructures(payload) {
-  console.log(payload);
-  return { type: DATA_LOADED, payload };
+export function loadStructures(payload) {
+  console.log("CREATOR LOAD STRUCTURES");
+  return { type: LOAD_STRUCTURES, payload };
 }
 
 export function deleteStructure(payload) {
   console.log(payload);
   return { type: DELETE_STRUCTURE, payload };
+}
+
+export function clearData() {
+  return { type: CLEAR_DATA };
 }

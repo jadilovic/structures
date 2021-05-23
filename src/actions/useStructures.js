@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import authHeader from "../service/auth-header";
-import { setStructures } from "./creator";
+import { loadStructures } from "./creator";
 
 export default function useStructures() {
-  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -16,13 +14,12 @@ export default function useStructures() {
         headers: authHeader(),
       })
       .then((response) => {
-        setData(response.data);
-        dispatch(setStructures(response.data));
+        dispatch(loadStructures(response.data));
         console.log(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
-        setError(error);
+        console.log(error);
       })
       .finally(() => {
         setLoading(false);

@@ -3,9 +3,10 @@
 import axios from "axios";
 import {
   CREATE_STRUCTURE,
-  DATA_LOADED,
+  CLEAR_DATA,
   DISPLAY_STRUCTURE,
   DELETE_STRUCTURE,
+  LOAD_STRUCTURES,
 } from "../constants/action-types";
 import authHeader from "../service/auth-header";
 
@@ -40,17 +41,25 @@ function RootReducer(state = initialState, action) {
       individualStructure: action.payload,
     };
     // SAVING API DATA IN STORE
-  } else if (action.type === DATA_LOADED) {
-    console.log(action.payload);
+  } else if (action.type === LOAD_STRUCTURES) {
+    console.log("REDUCER LOADING STRUCTURES");
     return {
       ...state,
       structures: action.payload,
-      isAuth: true,
       loading: false,
     };
     // DELETING SELECTED STRUCTURE
+  } else if (action.type === CLEAR_DATA) {
+    console.log("CLEAR DATA");
+    return {
+      ...state,
+      structures: [],
+      isAuth: true,
+      loading: true,
+    };
+    // DELETING SELECTED STRUCTURE
   } else if (action.type === DELETE_STRUCTURE) {
-    console.log(action.payload);
+    console.log("DELETE STRUCTURE");
     axios
       .delete("/api/structures/" + action.payload, {
         headers: authHeader(),
