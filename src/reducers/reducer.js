@@ -35,7 +35,6 @@ function RootReducer(state = initialState, action) {
       });
     // SELECTING INDIVIDUAL STRUCTURE SAVING IN STORE
   } else if (action.type === DISPLAY_STRUCTURE) {
-    console.log(action.payload);
     return {
       ...state,
       individualStructure: action.payload,

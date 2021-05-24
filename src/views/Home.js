@@ -24,7 +24,7 @@ function Home() {
   const routes = [
     "/",
     "/form-structure",
-    //"/individualStr",
+    "/individual-structure",
     // "/tbl-mach",
     // "/mach-form",
     // "/sens-tbl",
@@ -59,14 +59,13 @@ function Home() {
                     component={Link}
                     to="/form-structure"
                   />
-                  {/*
-                  
                   <Tab
-                    value={false}
-                    label="Single Structure"
-                    component={Link}
-                    to="/individualStr"
+                    value={routes[2]}
+                    // label="Single Structure"
+                    // component={Link}
+                    // to="/individual-structure"
                   />
+                  {/*
                   <Tab
                     value={routes[2]}
                     label="Machines Table"
@@ -93,7 +92,7 @@ function Home() {
                   />
                     */}
                   <Tab
-                    value={routes[2]}
+                    value={routes[3]}
                     label="LOGOUT"
                     component={Link}
                     to="/login"

@@ -100,34 +100,30 @@ export default function BasicTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              <div>
-                {structure.machines.map((mach) => {
-                  return (
-                    <TableRow key={mach.id}>
-                      <TableCell>
-                        <Button
-                          fullWidth={true}
-                          key={mach.id}
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            alert(
-                              "Once Machine Individual Display Created This Button Link Will Take It There"
-                            );
-                          }}
-                        >
-                          {mach.name}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                <b>
-                  {structure.machines.length > 0
-                    ? ""
-                    : "No Machines in the Structure"}
-                </b>
-              </div>
+              {structure.machines.map((mach) => {
+                return (
+                  <TableRow key={mach.id}>
+                    <TableCell>
+                      <Button
+                        fullWidth={true}
+                        key={mach.id}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          alert(
+                            "Once Machine Individual Display Created This Button Link Will Take It There"
+                          );
+                        }}
+                      >
+                        {mach.name}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {structure.machines.length > 0
+                ? ""
+                : "No Machines in the Structure"}
             </TableBody>
           </Table>
         </TableContainer>

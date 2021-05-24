@@ -7,7 +7,6 @@ import {
   DISPLAY_STRUCTURE,
   DELETE_STRUCTURE,
 } from "../constants/action-types";
-import useStructures from "./useStructures";
 
 export function createStructure(payload) {
   console.log(payload);
@@ -15,7 +14,6 @@ export function createStructure(payload) {
 }
 
 export function displayStructure(payload) {
-  console.log(payload);
   return { type: DISPLAY_STRUCTURE, payload };
 }
 

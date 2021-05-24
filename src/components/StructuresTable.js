@@ -1,6 +1,6 @@
 import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { displayStructure, loadStructures } from "../actions/creator";
+import { displayStructure } from "../actions/creator";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -87,7 +87,6 @@ export default function BasicFilteringGrid() {
               <DataGrid
                 {...structures}
                 onRowClick={(props) => {
-                  console.log(props.row);
                   displayStructureRow(props.row);
                 }}
                 filterModel={{

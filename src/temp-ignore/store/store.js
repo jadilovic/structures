@@ -1,5 +1,9 @@
 // src/store/cloud.js
 
+// NOT USED STORE
+// NOT USED STORE
+// NOT USED STORE
+
 import { createStore } from "redux";
 // applyMiddleware, compose
 import rootReducer from "../reducers/reducer";

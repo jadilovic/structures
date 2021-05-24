@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import authHeader from "../service/auth-header";
 import { loadStructures } from "./creator";
 
 export default function useStructures() {
-  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,7 +21,7 @@ export default function useStructures() {
         console.log(error);
       })
       .finally(() => {
-        setLoading(false);
+        console.log("FINALLY useStructures");
       });
   }, []);
 }
