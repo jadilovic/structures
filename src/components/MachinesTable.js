@@ -1,25 +1,26 @@
 import React, { useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { displayStructure, clearData } from "../actions/creator";
+import { clearData, displayStructure } from "../actions/creator";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
-import useStructures from "../actions/useStructures";
+import useMachines from "../actions/useMachines";
 
 export default function BasicFilteringGrid() {
-  useStructures();
+  useMachines();
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(clearData());
   }, []);
 
-  const dataArray = useSelector((state) => state.structures);
+  const dataArray = useSelector((state) => state.machines);
   const loading = useSelector((state) => state.loading);
   const error = useSelector((state) => state.error);
   console.log(loading);
+
   const history = useHistory();
 
   const dataHeaders = [
@@ -34,18 +35,38 @@ export default function BasicFilteringGrid() {
       flex: 1,
     },
     {
-      field: "city",
-      headerName: "City",
+      field: "alias",
+      headerName: "Alias",
       flex: 1,
     },
     {
-      field: "country",
-      headerName: "Country",
+      field: "manufacturer",
+      headerName: "Manufacturer",
+      flex: 1,
+    },
+    {
+      field: "placeNumber",
+      headerName: "Place Number",
+      flex: 1,
+    },
+    {
+      field: "businessId",
+      headerName: "Description",
       flex: 1,
     },
     {
       field: "timezone",
       headerName: "Timezone",
+      flex: 1,
+    },
+    {
+      field: "type",
+      headerName: "Machine Type",
+      flex: 1,
+    },
+    {
+      field: "structure",
+      headerName: "Structure",
       flex: 1,
     },
     {
@@ -56,9 +77,9 @@ export default function BasicFilteringGrid() {
     },
   ];
 
-  const structures = { columns: dataHeaders, rows: dataArray };
+  const machines = { columns: dataHeaders, rows: dataArray };
 
-  function displayStructureRow(data) {
+  function displayMachineRow(data) {
     dispatch(displayStructure(data));
     history.push("/individual-structure");
   }
@@ -90,9 +111,9 @@ export default function BasicFilteringGrid() {
           <div style={{ display: "flex", height: "100%" }}>
             <div style={{ flexGrow: 1, cursor: "pointer" }}>
               <DataGrid
-                {...structures}
+                {...machines}
                 onRowClick={(props) => {
-                  displayStructureRow(props.row);
+                  displayMachineRow(props.row);
                 }}
                 filterModel={{
                   items: [

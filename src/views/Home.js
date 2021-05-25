@@ -11,7 +11,7 @@ import {
   useHistory,
 } from "react-router-dom";
 import StructuresTable from "../components/StructuresTable";
-//import TableMachines from "../components/LoadStructures";
+import MachinesTable from "../components/MachinesTable";
 //import TableSensors from "../components/TableSensors";
 import FormStructure from "../components/FormStructure";
 //import FormMachine from "../temp-folder/FormMachine";
@@ -24,8 +24,8 @@ function Home() {
   const routes = [
     "/",
     "/form-structure",
+    "/machines-table",
     "/individual-structure",
-    // "/tbl-mach",
     // "/mach-form",
     // "/sens-tbl",
     // "/frm-sensor",
@@ -49,7 +49,7 @@ function Home() {
                 <Tabs value={location.pathname} variant="fullWidth">
                   <Tab
                     value={routes[0]}
-                    label="Structures Table"
+                    label="Structures"
                     component={Link}
                     to="/"
                   />
@@ -61,6 +61,12 @@ function Home() {
                   />
                   <Tab
                     value={routes[2]}
+                    label="Machines"
+                    component={Link}
+                    to="/machines-table"
+                  />
+                  <Tab
+                    value={routes[3]}
                     // label="Single Structure"
                     // component={Link}
                     // to="/individual-structure"
@@ -92,7 +98,7 @@ function Home() {
                   />
                     */}
                   <Tab
-                    value={routes[3]}
+                    value={routes[4]}
                     label="LOGOUT"
                     component={Link}
                     to="/login"
@@ -105,6 +111,7 @@ function Home() {
                   path="/individual-structure"
                   component={IndividualStructure}
                 />
+                <Route path="/machines-table" component={MachinesTable} />
                 <Route path="/form-structure" component={FormStructure} />
                 <Route path="/" component={StructuresTable} />
                 {/*

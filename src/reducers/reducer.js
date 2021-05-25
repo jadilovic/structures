@@ -7,12 +7,14 @@ import {
   DISPLAY_STRUCTURE,
   DELETE_STRUCTURE,
   LOAD_STRUCTURES,
+  LOAD_MACHINES,
 } from "../constants/action-types";
 import authHeader from "../service/auth-header";
 
 const initialState = {
   structures: [],
   individualStructure: {},
+  machines: [],
   isAuth: false,
   loading: true,
   error: null,
@@ -41,10 +43,18 @@ function RootReducer(state = initialState, action) {
     };
     // SAVING API DATA IN STORE
   } else if (action.type === LOAD_STRUCTURES) {
-    console.log("REDUCER LOADING STRUCTURES");
+    console.log("REDUCER LOAD STRUCTURES");
     return {
       ...state,
       structures: action.payload,
+      loading: false,
+    };
+    // SAVING API MACHINES IN STORE
+  } else if (action.type === LOAD_MACHINES) {
+    console.log("REDUCER LOAD MACHINES");
+    return {
+      ...state,
+      machines: action.payload,
       loading: false,
     };
     // DELETING SELECTED STRUCTURE
@@ -53,6 +63,7 @@ function RootReducer(state = initialState, action) {
     return {
       ...state,
       structures: [],
+      machines: [],
       isAuth: true,
       loading: true,
     };
