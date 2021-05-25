@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { clearData, displayStructure } from "../actions/creator";
+import { clearData, displayMachine } from "../actions/creator";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -80,8 +80,8 @@ export default function BasicFilteringGrid() {
   const machines = { columns: dataHeaders, rows: dataArray };
 
   function displayMachineRow(data) {
-    dispatch(displayStructure(data));
-    history.push("/individual-structure");
+    dispatch(displayMachine(data));
+    history.push("/individual-machine");
   }
 
   if (loading) {

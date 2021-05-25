@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function BasicTable() {
-  const structure = useSelector((state) => state.individualStructure);
+  const machine = useSelector((state) => state.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -30,7 +30,7 @@ export default function BasicTable() {
     <Grid container spacing={3} style={{ marginTop: "12vh" }}>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
-          <Table aria-label="simple table">
+          <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Item</TableCell>
@@ -42,31 +42,31 @@ export default function BasicTable() {
                 <TableCell component="th" scope="row">
                   Name:
                 </TableCell>
-                <TableCell>{structure.name}</TableCell>
+                <TableCell>{machine.name}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
-                  City:
+                  Active:
                 </TableCell>
-                <TableCell>{structure.city}</TableCell>
+                <TableCell>{`${machine.isActive ? "Yes" : "No"}`}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
-                  Country:
+                  Business ID:
                 </TableCell>
-                <TableCell>{structure.country}</TableCell>
+                <TableCell>{machine.businessId}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Description:
                 </TableCell>
-                <TableCell>{structure.description}</TableCell>
+                <TableCell>{machine.description}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
-                  Timezone:
+                  Alias:
                 </TableCell>
-                <TableCell>{structure.timezone}</TableCell>
+                <TableCell>{machine.alias}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -78,11 +78,11 @@ export default function BasicTable() {
           startIcon={<DeleteIcon />}
           onClick={() => {
             dispatch(clearData());
-            dispatch(deleteStructure(structure.id));
+            dispatch(deleteStructure(machine.id));
             history.push("/");
           }}
         >
-          Delete Structure
+          Delete Machine
         </Button>
       </Grid>
       <Grid item xs={6}>
@@ -90,34 +90,32 @@ export default function BasicTable() {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Machines:</TableCell>
+                <TableCell>Sensors:</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {structure.machines.map((mach) => {
+              {machine.sensors.map((sensor) => {
                 return (
-                  <TableRow key={mach.id}>
+                  <TableRow key={sensor.id}>
                     <TableCell>
                       <Button
                         fullWidth={true}
-                        key={mach.id}
+                        key={sensor.id}
                         variant="contained"
                         color="primary"
                         onClick={() => {
                           alert(
-                            "Once Machine Individual Display Created This Button Link Will Take It There"
+                            "Once Sensor Individual Display Created This Button Link Will Take You There"
                           );
                         }}
                       >
-                        {mach.name}
+                        {sensor.alias}
                       </Button>
                     </TableCell>
                   </TableRow>
                 );
               })}
-              {structure.machines.length > 0
-                ? null
-                : "No Machines in the Structure"}
+              {machine.sensors.length > 0 ? null : "No Sensors in the Machine"}
             </TableBody>
           </Table>
         </TableContainer>

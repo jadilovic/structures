@@ -5,6 +5,7 @@ import {
   LOAD_STRUCTURES,
   CLEAR_DATA,
   DISPLAY_STRUCTURE,
+  DISPLAY_MACHINE,
   DELETE_STRUCTURE,
   LOAD_MACHINES,
 } from "../constants/action-types";
@@ -16,6 +17,10 @@ export function createStructure(payload) {
 
 export function displayStructure(payload) {
   return { type: DISPLAY_STRUCTURE, payload };
+}
+
+export function displayMachine(payload) {
+  return { type: DISPLAY_MACHINE, payload };
 }
 
 export function loadStructures(payload) {
