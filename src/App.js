@@ -7,6 +7,7 @@ import { Login, Home, PrivateRoute, Error, Header } from "./views";
 import StructuresTable from "./components/StructuresTable";
 import MachinesTable from "./components/MachinesTable";
 import FormStructure from "./components/FormStructure";
+import IndividualStructures from "./components/IndividualStructures";
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
         </PrivateRoute>
         <PrivateRoute path="/machines-table" exact={true}>
           <MachinesTable />
+        </PrivateRoute>
+        <PrivateRoute path="/individual-structure" exact={true}>
+          <IndividualStructures />
         </PrivateRoute>
         <Route path="/login">
           <Login />

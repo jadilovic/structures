@@ -12,6 +12,8 @@ import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import MuiAlert from "@material-ui/lab/Alert";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthorized } from "../actions/creator";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -56,6 +58,7 @@ export default function SignIn(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmitClick = (e) => {
     e.preventDefault();
@@ -74,6 +77,7 @@ export default function SignIn(props) {
       .post("/api/public/login", payload)
       .then(function (response) {
         localStorage.setItem("user", JSON.stringify(response.data));
+        dispatch(setAuthorized(true));
         history.push("/");
       })
       .catch(function (error) {

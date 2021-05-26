@@ -27,16 +27,10 @@ export default function BasicTable() {
   const classes = useStyles();
 
   return (
-    <Grid container spacing={3} style={{ marginTop: "12vh" }}>
+    <Grid container spacing={3}>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Item</TableCell>
-                <TableCell align="left">Value</TableCell>
-              </TableRow>
-            </TableHead>
             <TableBody>
               <TableRow>
                 <TableCell component="th" scope="row">

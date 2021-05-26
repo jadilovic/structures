@@ -15,6 +15,8 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import { withRouter } from "react-router-dom";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthorized } from "../actions/creator";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,7 +44,14 @@ const Header = (props) => {
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-  console.log(isMobile);
+  const isAuthorized = useSelector((state) => state.isAuth);
+  const dispatch = useDispatch();
+
+  function logout() {
+    localStorage.removeItem("user");
+    dispatch(setAuthorized(false));
+    history.push("/login");
+  }
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -51,6 +60,10 @@ const Header = (props) => {
   const handleMenuClick = (pageURL) => {
     history.push(pageURL);
     setAnchorEl(null);
+  };
+
+  const handleButtonClick = (pageURL) => {
+    history.push(pageURL);
   };
 
   return (
@@ -99,10 +112,30 @@ const Header = (props) => {
             </>
           ) : (
             <div className={classes.headerOptions}>
-              <Button variant="contained">Structures</Button>
-              <Button variant="contained">Create Structure</Button>
-              <Button variant="contained">Structures</Button>
+              <Button
+                variant="contained"
+                onClick={() => handleButtonClick("/")}
+              >
+                Structures
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => handleButtonClick("/form-structure")}
+              >
+                Create Structure
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => handleButtonClick("/machines-table")}
+              >
+                Machines
+              </Button>
             </div>
+          )}
+          {isAuthorized && (
+            <Button variant="contained" color="secondary" onClick={logout}>
+              LOGOUT
+            </Button>
           )}
         </Toolbar>
       </AppBar>

@@ -9,6 +9,7 @@ import {
   LOAD_STRUCTURES,
   LOAD_MACHINES,
   DISPLAY_MACHINE,
+  SET_AUTHORIZED,
 } from "../constants/action-types";
 import authHeader from "../service/auth-header";
 
@@ -37,6 +38,12 @@ function RootReducer(state = initialState, action) {
         console.log(error.response.data);
         return;
       });
+  } else if (action.type === SET_AUTHORIZED) {
+    // SAVING AUTHORIZATION IN STORE
+    return {
+      ...state,
+      isAuth: action.payload,
+    };
   } else if (action.type === DISPLAY_STRUCTURE) {
     // DISPLAYING INDIVIDUAL STRUCTURE AND SAVING IN STORE
     return {

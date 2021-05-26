@@ -8,7 +8,13 @@ import {
   DISPLAY_MACHINE,
   DELETE_STRUCTURE,
   LOAD_MACHINES,
+  SET_AUTHORIZED,
 } from "../constants/action-types";
+
+export function setAuthorized(payload) {
+  console.log("SET AUTHORIZED");
+  return { type: SET_AUTHORIZED, payload };
+}
 
 export function createStructure(payload) {
   console.log(payload);
