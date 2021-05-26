@@ -23,8 +23,8 @@ const initialState = {
 };
 
 function RootReducer(state = initialState, action) {
-  // CREATING STRUCTURE IN API
   if (action.type === CREATE_STRUCTURE) {
+    // CREATING STRUCTURE IN API
     axios
       .post("/api/structures", action.payload, {
         headers: authHeader(),
@@ -37,37 +37,37 @@ function RootReducer(state = initialState, action) {
         console.log(error.response.data);
         return;
       });
-    // SELECTING INDIVIDUAL STRUCTURE SAVING IN STORE
   } else if (action.type === DISPLAY_STRUCTURE) {
+    // DISPLAYING INDIVIDUAL STRUCTURE AND SAVING IN STORE
     return {
       ...state,
       individualStructure: action.payload,
     };
-    // SAVING API DATA IN STORE
   } else if (action.type === LOAD_STRUCTURES) {
     console.log("REDUCER LOAD STRUCTURES");
+    // SAVING DOWNLOADED API STRUCTURES DATA IN STORE
     return {
       ...state,
       structures: action.payload,
       loading: false,
     };
-    // SAVING API MACHINES IN STORE
   } else if (action.type === LOAD_MACHINES) {
     console.log("REDUCER LOAD MACHINES");
+    // SAVING DOWNLOADED API MACHINES DATA IN STORE
     return {
       ...state,
       machines: action.payload,
       loading: false,
     };
-    // DELETING SELECTED STRUCTURE
   } else if (action.type === DISPLAY_MACHINE) {
+    // DISPLAYING INDIVIDUAL MACHINE
     return {
       ...state,
       individualMachine: action.payload,
     };
-    // SAVING API DATA IN STORE
   } else if (action.type === CLEAR_DATA) {
     console.log("CLEAR DATA");
+    // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
     return {
       ...state,
       structures: [],
@@ -83,11 +83,9 @@ function RootReducer(state = initialState, action) {
         headers: authHeader(),
       })
       .then((response) => {
-        // setStatus("Delete successful");
         console.log("Delete successful");
       })
       .catch((error) => {
-        //setErrorMessage(error.message);
         console.log("There was an error!", error);
       });
   }

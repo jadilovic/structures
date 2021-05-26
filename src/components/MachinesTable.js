@@ -12,6 +12,7 @@ export default function BasicFilteringGrid() {
   useMachines();
   const dispatch = useDispatch();
 
+  // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
     dispatch(clearData());
   }, []);
