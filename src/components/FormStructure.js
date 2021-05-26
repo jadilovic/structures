@@ -54,7 +54,7 @@ export default function CreateStructure() {
   const classes = useStyles();
   const { handleSubmit, control } = useForm();
   const [submitted, setSubmitted] = useState(false);
-  const [structure, setStructure] = React.useState("");
+  const [structure, setStructure] = useState("");
 
   const initialValues = {
     businessId: "",
