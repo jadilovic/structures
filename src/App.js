@@ -3,7 +3,7 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Login, Home, PrivateRoute, Error, Header } from "./views";
+import { Login, PrivateRoute, Error, HeaderDrawer } from "./views";
 import StructuresTable from "./components/StructuresTable";
 import MachinesTable from "./components/MachinesTable";
 import FormStructure from "./components/FormStructure";
@@ -13,7 +13,7 @@ import IndividualMachine from "./components/IndividualMachine";
 function App() {
   return (
     <Router>
-      <Header />
+      <HeaderDrawer />
       <Switch>
         <PrivateRoute path="/" exact={true}>
           <StructuresTable />
@@ -24,9 +24,9 @@ function App() {
         <PrivateRoute path="/machines-table" exact={true}>
           <MachinesTable />
         </PrivateRoute>
-        <PrivateRoute path="/individual-structure" exact={true}>
+        <Route path="/individual-structure" exact={true}>
           <IndividualStructure />
-        </PrivateRoute>
+        </Route>
         <PrivateRoute path="/individual-machine" exact={true}>
           <IndividualMachine />
         </PrivateRoute>

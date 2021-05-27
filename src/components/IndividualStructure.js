@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -10,9 +10,10 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { Button } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { deleteStructure, clearData } from "../actions/creator";
+import { deleteStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { setAuthorized } from "../actions/creator";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -21,10 +22,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function BasicTable() {
-  const structure = useSelector((state) => state.individualStructure);
+  let structure = useSelector((state) => state.individualStructure);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
+  const _ = require("lodash");
+
+  if (_.isEmpty(structure)) {
+    const structureData = localStorage.getItem("structure-data");
+    structure = JSON.parse(structureData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem("structure-data", JSON.stringify(structure));
+  }
 
   return (
     <Grid container spacing={3}>
@@ -71,7 +81,7 @@ export default function BasicTable() {
           className={classes.button}
           startIcon={<DeleteIcon />}
           onClick={() => {
-            dispatch(clearData());
+            //dispatch(clearData());
             dispatch(deleteStructure(structure.id));
             history.push("/");
           }}

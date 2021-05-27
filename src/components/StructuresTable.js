@@ -14,6 +14,7 @@ export default function BasicFilteringGrid() {
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
+    console.log("CLeAR DATA");
     dispatch(clearData());
   }, []);
 

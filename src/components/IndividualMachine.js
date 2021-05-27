@@ -13,6 +13,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { deleteStructure, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { setAuthorized } from "../actions/creator";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -21,10 +22,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function BasicTable() {
-  const machine = useSelector((state) => state.individualMachine);
+  let machine = useSelector((state) => state.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
+  const _ = require("lodash");
+
+  if (_.isEmpty(machine)) {
+    const machineData = localStorage.getItem("machine-data");
+    machine = JSON.parse(machineData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem("machine-data", JSON.stringify(machine));
+  }
 
   return (
     <Grid container spacing={3}>

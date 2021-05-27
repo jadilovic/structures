@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TimezoneSelect from "react-timezone-select";
 import { useForm, Controller } from "react-hook-form";
+import { setAuthorized } from "../actions/creator";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,11 +51,20 @@ export default function CreateStructure() {
   });
 
   const dispatch = useDispatch();
-  const structures = useSelector((state) => state.structures);
+  let structures = useSelector((state) => state.structures);
   const classes = useStyles();
   const { handleSubmit, control } = useForm();
   const [submitted, setSubmitted] = useState(false);
   const [structure, setStructure] = useState("");
+  const _ = require("lodash");
+
+  if (_.isEmpty(structures)) {
+    const structuresData = localStorage.getItem("structures-data");
+    structures = JSON.parse(structuresData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem("structures-data", JSON.stringify(structures));
+  }
 
   const initialValues = {
     businessId: "",

@@ -1,7 +1,6 @@
-import Home from "./Home";
 import PrivateRoute from "./PrivateRoute";
 import Error from "./Error";
 import Login from "./Login";
-import Header from "./Header";
+import HeaderDrawer from "./HeaderDrawer";
 
-export { Login, Home, PrivateRoute, Error, Header };
+export { Login, PrivateRoute, Error, HeaderDrawer };

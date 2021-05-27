@@ -12,7 +12,7 @@ import Container from "@material-ui/core/Container";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import MuiAlert from "@material-ui/lab/Alert";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setAuthorized } from "../actions/creator";
 
 function Alert(props) {
