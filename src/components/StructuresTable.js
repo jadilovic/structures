@@ -87,7 +87,7 @@ export default function BasicFilteringGrid() {
   } else {
     return (
       <>
-        <div style={{ marginTop: "12vh", height: 400, width: "100%" }}>
+        <div style={{ height: 400, width: "100%" }}>
           <div style={{ display: "flex", height: "100%" }}>
             <div style={{ flexGrow: 1, cursor: "pointer" }}>
               <DataGrid

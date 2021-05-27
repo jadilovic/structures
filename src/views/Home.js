@@ -18,7 +18,7 @@ import FormStructure from "../components/FormStructure";
 //import FormSensor from "../components/FormSensor";
 import { AppBar } from "@material-ui/core";
 import "./styles.css";
-import IndividualStructure from "../components/IndividualStructures";
+import IndividualStructure from "../components/IndividualStructure";
 import IndividualMachine from "../components/IndividualMachine";
 
 function Home() {

@@ -82,7 +82,7 @@ export default function SignIn(props) {
       })
       .catch(function (error) {
         console.log(error);
-        setError("Invalid Email or Password" + error.toString());
+        setError("Invalid Email or Password");
         return;
       });
   };

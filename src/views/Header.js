@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("sm")]: {
       flexGrow: 1,
     },
   },
@@ -43,7 +43,7 @@ const Header = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isAuthorized = useSelector((state) => state.isAuth);
   const dispatch = useDispatch();
 
@@ -66,81 +66,111 @@ const Header = (props) => {
     history.push(pageURL);
   };
 
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Photos
-          </Typography>
-          {isMobile ? (
-            <>
-              <IconButton
-                edge="start"
-                className={classes.menuButton}
-                color="inherit"
-                aria-label="menu"
-                onClick={handleMenu}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={open}
-                onClose={() => setAnchorEl(null)}
-              >
-                <MenuItem onClick={() => handleMenuClick("/")}>
-                  Structures
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuClick("/form-structure")}>
-                  Create Structure
-                </MenuItem>
-                <MenuItem onClick={() => handleMenuClick("/machines-table")}>
-                  Machines
-                </MenuItem>
-              </Menu>
-            </>
-          ) : (
-            <div className={classes.headerOptions}>
-              <Button
-                variant="contained"
-                onClick={() => handleButtonClick("/")}
-              >
-                Structures
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => handleButtonClick("/form-structure")}
-              >
-                Create Structure
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => handleButtonClick("/machines-table")}
-              >
-                Machines
-              </Button>
-            </div>
-          )}
-          {isAuthorized && (
-            <Button variant="contained" color="secondary" onClick={logout}>
+  const menuItems = [
+    {
+      title: "Structures",
+      pageURL: "/",
+    },
+    {
+      title: "Create Structure",
+      pageURL: "/form-structure",
+    },
+    {
+      title: "Machines",
+      pageURL: "/machines-table",
+    },
+    {
+      title: "Create Machine",
+      pageURL: "/form-machine",
+    },
+  ];
+
+  if (isAuthorized) {
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" className={classes.title}>
+              Tika
+            </Typography>
+            {isMobile ? (
+              <>
+                <IconButton
+                  edge="start"
+                  className={classes.menuButton}
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={handleMenu}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={open}
+                  onClose={() => setAnchorEl(null)}
+                >
+                  {menuItems.map((item) => {
+                    const { title, pageURL } = item;
+                    return (
+                      <MenuItem onClick={() => handleMenuClick(pageURL)}>
+                        {title}
+                      </MenuItem>
+                    );
+                  })}
+                </Menu>
+              </>
+            ) : (
+              <>
+                <div className={classes.headerOptions}>
+                  {menuItems.map((item) => {
+                    console.log(item);
+                    const { title, pageURL } = item;
+                    return (
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => handleButtonClick(pageURL)}
+                      >
+                        {title}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            <Button
+              size="small"
+              variant="contained"
+              color="secondary"
+              onClick={logout}
+            >
               LOGOUT
             </Button>
-          )}
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <Button color="inherit">Welcome</Button>
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
 };
 
 export default withRouter(Header);
