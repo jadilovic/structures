@@ -7,10 +7,18 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
 import useStructures from "../actions/useStructures";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  row: {
+    cursor: "pointer",
+  },
+}));
 
 export default function BasicFilteringGrid() {
   useStructures();
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
@@ -88,11 +96,12 @@ export default function BasicFilteringGrid() {
   } else {
     return (
       <>
-        <div style={{ height: 400, width: "100%" }}>
+        <div style={{ height: 550, width: "100%" }}>
           <div style={{ display: "flex", height: "100%" }}>
-            <div style={{ flexGrow: 1, cursor: "pointer" }}>
+            <div style={{ flexGrow: 1 }}>
               <DataGrid
                 {...structures}
+                className={classes.row}
                 onRowClick={(props) => {
                   displayStructureRow(props.row);
                 }}

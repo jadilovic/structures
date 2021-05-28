@@ -8,12 +8,13 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import { Button } from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { deleteStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setAuthorized } from "../actions/creator";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -27,6 +28,7 @@ export default function BasicTable() {
   const history = useHistory();
   const classes = useStyles();
   const _ = require("lodash");
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   if (_.isEmpty(structure)) {
     const structureData = localStorage.getItem("structure-data");
@@ -35,6 +37,12 @@ export default function BasicTable() {
   } else {
     localStorage.setItem("structure-data", JSON.stringify(structure));
   }
+
+  const deletePost = (structureId) => {
+    //dispatch(clearData());
+    dispatch(deleteStructure(structureId));
+    history.push("/");
+  };
 
   return (
     <Grid container spacing={3}>
@@ -75,6 +83,29 @@ export default function BasicTable() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <div>
+          <Button
+            aria-label="delete"
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            startIcon={<DeleteIcon />}
+            onClick={() => setConfirmOpen(true)}
+          >
+            Delete Structure
+          </Button>
+          <ConfirmDialog
+            title="Delete Structure?"
+            open={confirmOpen}
+            setOpen={setConfirmOpen}
+            onConfirm={() => deletePost(structure.id)}
+          >
+            Are you sure you want to delete this structure?
+          </ConfirmDialog>
+        </div>
+
+        {/*
         <Button
           variant="contained"
           color="secondary"
@@ -88,6 +119,7 @@ export default function BasicTable() {
         >
           Delete Structure
         </Button>
+          */}
       </Grid>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
