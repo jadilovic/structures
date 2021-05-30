@@ -10,25 +10,56 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { Button, IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { deleteStructure } from "../actions/creator";
+import { deleteStructure, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setAuthorized } from "../actions/creator";
 import ConfirmDialog from "../components/ConfirmDialog";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import { displayMachine, loadIndividualMachine } from "../actions/creator";
+import axios from "axios";
+import authHeader from "../service/auth-header";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(3),
   },
+  root: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+  row: {
+    cursor: "pointer",
+  },
 }));
 
-export default function BasicTable() {
+export default function IndividualStructureDisplay() {
   let structure = useSelector((state) => state.individualStructure);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
   const _ = require("lodash");
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
+
+  const displayDeleteNotification = () => {
+    setOpenDeleteNotification(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenDeleteNotification(false);
+    history.push("/");
+  };
 
   if (_.isEmpty(structure)) {
     const structureData = localStorage.getItem("structure-data");
@@ -38,14 +69,44 @@ export default function BasicTable() {
     localStorage.setItem("structure-data", JSON.stringify(structure));
   }
 
-  const deletePost = (structureId) => {
+  const displayMachineRow = async (machineId) => {
     //dispatch(clearData());
-    dispatch(deleteStructure(structureId));
-    history.push("/");
+    const response = await axios
+      .get(`/api/machines/${machineId}?populate=sensors`, {
+        headers: authHeader(),
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    if (response) {
+      dispatch(displayMachine(response.data));
+      history.push("/individual-machine");
+    }
   };
+
+  function deleteIndividualStructure(structureId) {
+    // dispatch(clearData());
+    dispatch(deleteStructure(structureId));
+    displayDeleteNotification();
+  }
 
   return (
     <Grid container spacing={3}>
+      {openDeleteNotification && (
+        <div className={classes.root}>
+          <Snackbar
+            open={openDeleteNotification}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert onClose={handleClose} severity="success">
+              You have successfuly deleted selected structure! You will now be
+              returned to the Structures page.
+            </Alert>
+          </Snackbar>
+        </div>
+      )}
       <Grid item xs={6}>
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
@@ -83,7 +144,6 @@ export default function BasicTable() {
             </TableBody>
           </Table>
         </TableContainer>
-
         <div>
           <Button
             aria-label="delete"
@@ -99,27 +159,13 @@ export default function BasicTable() {
             title="Delete Structure?"
             open={confirmOpen}
             setOpen={setConfirmOpen}
-            onConfirm={() => deletePost(structure.id)}
+            onConfirm={() => {
+              deleteIndividualStructure(structure.id);
+            }}
           >
             Are you sure you want to delete this structure?
           </ConfirmDialog>
         </div>
-
-        {/*
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          startIcon={<DeleteIcon />}
-          onClick={() => {
-            //dispatch(clearData());
-            dispatch(deleteStructure(structure.id));
-            history.push("/");
-          }}
-        >
-          Delete Structure
-        </Button>
-          */}
       </Grid>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
@@ -130,23 +176,21 @@ export default function BasicTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {structure.machines.map((mach) => {
+              {structure.machines.map((machine) => {
                 return (
-                  <TableRow key={mach.id}>
-                    <TableCell>
-                      <Button
-                        fullWidth={true}
-                        key={mach.id}
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          alert(
-                            "Once Machine Individual Display Created This Button Link Will Take It There"
-                          );
-                        }}
-                      >
-                        {mach.name}
-                      </Button>
+                  <TableRow
+                    key={machine.id}
+                    variant="contained"
+                    color="primary"
+                  >
+                    <TableCell
+                      onClick={() => {
+                        displayMachineRow(machine.id);
+                      }}
+                      align="justify"
+                      className={classes.row}
+                    >
+                      {machine.name}
                     </TableCell>
                   </TableRow>
                 );

@@ -9,6 +9,8 @@ import {
   DELETE_STRUCTURE,
   LOAD_MACHINES,
   SET_AUTHORIZED,
+  DISPLAY_SENSOR,
+  LOAD_INDIVIDUAL_MACHINE,
 } from "../constants/action-types";
 
 export function setAuthorized(payload) {
@@ -39,8 +41,17 @@ export function loadMachines(payload) {
   return { type: LOAD_MACHINES, payload };
 }
 
+export function loadIndividualMachine(payload) {
+  console.log("CREATOR LOAD INDIVIDUAL MACHINE" + payload);
+  return { type: LOAD_INDIVIDUAL_MACHINE, payload: payload };
+}
+
+export function displaySensor(payload) {
+  return { type: DISPLAY_SENSOR, payload };
+}
+
 export function deleteStructure(payload) {
-  console.log(payload);
+  console.log("DELETE STRUCTURE");
   return { type: DELETE_STRUCTURE, payload };
 }
 

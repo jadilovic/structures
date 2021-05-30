@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,19 +14,50 @@ import { deleteStructure, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setAuthorized } from "../actions/creator";
+import ConfirmDialog from "../components/ConfirmDialog";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import { displaySensor } from "../actions/creator";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(3),
   },
+  root: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+  row: {
+    cursor: "pointer",
+  },
 }));
 
-export default function BasicTable() {
+export default function IndividualMachineDisplay() {
   let machine = useSelector((state) => state.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
   const _ = require("lodash");
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
+
+  const displayDeleteNotification = () => {
+    setOpenDeleteNotification(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenDeleteNotification(false);
+    history.push("/");
+  };
 
   if (_.isEmpty(machine)) {
     const machineData = localStorage.getItem("machine-data");
@@ -36,8 +67,33 @@ export default function BasicTable() {
     localStorage.setItem("machine-data", JSON.stringify(machine));
   }
 
+  const deleteMachine = (machineId) => {
+    //dispatch(clearData());
+    dispatch(deleteMachine(machineId));
+    displayDeleteNotification();
+  };
+
+  function displaySensorRow(data) {
+    dispatch(displaySensor(data));
+    history.push("/individual-sensor");
+  }
+
   return (
     <Grid container spacing={3}>
+      {openDeleteNotification && (
+        <div className={classes.root}>
+          <Snackbar
+            open={openDeleteNotification}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert onClose={handleClose} severity="success">
+              You have successfuly deleted selected machine! You will now be
+              returned to the Machines page.
+            </Alert>
+          </Snackbar>
+        </div>
+      )}
       <Grid item xs={6}>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
@@ -75,19 +131,26 @@ export default function BasicTable() {
             </TableBody>
           </Table>
         </TableContainer>
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          startIcon={<DeleteIcon />}
-          onClick={() => {
-            dispatch(clearData());
-            dispatch(deleteStructure(machine.id));
-            history.push("/");
-          }}
-        >
-          Delete Machine
-        </Button>
+        <div>
+          <Button
+            aria-label="delete"
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            startIcon={<DeleteIcon />}
+            onClick={() => setConfirmOpen(true)}
+          >
+            Delete Machine
+          </Button>
+          <ConfirmDialog
+            title="Delete Machine?"
+            open={confirmOpen}
+            setOpen={setConfirmOpen}
+            onConfirm={() => deleteMachine(machine.id)}
+          >
+            Are you sure you want to delete this machine?
+          </ConfirmDialog>
+        </div>
       </Grid>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
@@ -100,21 +163,20 @@ export default function BasicTable() {
             <TableBody>
               {machine.sensors.map((sensor) => {
                 return (
-                  <TableRow key={sensor.id}>
-                    <TableCell>
-                      <Button
-                        fullWidth={true}
-                        key={sensor.id}
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          alert(
-                            "Once Sensor Individual Display Created This Button Link Will Take You There"
-                          );
-                        }}
-                      >
-                        {sensor.alias}
-                      </Button>
+                  <TableRow
+                    fullWidth={true}
+                    key={sensor.id}
+                    variant="contained"
+                    color="primary"
+                  >
+                    <TableCell
+                      onClick={() => {
+                        displaySensorRow(sensor);
+                      }}
+                      align="center"
+                      className={classes.row}
+                    >
+                      {`Name: ${sensor.sensorId}, --- Alias: ${sensor.alias}`}
                     </TableCell>
                   </TableRow>
                 );

@@ -2,18 +2,18 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import authHeader from "../service/auth-header";
-import { loadMachines } from "./creator";
+import { loadIndividualMachine } from "./creator";
 
-export default function useStructures() {
+export default function useIndividualMachine(id) {
   const dispatch = useDispatch();
 
   useEffect(() => {
     axios
-      .get("/api/machines?populate=sensors", {
+      .get(`/api/machines/${id}?populate=sensors`, {
         headers: authHeader(),
       })
       .then((response) => {
-        dispatch(loadMachines(response.data));
+        dispatch(loadIndividualMachine(response.data));
         console.log(response.data);
       })
       .catch((error) => {

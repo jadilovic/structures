@@ -10,6 +10,7 @@ import {
   LOAD_MACHINES,
   DISPLAY_MACHINE,
   SET_AUTHORIZED,
+  LOAD_INDIVIDUAL_MACHINE,
 } from "../constants/action-types";
 import authHeader from "../service/auth-header";
 
@@ -68,6 +69,14 @@ function RootReducer(state = initialState, action) {
     };
   } else if (action.type === DISPLAY_MACHINE) {
     // DISPLAYING INDIVIDUAL MACHINE
+    console.log("DISPLAY MACHINE REDUCER");
+    return {
+      ...state,
+      individualMachine: action.payload,
+    };
+  } else if (action.type === LOAD_INDIVIDUAL_MACHINE) {
+    console.log("LOAD IND MACHINE REDUCER");
+    // SAVING INDIVIDUAL MACHINE IN STORE
     return {
       ...state,
       individualMachine: action.payload,
@@ -79,6 +88,8 @@ function RootReducer(state = initialState, action) {
       ...state,
       structures: [],
       machines: [],
+      individualMachine: {},
+      individualStructure: {},
       isAuth: true,
       loading: true,
     };
