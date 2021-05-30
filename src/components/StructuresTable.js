@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function BasicFilteringGrid() {
+export default function StructuresTable() {
   useStructures();
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -26,13 +26,12 @@ export default function BasicFilteringGrid() {
     dispatch(clearData());
   }, []);
 
-  const dataArray = useSelector((state) => state.structures);
+  const structuresData = useSelector((state) => state.structures);
   const loading = useSelector((state) => state.loading);
   const error = useSelector((state) => state.error);
-  console.log(loading);
   const history = useHistory();
 
-  const dataHeaders = [
+  const dataColumns = [
     {
       field: "name",
       headerName: "Name",
@@ -66,7 +65,7 @@ export default function BasicFilteringGrid() {
     },
   ];
 
-  const structures = { columns: dataHeaders, rows: dataArray };
+  const structures = { columns: dataColumns, rows: structuresData };
 
   function displayStructureRow(data) {
     dispatch(displayStructure(data));

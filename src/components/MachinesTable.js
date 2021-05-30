@@ -17,14 +17,14 @@ export default function MachinesTable() {
     dispatch(clearData());
   }, []);
 
-  const dataArray = useSelector((state) => state.machines);
+  const machinesData = useSelector((state) => state.machines);
   const loading = useSelector((state) => state.loading);
   const error = useSelector((state) => state.error);
   console.log(loading);
 
   const history = useHistory();
 
-  const dataHeaders = [
+  const machinesColumns = [
     {
       field: "name",
       headerName: "Name",
@@ -63,11 +63,13 @@ export default function MachinesTable() {
     {
       field: "type",
       headerName: "Machine Type",
+      valueFormatter: (params) => params.row.type.name,
       flex: 1,
     },
     {
       field: "structure",
       headerName: "Structure",
+      valueFormatter: (params) => params.row.name,
       flex: 1,
     },
     {
@@ -78,9 +80,10 @@ export default function MachinesTable() {
     },
   ];
 
-  const machines = { columns: dataHeaders, rows: dataArray };
+  const machines = { columns: machinesColumns, rows: machinesData };
 
   function displayMachineRow(data) {
+    dispatch(clearData());
     dispatch(displayMachine(data));
     history.push("/individual-machine");
   }
@@ -108,7 +111,7 @@ export default function MachinesTable() {
   } else {
     return (
       <>
-        <div style={{ marginTop: "12vh", height: 400, width: "100%" }}>
+        <div style={{ height: 550, width: "100%" }}>
           <div style={{ display: "flex", height: "100%" }}>
             <div style={{ flexGrow: 1, cursor: "pointer" }}>
               <DataGrid

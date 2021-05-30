@@ -49,6 +49,37 @@ export default function IndividualStructureDisplay() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
 
+  // SAVING AND GETTING STRUCTURE DATA ON REFRESH PAGE
+  if (_.isEmpty(structure)) {
+    const structureData = localStorage.getItem("structure-data");
+    structure = JSON.parse(structureData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem("structure-data", JSON.stringify(structure));
+  }
+
+  const displayMachineRow = async (machineId) => {
+    dispatch(clearData());
+    const response = await axios
+      .get(`/api/machines/${machineId}?populate=sensors`, {
+        headers: authHeader(),
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    if (response) {
+      dispatch(displayMachine(response.data));
+      history.push("/individual-machine");
+    }
+  };
+
+  function deleteIndividualStructure(structureId) {
+    dispatch(clearData());
+    dispatch(deleteStructure(structureId));
+    displayDeleteNotification();
+  }
+
+  // SNACK BAR DELETE NOTIFICATION
   const displayDeleteNotification = () => {
     setOpenDeleteNotification(true);
   };
@@ -60,36 +91,6 @@ export default function IndividualStructureDisplay() {
     setOpenDeleteNotification(false);
     history.push("/");
   };
-
-  if (_.isEmpty(structure)) {
-    const structureData = localStorage.getItem("structure-data");
-    structure = JSON.parse(structureData);
-    dispatch(setAuthorized(true));
-  } else {
-    localStorage.setItem("structure-data", JSON.stringify(structure));
-  }
-
-  const displayMachineRow = async (machineId) => {
-    //dispatch(clearData());
-    const response = await axios
-      .get(`/api/machines/${machineId}?populate=sensors`, {
-        headers: authHeader(),
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    if (response) {
-      dispatch(displayMachine(response.data));
-      history.push("/individual-machine");
-    }
-  };
-
-  function deleteIndividualStructure(structureId) {
-    // dispatch(clearData());
-    dispatch(deleteStructure(structureId));
-    displayDeleteNotification();
-  }
 
   return (
     <Grid container spacing={3}>

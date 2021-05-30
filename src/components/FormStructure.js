@@ -53,7 +53,7 @@ export default function CreateStructure() {
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.structures);
   const classes = useStyles();
-  const { handleSubmit, control } = useForm();
+  const { handleSubmit, control, reset } = useForm();
   const [submitted, setSubmitted] = useState(false);
   const [structure, setStructure] = useState("");
   const _ = require("lodash");
@@ -84,18 +84,21 @@ export default function CreateStructure() {
     setStructure(event.target.value);
   };
 
-  const onSubmit = (data) => {
-    let newStructure = initialValues;
+  const onSubmit = (data, e) => {
+    let newStructure = { ...initialValues, ...data };
+    /*
     newStructure.businessId = data.businessId;
     newStructure.name = data.name;
     newStructure.description = data.description;
     newStructure.city = data.city;
     newStructure.country = data.country;
+  */
     newStructure.timezone = selectedTimezone.value;
     if (structure !== "") {
       newStructure.structure = structure;
     }
     console.log(newStructure);
+    reset({ ...initialValues });
     dispatch(createStructure(newStructure));
     setSubmitted(true);
   };
@@ -216,6 +219,7 @@ export default function CreateStructure() {
                   fieldState: { error },
                 }) => (
                   <TextField
+                    placeholder="Input"
                     name="country"
                     variant="outlined"
                     fullWidth
@@ -266,16 +270,9 @@ export default function CreateStructure() {
             color="primary"
             className={classes.submit}
           >
-            Submit New Structure Data
+            Submit
           </Button>
         </form>
-        <Grid item xs={12}>
-          <Link to="/" className="btn">
-            <Button variant="contained" color="default" p={3}>
-              return home
-            </Button>
-          </Link>
-        </Grid>
       </div>
     </Container>
   );
