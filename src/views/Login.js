@@ -16,6 +16,7 @@ import axios from "axios";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useDispatch } from "react-redux";
 import { setAuthorized } from "../actions/creator";
+import { useForm, Controller } from "react-hook-form";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -52,27 +53,27 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  root: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(4),
+    },
+  },
 }));
 
 export default function SignIn(props) {
   const classes = useStyles();
   const history = useHistory();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
+  const { handleSubmit, control, reset } = useForm();
 
-  const handleSubmitClick = (e) => {
-    e.preventDefault();
-
-    if (email === "" || password === "") {
-      setError("Fields are required");
-      return;
-    }
+  const onSubmit = (data, e) => {
+    console.log(data);
 
     const payload = {
-      email: email,
-      password: password,
+      email: data.email,
+      password: data.password,
     };
 
     axios
@@ -85,6 +86,7 @@ export default function SignIn(props) {
       .catch(function (error) {
         console.log(error);
         setError("Invalid Email or Password");
+        reset({ email: "", password: "" });
         return;
       });
   };
@@ -108,32 +110,61 @@ export default function SignIn(props) {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+          {error && (
+            <div className={classes.root}>
+              <Alert
+                variant="outlined"
+                severity="error"
+                onClick={() => setError(null)}
+              >
+                {props.error || error}
+              </Alert>
+            </div>
+          )}
+          <Controller
             name="email"
-            autoComplete="email"
-            autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                value={value}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+              />
+            )}
+            rules={{ required: "Email is required" }}
           />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
+          <Controller
             name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            control={control}
+            defaultValue=""
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={value}
+                onChange={onChange}
+                error={!!error}
+                helperText={error ? error.message : null}
+              />
+            )}
+            rules={{ required: "Password is required" }}
           />
           <Button
             type="submit"
@@ -141,15 +172,10 @@ export default function SignIn(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={handleSubmitClick}
+            onClick={handleSubmit}
           >
             Sign In
           </Button>
-          {error && (
-            <Alert severity="error" onClick={() => setError(null)}>
-              {props.error || error}
-            </Alert>
-          )}
         </form>
       </div>
       <Box mt={8}>

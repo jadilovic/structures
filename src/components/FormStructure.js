@@ -86,13 +86,6 @@ export default function FormStructure() {
 
   const onSubmit = (data, e) => {
     let newStructure = { ...initialValues, ...data };
-    /*
-    newStructure.businessId = data.businessId;
-    newStructure.name = data.name;
-    newStructure.description = data.description;
-    newStructure.city = data.city;
-    newStructure.country = data.country;
-  */
     newStructure.timezone = selectedTimezone.value;
     if (structure !== "") {
       newStructure.structure = structure;
@@ -235,12 +228,20 @@ export default function FormStructure() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormHelperText id="timezone">Timezone required</FormHelperText>
+              <FormHelperText
+                id="outlined-select-currency-native"
+                fullWidth
+                variant="outlined"
+                id="timezone"
+              >
+                Timezone is required
+              </FormHelperText>
               <TimezoneSelect
                 value={selectedTimezone}
                 onChange={setSelectedTimezone}
               />
             </Grid>
+
             <Grid item xs={12}>
               <TextField
                 id="outlined-select-currency-native"
