@@ -7,6 +7,7 @@ import {
   DISPLAY_STRUCTURE,
   DISPLAY_MACHINE,
   DELETE_STRUCTURE,
+  DELETE_MACHINE,
   LOAD_MACHINES,
   SET_AUTHORIZED,
   DISPLAY_SENSOR,
@@ -53,6 +54,11 @@ export function displaySensor(payload) {
 export function deleteStructure(payload) {
   console.log("DELETE STRUCTURE");
   return { type: DELETE_STRUCTURE, payload };
+}
+
+export function deleteMachine(payload) {
+  alert("DELETE MACHINE NOT FUNCTIONAL YET");
+  return { type: DELETE_MACHINE, payload };
 }
 
 export function clearData() {

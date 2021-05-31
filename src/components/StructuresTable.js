@@ -4,8 +4,7 @@ import { displayStructure, clearData } from "../actions/creator";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
+import { Box, Grid } from "@material-ui/core";
 import useStructures from "../actions/useStructures";
 import { makeStyles } from "@material-ui/core/styles";
 

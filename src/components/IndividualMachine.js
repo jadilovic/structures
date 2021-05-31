@@ -1,21 +1,23 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import { Button } from "@material-ui/core";
+import {
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid,
+  Button,
+  Snackbar,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { deleteStructure, clearData } from "../actions/creator";
+import { deleteMachine, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setAuthorized } from "../actions/creator";
 import ConfirmDialog from "../components/ConfirmDialog";
-import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { displaySensor } from "../actions/creator";
 
@@ -56,7 +58,7 @@ export default function IndividualMachineDisplay() {
       return;
     }
     setOpenDeleteNotification(false);
-    history.push("/");
+    history.push("/machines-table");
   };
 
   if (_.isEmpty(machine)) {
@@ -67,11 +69,11 @@ export default function IndividualMachineDisplay() {
     localStorage.setItem("machine-data", JSON.stringify(machine));
   }
 
-  const deleteMachine = (machineId) => {
-    //dispatch(clearData());
+  function deleteIndividualMachine(machineId) {
+    dispatch(clearData());
     dispatch(deleteMachine(machineId));
     displayDeleteNotification();
-  };
+  }
 
   function displaySensorRow(data) {
     dispatch(displaySensor(data));
@@ -146,7 +148,7 @@ export default function IndividualMachineDisplay() {
             title="Delete Machine?"
             open={confirmOpen}
             setOpen={setConfirmOpen}
-            onConfirm={() => deleteMachine(machine.id)}
+            onConfirm={() => deleteIndividualMachine(machine.id)}
           >
             Are you sure you want to delete this machine?
           </ConfirmDialog>
@@ -163,12 +165,7 @@ export default function IndividualMachineDisplay() {
             <TableBody>
               {machine.sensors.map((sensor) => {
                 return (
-                  <TableRow
-                    fullWidth={true}
-                    key={sensor.id}
-                    variant="contained"
-                    color="primary"
-                  >
+                  <TableRow key={sensor.id} variant="contained" color="primary">
                     <TableCell
                       onClick={() => {
                         displaySensorRow(sensor);

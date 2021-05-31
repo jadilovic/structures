@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import { FormHelperText } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
+import {
+  Avatar,
+  Button,
+  FormHelperText,
+  CssBaseline,
+  TextField,
+  Grid,
+  Typography,
+  makeStyles,
+  Container,
+  green,
+} from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import Grid from "@material-ui/core/Grid";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import { green } from "@material-ui/core/colors";
 import { createStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";

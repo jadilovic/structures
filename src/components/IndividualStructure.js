@@ -1,23 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import { Button, IconButton } from "@material-ui/core";
+import React, { useState } from "react";
+import {
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid,
+  Button,
+  Snackbar,
+} from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { deleteStructure, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { setAuthorized } from "../actions/creator";
 import ConfirmDialog from "../components/ConfirmDialog";
-import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-import { displayMachine, loadIndividualMachine } from "../actions/creator";
+import { displayMachine } from "../actions/creator";
 import axios from "axios";
 import authHeader from "../service/auth-header";
 

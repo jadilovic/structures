@@ -1,40 +1,26 @@
-/*
 import React, { useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   AppBar,
   Toolbar,
   Typography,
   Button,
   IconButton,
-  Switch,
-  Menu,
-  MenuItem,
-  FormControlLabel,
-  FormGroup,
+  Drawer,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
 } from "@material-ui/core";
-*/
 import { withRouter } from "react-router-dom";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthorized } from "../actions/creator";
-
-import React, { useState } from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 
 const drawerWidth = 240;
 
@@ -122,6 +108,11 @@ const Header = (props) => {
     setOpen(false);
   };
 
+  const handleDrawerCloseAfterSelection = (pageURL) => {
+    handleDrawerClose();
+    history.push(pageURL);
+  };
+
   function logout() {
     localStorage.removeItem("user");
     dispatch(setAuthorized(false));
@@ -193,7 +184,9 @@ const Header = (props) => {
                         <ListItem
                           button
                           key={title}
-                          onClick={() => history.push(pageURL)}
+                          onClick={() =>
+                            handleDrawerCloseAfterSelection(pageURL)
+                          }
                         >
                           <ListItemText primary={title} />
                         </ListItem>
