@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import authHeader from "../service/auth-header";
-import { loadMachines } from "./creator";
+import { loadMachines } from "../actions/creator";
 
 export default function useStructures() {
   const dispatch = useDispatch();

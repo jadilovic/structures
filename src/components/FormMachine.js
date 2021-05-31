@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreateStructure() {
+export default function FormMachine() {
   const dispatch = useDispatch();
   const structures = useSelector((state) => state.structures);
   const classes = useStyles();

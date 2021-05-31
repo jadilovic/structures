@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreateStructure() {
+export default function FormStructure() {
   const [selectedTimezone, setSelectedTimezone] = useState({
     value: "America/Juneau",
     label: "(GMT-8:00) Alaska",

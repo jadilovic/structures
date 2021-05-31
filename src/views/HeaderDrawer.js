@@ -203,7 +203,6 @@ const Header = (props) => {
                 </Typography>
                 <div className={classes.headerOptions}>
                   {menuItems.map((item) => {
-                    console.log(item);
                     const { title, pageURL } = item;
                     return (
                       <Button

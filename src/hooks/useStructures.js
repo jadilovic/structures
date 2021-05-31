@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import authHeader from "../service/auth-header";
-import { loadStructures } from "./creator";
+import { loadStructures } from "../actions/creator";
 
 export default function useStructures() {
   const dispatch = useDispatch();
@@ -19,9 +19,6 @@ export default function useStructures() {
       .catch((error) => {
         console.error("Error fetching data: ", error);
         console.log(error);
-      })
-      .finally(() => {
-        console.log("FINALLY useStructures");
       });
   }, []);
 }

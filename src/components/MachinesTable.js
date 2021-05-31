@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Box, Grid } from "@material-ui/core";
-import useMachines from "../actions/useMachines";
+import useMachines from "../hooks/useMachines";
 
 export default function MachinesTable() {
   useMachines();
