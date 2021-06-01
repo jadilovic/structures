@@ -14,29 +14,6 @@ function App() {
   return (
     <Router>
       <HeaderDrawer />
-      <Switch>
-        <PrivateRoute path="/" exact={true}>
-          <StructuresTable />
-        </PrivateRoute>
-        <PrivateRoute path="/form-structure" exact={true}>
-          <FormStructure />
-        </PrivateRoute>
-        <PrivateRoute path="/machines-table" exact={true}>
-          <MachinesTable />
-        </PrivateRoute>
-        <Route path="/individual-structure" exact={true}>
-          <IndividualStructure />
-        </Route>
-        <PrivateRoute path="/individual-machine" exact={true}>
-          <IndividualMachine />
-        </PrivateRoute>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="*">
-          <Error />
-        </Route>
-      </Switch>
     </Router>
   );
 }

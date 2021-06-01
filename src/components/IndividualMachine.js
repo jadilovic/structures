@@ -20,6 +20,7 @@ import { setAuthorized } from "../actions/creator";
 import ConfirmDialog from "../components/ConfirmDialog";
 import MuiAlert from "@material-ui/lab/Alert";
 import { displaySensor } from "../actions/creator";
+import _ from "lodash";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -45,7 +46,6 @@ export default function IndividualMachineDisplay() {
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
-  const _ = require("lodash");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
 

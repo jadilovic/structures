@@ -22,6 +22,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { displayMachine } from "../actions/creator";
 import axios from "axios";
 import authHeader from "../service/auth-header";
+import _ from "lodash";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -47,7 +48,6 @@ export default function IndividualStructureDisplay() {
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
-  const _ = require("lodash");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
 

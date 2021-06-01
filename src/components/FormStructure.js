@@ -14,9 +14,9 @@ import Alert from "@material-ui/lab/Alert";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { createStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
-import TimezoneSelect from "react-timezone-select";
 import { useForm, Controller } from "react-hook-form";
 import { setAuthorized } from "../actions/creator";
+import momentTZ from "moment-timezone";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,19 +43,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormStructure() {
-  const [selectedTimezone, setSelectedTimezone] = useState({
-    value: "America/Juneau",
-    label: "(GMT-8:00) Alaska",
-    abbrev: "AHST",
-    altName: "Alaskan Standard Time",
-  });
-
+  const timeZonesList = momentTZ.tz.names();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.structures);
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
   const [submitted, setSubmitted] = useState(false);
   const [structure, setStructure] = useState("");
+  const [timezone, setTimezone] = useState("");
   const _ = require("lodash");
 
   if (_.isEmpty(structures)) {
@@ -80,13 +75,17 @@ export default function FormStructure() {
     machines: [],
   };
 
-  const handleChange = (event) => {
+  const handleChangeStructure = (event) => {
     setStructure(event.target.value);
+  };
+
+  const handleChangeTimezone = (event) => {
+    setTimezone(event.target.value);
   };
 
   const onSubmit = (data, e) => {
     let newStructure = { ...initialValues, ...data };
-    newStructure.timezone = selectedTimezone.value;
+    newStructure.timezone = timezone;
     if (structure !== "") {
       newStructure.structure = structure;
     }
@@ -228,18 +227,25 @@ export default function FormStructure() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormHelperText
+              <TextField
                 id="outlined-select-currency-native"
                 fullWidth
+                select
+                value={timezone}
+                onChange={handleChangeTimezone}
+                SelectProps={{
+                  native: true,
+                }}
+                helperText="Please select timezone"
                 variant="outlined"
-                id="timezone"
               >
-                Timezone is required
-              </FormHelperText>
-              <TimezoneSelect
-                value={selectedTimezone}
-                onChange={setSelectedTimezone}
-              />
+                <option value="">{timeZonesList[0]}</option>
+                {timeZonesList.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </TextField>
             </Grid>
 
             <Grid item xs={12}>
@@ -248,7 +254,7 @@ export default function FormStructure() {
                 fullWidth
                 select
                 value={structure}
-                onChange={handleChange}
+                onChange={handleChangeStructure}
                 SelectProps={{
                   native: true,
                 }}
