@@ -113,7 +113,7 @@ export default function MachinesTable() {
       <Container maxWidth="lg">
         <div
           style={{
-            height: userScreenHeight - 65,
+            height: userScreenHeight - 112,
             width: "100%",
             cursor: "pointer",
           }}

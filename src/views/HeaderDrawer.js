@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import {
   makeStyles,
@@ -15,7 +15,8 @@ import {
   ListItemText,
   ListItem,
   Button,
-  Container,
+  useMediaQuery,
+  Hidden,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -77,6 +78,23 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   drawerClose: {
+    overflowX: "hidden",
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing.unit * 7,
+    [theme.breakpoints.up("xs")]: {
+      width: theme.spacing.unit * 9,
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: 0,
+      display: "none",
+    },
+    nested: {
+      paddingLeft: theme.spacing.unit * 4,
+    },
+    /*
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -86,6 +104,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       width: theme.spacing(9) + 1,
     },
+    */
   },
   toolbar: {
     display: "flex",
@@ -108,6 +127,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  drawerPaper: {
+    width: drawerWidth,
+  },
 }));
 
 const HeaderDrawer = (props) => {
@@ -115,8 +137,8 @@ const HeaderDrawer = (props) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const isAuthorized = useSelector((state) => state.isAuth);
+  const [open, setOpen] = useState(false);
+  const isAuthorized = localStorage.getItem("user");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -160,119 +182,146 @@ const HeaderDrawer = (props) => {
     },
   ];
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
+  const drawer = (
+    <List>
+      {menuItems.map((item) => {
+        const { title, pageURL, icon } = item;
+        return (
+          <ListItem
+            button
+            key={title}
+            onClick={() => handleDrawerCloseAfterSelection(pageURL)}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Tika Technologies
-          </Typography>
-          <div className={classes.toolbarButtons}>
-            <Button
-              size="small"
-              variant="contained"
-              color="secondary"
-              onClick={logout}
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={title} />
+          </ListItem>
+        );
+      })}
+    </List>
+  );
+
+  if (isAuthorized) {
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, {
+                [classes.hide]: open,
+              })}
             >
-              LOGOUT
-            </Button>
-          </div>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              Tika Technologies
+            </Typography>
+            <div className={classes.toolbarButtons}>
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                onClick={logout}
+              >
+                LOGOUT
+              </Button>
+            </div>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          {menuItems.map((item) => {
-            const { title, pageURL, icon } = item;
-            return (
-              <ListItem
-                button
-                key={title}
-                onClick={() => handleDrawerCloseAfterSelection(pageURL)}
-              >
-                <ListItemIcon>{icon}</ListItemIcon>
-                <ListItemText primary={title} />
-              </ListItem>
-            );
           })}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <Switch>
-          <PrivateRoute
-            component={StructuresTable}
-            path="/"
-            exact={true}
-          ></PrivateRoute>
-          <PrivateRoute
-            component={FormStructure}
-            path="/form-structure"
-            exact={true}
-          ></PrivateRoute>
-          <PrivateRoute path="/machines-table" exact={true}>
-            <MachinesTable />
-          </PrivateRoute>
-          <PrivateRoute path="/individual-structure" exact={true}>
-            <IndividualStructure />
-          </PrivateRoute>
-          <PrivateRoute path="/individual-machine" exact={true}>
-            <IndividualMachine />
-          </PrivateRoute>
-          <Route path="*" component={Error}></Route>
-        </Switch>
-      </main>
-    </div>
-  );
+          classes={{
+            paper: clsx({
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            }),
+          }}
+        >
+          <div className={classes.toolbar}>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "rtl" ? (
+                <ChevronRightIcon />
+              ) : (
+                <ChevronLeftIcon />
+              )}
+            </IconButton>
+          </div>
+          <Divider />
+          {drawer}
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <Switch>
+            <PrivateRoute
+              component={StructuresTable}
+              path="/"
+              exact={true}
+            ></PrivateRoute>
+            <PrivateRoute
+              component={FormStructure}
+              path="/form-structure"
+              exact={true}
+            ></PrivateRoute>
+            <PrivateRoute
+              component={MachinesTable}
+              path="/machines-table"
+              exact={true}
+            ></PrivateRoute>
+            <PrivateRoute
+              component={IndividualStructure}
+              path="/individual-structure"
+              exact={true}
+            ></PrivateRoute>
+            <PrivateRoute
+              component={IndividualMachine}
+              path="/individual-machine"
+              exact={true}
+            ></PrivateRoute>
+            <Route component={Login} path="/login"></Route>
+            <Route component={Error} path="*"></Route>
+          </Switch>
+        </main>
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar>
+            <Typography variant="h6" noWrap>
+              Welcome to Tika Technologies
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <Switch>
+            <Route component={Login} path="/login"></Route>
+            <Route component={Error} path="*"></Route>
+          </Switch>
+        </main>
+      </div>
+    );
+  }
 };
 
 export default withRouter(HeaderDrawer);

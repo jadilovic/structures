@@ -12,16 +12,9 @@ function App() {
       <HeaderDrawer />
       <Switch>
         <PrivateRoute path="/" exact={true}></PrivateRoute>
-        <Route path="/login">
-          <Login />
-        </Route>
       </Switch>
     </Router>
   );
 }
 
 export default App;
-
-/*
-
-        */
