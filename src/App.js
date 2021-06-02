@@ -3,19 +3,25 @@
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Login, PrivateRoute, Error, HeaderDrawer } from "./views";
+import { HeaderDrawer, Error, Login, PrivateRoute, PublicRoute } from "./views";
 import StructuresTable from "./components/StructuresTable";
-import MachinesTable from "./components/MachinesTable";
-import FormStructure from "./components/FormStructure";
-import IndividualStructure from "./components/IndividualStructure";
-import IndividualMachine from "./components/IndividualMachine";
 
 function App() {
   return (
     <Router>
       <HeaderDrawer />
+      <Switch>
+        <PrivateRoute path="/" exact={true}></PrivateRoute>
+        <Route path="/login">
+          <Login />
+        </Route>
+      </Switch>
     </Router>
   );
 }
 
 export default App;
+
+/*
+
+        */

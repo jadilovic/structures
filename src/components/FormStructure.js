@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
-  FormHelperText,
   CssBaseline,
   TextField,
   Grid,
@@ -20,7 +19,7 @@ import momentTZ from "moment-timezone";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(1),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

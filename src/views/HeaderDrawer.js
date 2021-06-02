@@ -15,26 +15,27 @@ import {
   ListItemText,
   ListItem,
   Button,
+  Container,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
-import { Switch, withRouter } from "react-router-dom";
 import { setAuthorized } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import StructuresIcon from "@material-ui/icons/AccountBalanceOutlined";
 import CreateStructureIcon from "@material-ui/icons/BuildOutlined";
 import MachinesIcon from "@material-ui/icons/SettingsApplicationsOutlined";
 import CreateMachineIcon from "@material-ui/icons/GavelOutlined";
-import { BrowserRouter as Router, Route } from "react-router-dom";
 import StructuresTable from "../components/StructuresTable";
 import FormStructure from "../components/FormStructure";
 import MachinesTable from "../components/MachinesTable";
 import IndividualStructure from "../components/IndividualStructure";
 import IndividualMachine from "../components/IndividualMachine";
-import { PrivateRoute, Login, Error } from "../views";
+import { Login, Error } from "../views";
+import { withRouter, Switch, Route } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 
 const drawerWidth = 200;
 
@@ -98,6 +99,15 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  toolbarButtons: {
+    marginLeft: "auto",
+  },
+  paper: {
+    marginTop: theme.spacing(12),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
 }));
 
 const HeaderDrawer = (props) => {
@@ -106,6 +116,7 @@ const HeaderDrawer = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const isAuthorized = useSelector((state) => state.isAuth);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -125,10 +136,6 @@ const HeaderDrawer = (props) => {
     dispatch(setAuthorized(false));
     history.push("/login");
   }
-
-  const handleButtonClick = (pageURL) => {
-    history.push(pageURL);
-  };
 
   const menuItems = [
     {
@@ -177,7 +184,7 @@ const HeaderDrawer = (props) => {
           <Typography variant="h6" noWrap>
             Tika Technologies
           </Typography>
-          <div>
+          <div className={classes.toolbarButtons}>
             <Button
               size="small"
               variant="contained"
@@ -242,12 +249,16 @@ const HeaderDrawer = (props) => {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Switch>
-          <PrivateRoute path="/" exact={true}>
-            <StructuresTable />
-          </PrivateRoute>
-          <PrivateRoute path="/form-structure" exact={true}>
-            <FormStructure />
-          </PrivateRoute>
+          <PrivateRoute
+            component={StructuresTable}
+            path="/"
+            exact={true}
+          ></PrivateRoute>
+          <PrivateRoute
+            component={FormStructure}
+            path="/form-structure"
+            exact={true}
+          ></PrivateRoute>
           <PrivateRoute path="/machines-table" exact={true}>
             <MachinesTable />
           </PrivateRoute>
@@ -257,12 +268,7 @@ const HeaderDrawer = (props) => {
           <PrivateRoute path="/individual-machine" exact={true}>
             <IndividualMachine />
           </PrivateRoute>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="*">
-            <Error />
-          </Route>
+          <Route path="*" component={Error}></Route>
         </Switch>
       </main>
     </div>
