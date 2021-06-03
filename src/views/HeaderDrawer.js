@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import React, { useState } from "react";
 import clsx from "clsx";
 import {
@@ -15,27 +16,24 @@ import {
   ListItemText,
   ListItem,
   Button,
-  useMediaQuery,
-  Hidden,
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
-import { setAuthorized } from "../actions/creator";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import StructuresIcon from "@material-ui/icons/AccountBalanceOutlined";
 import CreateStructureIcon from "@material-ui/icons/BuildOutlined";
 import MachinesIcon from "@material-ui/icons/SettingsApplicationsOutlined";
 import CreateMachineIcon from "@material-ui/icons/GavelOutlined";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import { withRouter, Switch, Route } from "react-router-dom";
+import { setAuthorized } from "../actions/creator";
 import StructuresTable from "../components/StructuresTable";
 import FormStructure from "../components/FormStructure";
 import MachinesTable from "../components/MachinesTable";
 import IndividualStructure from "../components/IndividualStructure";
 import IndividualMachine from "../components/IndividualMachine";
-import { Login, Error } from "../views";
-import { withRouter, Switch, Route } from "react-router-dom";
+import Login from "./Login";
+import Error from "./Error";
 import PrivateRoute from "./PrivateRoute";
 
 const drawerWidth = 200;
@@ -94,17 +92,6 @@ const useStyles = makeStyles((theme) => ({
     nested: {
       paddingLeft: theme.spacing.unit * 4,
     },
-    /*
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: "hidden",
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1,
-    },
-    */
   },
   toolbar: {
     display: "flex",
@@ -265,63 +252,58 @@ const HeaderDrawer = (props) => {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-            <PrivateRoute
-              component={StructuresTable}
-              path="/"
-              exact={true}
-            ></PrivateRoute>
+            <PrivateRoute component={StructuresTable} path="/" exact />
             <PrivateRoute
               component={FormStructure}
               path="/form-structure"
-              exact={true}
-            ></PrivateRoute>
+              exact
+            />
             <PrivateRoute
               component={MachinesTable}
               path="/machines-table"
-              exact={true}
-            ></PrivateRoute>
+              exact
+            />
             <PrivateRoute
               component={IndividualStructure}
               path="/individual-structure"
-              exact={true}
-            ></PrivateRoute>
+              exact
+            />
             <PrivateRoute
               component={IndividualMachine}
               path="/individual-machine"
-              exact={true}
-            ></PrivateRoute>
-            <Route component={Login} path="/login"></Route>
-            <Route component={Error} path="*"></Route>
-          </Switch>
-        </main>
-      </div>
-    );
-  } else {
-    return (
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar>
-            <Typography variant="h6" noWrap>
-              Welcome to Tika Technologies
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Switch>
-            <Route component={Login} path="/login"></Route>
-            <Route component={Error} path="*"></Route>
+              exact
+            />
+            <Route component={Login} path="/login" />
+            <Route component={Error} path="*" />
           </Switch>
         </main>
       </div>
     );
   }
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar>
+          <Typography variant="h6" noWrap>
+            Welcome to Tika Technologies
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <Switch>
+          <Route component={Login} path="/login" />
+          <Route component={Error} path="*" />
+        </Switch>
+      </main>
+    </div>
+  );
 };
 
 export default withRouter(HeaderDrawer);

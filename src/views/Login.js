@@ -15,8 +15,8 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useDispatch } from "react-redux";
-import { setAuthorized } from "../actions/creator";
 import { useForm, Controller } from "react-hook-form";
+import { setAuthorized } from "../actions/creator";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -26,11 +26,10 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
-      <Link color="inherit" href="#">
+      <Link color="inherit" href="https://www.bildbosnia.org/">
         Tika Technologies
       </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
+      {new Date().getFullYear()}.
     </Typography>
   );
 }
@@ -68,7 +67,7 @@ export default function SignIn(props) {
   const dispatch = useDispatch();
   const { handleSubmit, control, reset } = useForm();
 
-  const onSubmit = (data, e) => {
+  const onSubmit = (data) => {
     console.log(data);
 
     const payload = {
@@ -78,16 +77,15 @@ export default function SignIn(props) {
 
     axios
       .post("/api/public/login", payload)
-      .then(function (response) {
+      .then((response) => {
         localStorage.setItem("user", JSON.stringify(response.data));
         dispatch(setAuthorized(true));
         history.push("/");
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
         setError("Invalid Email or Password");
         reset({ email: "", password: "" });
-        return;
       });
   };
 

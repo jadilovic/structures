@@ -43,8 +43,7 @@ export function loadMachines(payload) {
 }
 
 export function loadIndividualMachine(payload) {
-  console.log("CREATOR LOAD INDIVIDUAL MACHINE" + payload);
-  return { type: LOAD_INDIVIDUAL_MACHINE, payload: payload };
+  return { type: LOAD_INDIVIDUAL_MACHINE, payload };
 }
 
 export function displaySensor(payload) {

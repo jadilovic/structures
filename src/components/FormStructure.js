@@ -11,11 +11,11 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import { createStructure } from "../actions/creator";
+import momentTZ from "moment-timezone";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
-import { setAuthorized } from "../actions/creator";
-import momentTZ from "moment-timezone";
+import _ from "lodash";
+import { createStructure, setAuthorized } from "../actions/creator";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,7 +50,6 @@ export default function FormStructure() {
   const [submitted, setSubmitted] = useState(false);
   const [structure, setStructure] = useState("");
   const [timezone, setTimezone] = useState("");
-  const _ = require("lodash");
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem("structures-data");
@@ -82,8 +81,8 @@ export default function FormStructure() {
     setTimezone(event.target.value);
   };
 
-  const onSubmit = (data, e) => {
-    let newStructure = { ...initialValues, ...data };
+  const onSubmit = (data) => {
+    const newStructure = { ...initialValues, ...data };
     newStructure.timezone = timezone;
     if (structure !== "") {
       newStructure.structure = structure;
@@ -129,7 +128,7 @@ export default function FormStructure() {
                     label="Business ID"
                     value={value}
                     onChange={onChange}
-                    autoFocus={true}
+                    autoFocus
                   />
                 )}
               />

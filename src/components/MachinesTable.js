@@ -1,17 +1,17 @@
 import React, { useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { clearData, displayMachine } from "../actions/creator";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Grid, Container, Typography } from "@material-ui/core";
+import { clearData, displayMachine } from "../actions/creator";
 import useMachines from "../hooks/useMachines";
 
 export default function MachinesTable() {
   useMachines();
   const dispatch = useDispatch();
 
-  let userScreenHeight = window.innerHeight;
+  const userScreenHeight = window.innerHeight;
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
@@ -106,37 +106,37 @@ export default function MachinesTable() {
         <CircularProgress />
       </Grid>
     );
-  } else if (error) {
-    return "Error!";
-  } else {
-    return (
-      <Container maxWidth="lg">
-        <div
-          style={{
-            height: userScreenHeight - 112,
-            width: "100%",
-            cursor: "pointer",
-          }}
-        >
-          <DataGrid
-            size="small"
-            aria-label="a dense table"
-            {...machines}
-            onRowClick={(props) => {
-              displayMachineRow(props.row);
-            }}
-            filterModel={{
-              items: [
-                {
-                  columnField: "description",
-                  operatorValue: "contains",
-                  value: "",
-                },
-              ],
-            }}
-          />
-        </div>
-      </Container>
-    );
   }
+  if (error) {
+    return "Error!";
+  }
+  return (
+    <Container maxWidth="lg">
+      <div
+        style={{
+          height: userScreenHeight - 112,
+          width: "100%",
+          cursor: "pointer",
+        }}
+      >
+        <DataGrid
+          size="small"
+          aria-label="a dense table"
+          {...machines}
+          onRowClick={(props) => {
+            displayMachineRow(props.row);
+          }}
+          filterModel={{
+            items: [
+              {
+                columnField: "description",
+                operatorValue: "contains",
+                value: "",
+              },
+            ],
+          }}
+        />
+      </div>
+    </Container>
+  );
 }

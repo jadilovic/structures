@@ -13,14 +13,17 @@ import {
   Snackbar,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { deleteMachine, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { setAuthorized } from "../actions/creator";
-import ConfirmDialog from "../components/ConfirmDialog";
 import MuiAlert from "@material-ui/lab/Alert";
-import { displaySensor } from "../actions/creator";
 import _ from "lodash";
+import {
+  setAuthorized,
+  displaySensor,
+  deleteMachine,
+  clearData,
+} from "../actions/creator";
+import ConfirmDialog from "./ConfirmDialog";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -163,21 +166,19 @@ export default function IndividualMachineDisplay() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {machine.sensors.map((sensor) => {
-                return (
-                  <TableRow key={sensor.id} variant="contained" color="primary">
-                    <TableCell
-                      onClick={() => {
-                        displaySensorRow(sensor);
-                      }}
-                      align="center"
-                      className={classes.row}
-                    >
-                      {`Name: ${sensor.sensorId}, --- Alias: ${sensor.alias}`}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {machine.sensors.map((sensor) => (
+                <TableRow key={sensor.id} variant="contained" color="primary">
+                  <TableCell
+                    onClick={() => {
+                      displaySensorRow(sensor);
+                    }}
+                    align="center"
+                    className={classes.row}
+                  >
+                    {`Name: ${sensor.sensorId}, --- Alias: ${sensor.alias}`}
+                  </TableCell>
+                </TableRow>
+              ))}
               {machine.sensors.length > 0 ? null : "No Sensors in the Machine"}
             </TableBody>
           </Table>

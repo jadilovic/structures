@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
-import { displayStructure, clearData } from "../actions/creator";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { Container, Grid, Typography } from "@material-ui/core";
+import { Container, Grid, Typography, makeStyles } from "@material-ui/core";
+import { displayStructure, clearData } from "../actions/creator";
 import useStructures from "../hooks/useStructures";
-import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -30,7 +29,7 @@ export default function StructuresTable() {
   useStructures();
   const dispatch = useDispatch();
   const classes = useStyles();
-  let userScreenHeight = window.innerHeight;
+  const userScreenHeight = window.innerHeight;
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
@@ -98,36 +97,36 @@ export default function StructuresTable() {
         <CircularProgress />
       </Grid>
     );
-  } else if (error) {
-    return "Error!";
-  } else {
-    return (
-      <Container maxWidth="lg">
-        <div
-          style={{
-            height: userScreenHeight - 112,
-            width: "100%",
-            cursor: "pointer",
-          }}
-        >
-          <DataGrid
-            {...structures}
-            className={classes.row}
-            onRowClick={(props) => {
-              displayStructureRow(props.row);
-            }}
-            filterModel={{
-              items: [
-                {
-                  columnField: "description",
-                  operatorValue: "contains",
-                  value: "",
-                },
-              ],
-            }}
-          />
-        </div>
-      </Container>
-    );
   }
+  if (error) {
+    return "Error!";
+  }
+  return (
+    <Container maxWidth="lg">
+      <div
+        style={{
+          height: userScreenHeight - 112,
+          width: "100%",
+          cursor: "pointer",
+        }}
+      >
+        <DataGrid
+          {...structures}
+          className={classes.row}
+          onRowClick={(props) => {
+            displayStructureRow(props.row);
+          }}
+          filterModel={{
+            items: [
+              {
+                columnField: "description",
+                operatorValue: "contains",
+                value: "",
+              },
+            ],
+          }}
+        />
+      </div>
+    </Container>
+  );
 }

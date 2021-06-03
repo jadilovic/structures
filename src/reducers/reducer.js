@@ -31,13 +31,12 @@ function RootReducer(state = initialState, action) {
       .post("/api/structures", action.payload, {
         headers: authHeader(),
       })
-      .then(function (response) {
+      .then((response) => {
         console.log("CREATED STRUCTURE");
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log("ERROR CRATING STRUCTURE");
         console.log(error.response.data);
-        return;
       });
   } else if (action.type === SET_AUTHORIZED) {
     // SAVING AUTHORIZATION IN STORE
@@ -97,7 +96,7 @@ function RootReducer(state = initialState, action) {
   } else if (action.type === DELETE_STRUCTURE) {
     console.log("DELETE STRUCTURE");
     axios
-      .delete("/api/structures/" + action.payload, {
+      .delete(`/api/structures/${action.payload}`, {
         headers: authHeader(),
       })
       .then((response) => {

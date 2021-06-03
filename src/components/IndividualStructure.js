@@ -12,17 +12,21 @@ import {
   Button,
   Snackbar,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { deleteStructure, clearData } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { useHistory } from "react-router-dom";
-import { setAuthorized } from "../actions/creator";
-import ConfirmDialog from "../components/ConfirmDialog";
 import MuiAlert from "@material-ui/lab/Alert";
-import { displayMachine } from "../actions/creator";
 import axios from "axios";
-import authHeader from "../service/auth-header";
 import _ from "lodash";
+import {
+  deleteStructure,
+  clearData,
+  displayMachine,
+  setAuthorized,
+} from "../actions/creator";
+
+import ConfirmDialog from "./ConfirmDialog";
+import authHeader from "../service/auth-header";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -75,16 +79,16 @@ export default function IndividualStructureDisplay() {
     }
   };
 
+  // SNACK BAR DELETE NOTIFICATION
+  const displayDeleteNotification = () => {
+    setOpenDeleteNotification(true);
+  };
+
   function deleteIndividualStructure(structureId) {
     dispatch(clearData());
     dispatch(deleteStructure(structureId));
     displayDeleteNotification();
   }
-
-  // SNACK BAR DELETE NOTIFICATION
-  const displayDeleteNotification = () => {
-    setOpenDeleteNotification(true);
-  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -179,25 +183,19 @@ export default function IndividualStructureDisplay() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {structure.machines.map((machine) => {
-                return (
-                  <TableRow
-                    key={machine.id}
-                    variant="contained"
-                    color="primary"
+              {structure.machines.map((machine) => (
+                <TableRow key={machine.id} variant="contained" color="primary">
+                  <TableCell
+                    onClick={() => {
+                      displayMachineRow(machine.id);
+                    }}
+                    align="justify"
+                    className={classes.row}
                   >
-                    <TableCell
-                      onClick={() => {
-                        displayMachineRow(machine.id);
-                      }}
-                      align="justify"
-                      className={classes.row}
-                    >
-                      {machine.name}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                    {machine.name}
+                  </TableCell>
+                </TableRow>
+              ))}
               {structure.machines.length > 0
                 ? null
                 : "No Machines in the Structure"}
