@@ -8,6 +8,14 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducers/reducer";
 import "./index.css";
 import App from "./App";
+/*
+import snackbarReducer from "./reducers/snackbarReducer";
+
+const reducers = combineReducers({
+  snackbar: snackbarReducer,
+  root: rootReducer,
+});
+*/
 
 // Create store using root reducer
 const store = createStore(rootReducer, composeWithDevTools());

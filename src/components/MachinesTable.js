@@ -55,11 +55,6 @@ export default function MachinesTable() {
       flex: 1,
     },
     {
-      field: "businessId",
-      headerName: "Description",
-      flex: 1,
-    },
-    {
       field: "timezone",
       headerName: "Timezone",
       flex: 1,

@@ -88,6 +88,7 @@ export default function IndividualStructureDisplay() {
     dispatch(clearData());
     dispatch(deleteStructure(structureId));
     displayDeleteNotification();
+    history.push("/");
   }
 
   const handleClose = (event, reason) => {
@@ -95,7 +96,6 @@ export default function IndividualStructureDisplay() {
       return;
     }
     setOpenDeleteNotification(false);
-    history.push("/");
   };
 
   return (
