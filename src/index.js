@@ -5,20 +5,12 @@ import ReactDOM from "react-dom";
 import { createStore } from "redux";
 import { Provider } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
-import rootReducer from "./reducers/reducer";
+import combinedReducers from "./reducers/index";
 import "./index.css";
 import App from "./App";
-/*
-import snackbarReducer from "./reducers/snackbarReducer";
-
-const reducers = combineReducers({
-  snackbar: snackbarReducer,
-  root: rootReducer,
-});
-*/
 
 // Create store using root reducer
-const store = createStore(rootReducer, composeWithDevTools());
+const store = createStore(combinedReducers, composeWithDevTools());
 
 ReactDOM.render(
   <Provider store={store}>

@@ -10,12 +10,10 @@ import {
   Paper,
   Grid,
   Button,
-  Snackbar,
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useHistory } from "react-router-dom";
-import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
 import _ from "lodash";
 import {
@@ -24,13 +22,10 @@ import {
   displayMachine,
   setAuthorized,
 } from "../actions/creator";
-
+import { setSnackbar } from "../reducers/snackbarReducer";
 import ConfirmDialog from "./ConfirmDialog";
 import authHeader from "../service/auth-header";
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import Engineer from "./Engineer";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -48,12 +43,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IndividualStructureDisplay() {
-  let structure = useSelector((state) => state.individualStructure);
+  let structure = useSelector((state) => state.main.individualStructure);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
 
   // SAVING AND GETTING STRUCTURE DATA ON REFRESH PAGE
   if (_.isEmpty(structure)) {
@@ -81,39 +75,24 @@ export default function IndividualStructureDisplay() {
 
   // SNACK BAR DELETE NOTIFICATION
   const displayDeleteNotification = () => {
-    setOpenDeleteNotification(true);
+    dispatch(
+      setSnackbar(
+        true,
+        "success",
+        "Selected structure has been successfully deleted!"
+      )
+    );
+    history.push("/");
   };
 
   function deleteIndividualStructure(structureId) {
     dispatch(clearData());
     dispatch(deleteStructure(structureId));
     displayDeleteNotification();
-    history.push("/");
   }
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenDeleteNotification(false);
-  };
 
   return (
     <Grid container spacing={3}>
-      {openDeleteNotification && (
-        <div className={classes.root}>
-          <Snackbar
-            open={openDeleteNotification}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert onClose={handleClose} severity="success">
-              You have successfuly deleted selected structure! You will now be
-              returned to the Structures page.
-            </Alert>
-          </Snackbar>
-        </div>
-      )}
       <Grid item xs={6}>
         <TableContainer component={Paper}>
           <Table aria-label="simple table">

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IndividualMachineDisplay() {
-  let machine = useSelector((state) => state.individualMachine);
+  let machine = useSelector((state) => state.main.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();

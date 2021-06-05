@@ -37,9 +37,9 @@ export default function StructuresTable() {
     dispatch(clearData());
   }, []);
 
-  const structuresData = useSelector((state) => state.structures);
-  const loading = useSelector((state) => state.loading);
-  const error = useSelector((state) => state.error);
+  const structuresData = useSelector((state) => state.main.structures);
+  const loading = useSelector((state) => state.main.loading);
+  const error = useSelector((state) => state.main.error);
   const history = useHistory();
 
   const dataColumns = [

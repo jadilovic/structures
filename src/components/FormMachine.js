@@ -13,11 +13,11 @@ import {
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import { createStructure } from "../actions/creator";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import TimezoneSelect from "react-timezone-select";
 import { useForm, Controller } from "react-hook-form";
+import { createStructure } from "../actions/creator";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormMachine() {
   const dispatch = useDispatch();
-  const structures = useSelector((state) => state.structures);
+  const structures = useSelector((state) => state.main.structures);
   const classes = useStyles();
   const { handleSubmit, control } = useForm();
   const [submitted, setSubmitted] = useState(false);
@@ -70,7 +70,7 @@ export default function FormMachine() {
   };
 
   const onSubmit = (data) => {
-    let newStructure = initialValues;
+    const newStructure = initialValues;
     newStructure.businessId = data.businessId;
     newStructure.name = data.name;
     newStructure.description = data.description;
@@ -120,7 +120,7 @@ export default function FormMachine() {
                     label="Business ID"
                     value={value}
                     onChange={onChange}
-                    autoFocus={true}
+                    autoFocus
                   />
                 )}
               />

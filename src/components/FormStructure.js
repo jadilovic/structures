@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 export default function FormStructure() {
   const timeZonesList = momentTZ.tz.names();
   const dispatch = useDispatch();
-  let structures = useSelector((state) => state.structures);
+  let structures = useSelector((state) => state.main.structures);
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
   const [submitted, setSubmitted] = useState(false);

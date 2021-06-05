@@ -18,9 +18,9 @@ export default function MachinesTable() {
     dispatch(clearData());
   }, []);
 
-  const machinesData = useSelector((state) => state.machines);
-  const loading = useSelector((state) => state.loading);
-  const error = useSelector((state) => state.error);
+  const machinesData = useSelector((state) => state.main.machines);
+  const loading = useSelector((state) => state.main.loading);
+  const error = useSelector((state) => state.main.error);
   const history = useHistory();
 
   const machinesColumns = [
