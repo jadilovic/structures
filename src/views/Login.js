@@ -9,7 +9,9 @@ import {
   Typography,
   makeStyles,
   Container,
+  IconButton,
 } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
@@ -114,6 +116,18 @@ export default function SignIn(props) {
               <Alert
                 variant="outlined"
                 severity="error"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setError(null);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
                 onClick={() => setError(null)}
               >
                 {props.error || error}

@@ -9,13 +9,13 @@ import {
   makeStyles,
   Container,
 } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import momentTZ from "moment-timezone";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import _ from "lodash";
 import { createStructure, setAuthorized } from "../actions/creator";
+import { setSnackbar } from "../reducers/snackbarReducer";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,9 +47,9 @@ export default function FormStructure() {
   let structures = useSelector((state) => state.main.structures);
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
-  const [submitted, setSubmitted] = useState(false);
   const [structure, setStructure] = useState("");
   const [timezone, setTimezone] = useState("");
+  const [createdNewStructure, setCreatedNewStructure] = useState(false);
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem("structures-data");
@@ -81,6 +81,17 @@ export default function FormStructure() {
     setTimezone(event.target.value);
   };
 
+  // SNACK BAR DELETE NOTIFICATION
+  const displayCreatedNewStructureNotification = () => {
+    dispatch(
+      setSnackbar(
+        true,
+        "success",
+        "New structure has been successfully created!"
+      )
+    );
+  };
+
   const onSubmit = (data) => {
     const newStructure = { ...initialValues, ...data };
     newStructure.timezone = timezone;
@@ -90,14 +101,13 @@ export default function FormStructure() {
     console.log(newStructure);
     reset({ ...initialValues });
     dispatch(createStructure(newStructure));
-    setSubmitted(true);
+    setCreatedNewStructure(true);
+    displayCreatedNewStructureNotification();
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 6000);
-  }, [submitted]);
+    window.scrollTo(0, 0);
+  }, [createdNewStructure]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -109,9 +119,6 @@ export default function FormStructure() {
         <Typography component="h3" variant="h5">
           Create New Structure
         </Typography>
-        {submitted && (
-          <Alert severity="success">New Structure Was Created</Alert>
-        )}
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -121,6 +128,7 @@ export default function FormStructure() {
                 defaultValue=""
                 render={({ field: { onChange, value } }) => (
                   <TextField
+                    autoFocus
                     name="businessId"
                     variant="outlined"
                     fullWidth
@@ -128,7 +136,6 @@ export default function FormStructure() {
                     label="Business ID"
                     value={value}
                     onChange={onChange}
-                    autoFocus
                   />
                 )}
               />
