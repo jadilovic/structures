@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
 const ConfirmDialog = (props) => {
   const { title, children, open, setOpen, onConfirm } = props;

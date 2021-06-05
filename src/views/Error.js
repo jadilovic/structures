@@ -1,9 +1,9 @@
 // src/pages/Error.js
-import React from "react";
-import { Link } from "react-router-dom";
-import { Button, CardMedia } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import image from "../images/Error404.png";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button, CardMedia } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import image from '../images/Error404.png';
 
 export default function Error() {
   return (
@@ -13,13 +13,13 @@ export default function Error() {
       direction="column"
       alignItems="center"
       justify="center"
-      style={{ minHeight: "25vh" }}
+      style={{ minHeight: '25vh' }}
     >
       <CardMedia
         component="img"
         alt="Error Page"
         src={image}
-        style={{ width: "50%", height: "50%" }}
+        style={{ width: '50%', height: '50%' }}
         title="Error Page"
       />
       <p />

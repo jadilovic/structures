@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -13,16 +13,16 @@ import {
   makeStyles,
   useTheme,
   useMediaQuery,
-} from "@material-ui/core";
-import { withRouter } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { setAuthorized } from "../actions/creator";
-import clsx from "clsx";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+} from '@material-ui/core'
+import { withRouter } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import clsx from 'clsx'
+import MenuIcon from '@material-ui/icons/Menu'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import { setAuthorized } from '../actions/creator'
 
-const drawerWidth = 200;
+const drawerWidth = 200
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,17 +32,17 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('sm')]: {
       flexGrow: 1,
     },
   },
   headerOptions: {
-    display: "flex",
+    display: 'flex',
     flex: 1,
-    justifyContent: "space-evenly",
+    justifyContent: 'space-evenly',
   },
   appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -50,13 +50,13 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
   hide: {
-    display: "none",
+    display: 'none',
   },
   drawer: {
     width: drawerWidth,
@@ -66,81 +66,81 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
   drawerHeader: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
   },
   contentShift: {
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
   },
-}));
+}))
 
 const Header = (props) => {
-  const { history } = props;
-  const classes = useStyles();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isAuthorized = useSelector((state) => state.isAuth);
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  const { history } = props
+  const classes = useStyles()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isAuthorized = useSelector((state) => state.isAuth)
+  const dispatch = useDispatch()
+  const [open, setOpen] = useState(false)
 
   const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleDrawerClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const handleDrawerCloseAfterSelection = (pageURL) => {
-    handleDrawerClose();
-    history.push(pageURL);
-  };
+    handleDrawerClose()
+    history.push(pageURL)
+  }
 
   function logout() {
-    localStorage.removeItem("user");
-    dispatch(setAuthorized(false));
-    history.push("/login");
+    localStorage.removeItem('user')
+    dispatch(setAuthorized(false))
+    history.push('/login')
   }
 
   const handleButtonClick = (pageURL) => {
-    history.push(pageURL);
-  };
+    history.push(pageURL)
+  }
 
   const menuItems = [
     {
-      title: "Structures",
-      pageURL: "/",
+      title: 'Structures',
+      pageURL: '/',
     },
     {
-      title: "Create Structure",
-      pageURL: "/form-structure",
+      title: 'Create Structure',
+      pageURL: '/form-structure',
     },
     {
-      title: "Machines",
-      pageURL: "/machines-table",
+      title: 'Machines',
+      pageURL: '/machines-table',
     },
     {
-      title: "Create Machine",
-      pageURL: "/form-machine",
+      title: 'Create Machine',
+      pageURL: '/form-machine',
     },
-  ];
+  ]
 
   if (isAuthorized) {
     return (
@@ -169,7 +169,7 @@ const Header = (props) => {
                 >
                   <div className={classes.drawerHeader}>
                     <IconButton onClick={handleDrawerClose}>
-                      {theme.direction === "ltr" ? (
+                      {theme.direction === 'ltr' ? (
                         <ChevronLeftIcon />
                       ) : (
                         <ChevronRightIcon />
@@ -179,7 +179,7 @@ const Header = (props) => {
                   <Divider />
                   <List>
                     {menuItems.map((item) => {
-                      const { title, pageURL } = item;
+                      const { title, pageURL } = item
                       return (
                         <ListItem
                           button
@@ -190,7 +190,7 @@ const Header = (props) => {
                         >
                           <ListItemText primary={title} />
                         </ListItem>
-                      );
+                      )
                     })}
                   </List>
                   <Divider />
@@ -203,7 +203,7 @@ const Header = (props) => {
                 </Typography>
                 <div className={classes.headerOptions}>
                   {menuItems.map((item) => {
-                    const { title, pageURL } = item;
+                    const { title, pageURL } = item
                     return (
                       <Button
                         size="small"
@@ -212,7 +212,7 @@ const Header = (props) => {
                       >
                         {title}
                       </Button>
-                    );
+                    )
                   })}
                 </div>
               </>
@@ -230,20 +230,19 @@ const Header = (props) => {
           </Toolbar>
         </AppBar>
       </div>
-    );
-  } else {
-    return (
-      <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography type="title" color="inherit">
-              Welcome to Tika Technologies
-            </Typography>
-          </Toolbar>
-        </AppBar>
-      </div>
-    );
+    )
   }
-};
+  return (
+    <div className={classes.root}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography type="title" color="inherit">
+            Welcome to Tika Technologies
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    </div>
+  )
+}
 
-export default withRouter(Header);
+export default withRouter(Header)

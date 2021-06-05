@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
-import React, { useState } from "react";
-import clsx from "clsx";
+import React, { useState } from 'react';
+import clsx from 'clsx';
 import {
   makeStyles,
   useTheme,
@@ -16,35 +16,35 @@ import {
   ListItemText,
   ListItem,
   Button,
-} from "@material-ui/core";
-import { useDispatch } from "react-redux";
-import StructuresIcon from "@material-ui/icons/AccountBalanceOutlined";
-import CreateStructureIcon from "@material-ui/icons/BuildOutlined";
-import MachinesIcon from "@material-ui/icons/SettingsApplicationsOutlined";
-import CreateMachineIcon from "@material-ui/icons/GavelOutlined";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { withRouter, Switch, Route } from "react-router-dom";
-import { setAuthorized } from "../actions/creator";
-import StructuresTable from "../components/StructuresTable";
-import FormStructure from "../components/FormStructure";
-import MachinesTable from "../components/MachinesTable";
-import IndividualStructure from "../components/IndividualStructure";
-import IndividualMachine from "../components/IndividualMachine";
-import Login from "./Login";
-import Error from "./Error";
-import PrivateRoute from "./PrivateRoute";
+} from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import StructuresIcon from '@material-ui/icons/AccountBalanceOutlined';
+import CreateStructureIcon from '@material-ui/icons/BuildOutlined';
+import MachinesIcon from '@material-ui/icons/SettingsApplicationsOutlined';
+import CreateMachineIcon from '@material-ui/icons/GavelOutlined';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { withRouter, Switch, Route } from 'react-router-dom';
+import { setAuthorized } from '../actions/creator';
+import StructuresTable from '../components/StructuresTable';
+import FormStructure from '../components/FormStructure';
+import MachinesTable from '../components/MachinesTable';
+import IndividualStructure from '../components/IndividualStructure';
+import IndividualMachine from '../components/IndividualMachine';
+import Login from './Login';
+import Error from './Error';
+import PrivateRoute from '../components/PrivateRoute';
 
 const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: 'flex',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(["width", "margin"], {
+    transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
+    transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -61,42 +61,42 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 36,
   },
   hide: {
-    display: "none",
+    display: 'none',
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap",
+    whiteSpace: 'nowrap',
   },
   drawerOpen: {
     width: drawerWidth,
-    transition: theme.transitions.create("width", {
+    transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
   drawerClose: {
-    overflowX: "hidden",
-    transition: theme.transitions.create("width", {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing.unit * 7,
-    [theme.breakpoints.up("xs")]: {
+    [theme.breakpoints.up('xs')]: {
       width: theme.spacing.unit * 9,
     },
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down('xs')]: {
       width: 0,
-      display: "none",
+      display: 'none',
     },
     nested: {
       paddingLeft: theme.spacing.unit * 4,
     },
   },
   toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -106,13 +106,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   toolbarButtons: {
-    marginLeft: "auto",
+    marginLeft: 'auto',
   },
   paper: {
     marginTop: theme.spacing(12),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   drawerPaper: {
     width: drawerWidth,
@@ -125,7 +125,7 @@ const HeaderDrawer = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const isAuthorized = localStorage.getItem("user");
+  const isAuthorized = localStorage.getItem('user');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -141,30 +141,30 @@ const HeaderDrawer = (props) => {
   };
 
   function logout() {
-    localStorage.removeItem("user");
+    localStorage.removeItem('user');
     dispatch(setAuthorized(false));
-    history.push("/login");
+    history.push('/login');
   }
 
   const menuItems = [
     {
-      title: "Structures",
-      pageURL: "/",
+      title: 'Structures',
+      pageURL: '/',
       icon: <StructuresIcon />,
     },
     {
-      title: "Create Structure",
-      pageURL: "/form-structure",
+      title: 'Create Structure',
+      pageURL: '/form-structure',
       icon: <CreateStructureIcon />,
     },
     {
-      title: "Machines",
-      pageURL: "/machines-table",
+      title: 'Machines',
+      pageURL: '/machines-table',
       icon: <MachinesIcon />,
     },
     {
-      title: "Create Machine",
-      pageURL: "/form-machine",
+      title: 'Create Machine',
+      pageURL: '/form-machine',
       icon: <CreateMachineIcon />,
     },
   ];
@@ -239,7 +239,7 @@ const HeaderDrawer = (props) => {
         >
           <div className={classes.toolbar}>
             <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? (
+              {theme.direction === 'rtl' ? (
                 <ChevronRightIcon />
               ) : (
                 <ChevronLeftIcon />

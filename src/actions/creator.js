@@ -12,10 +12,10 @@ import {
   SET_AUTHORIZED,
   DISPLAY_SENSOR,
   LOAD_INDIVIDUAL_MACHINE,
-} from "../constants/action-types";
+} from '../constants/action-types';
 
 export function setAuthorized(payload) {
-  console.log("SET AUTHORIZED");
+  console.log('SET AUTHORIZED');
   return { type: SET_AUTHORIZED, payload };
 }
 
@@ -33,12 +33,12 @@ export function displayMachine(payload) {
 }
 
 export function loadStructures(payload) {
-  console.log("CREATOR LOAD STRUCTURES");
+  console.log('CREATOR LOAD STRUCTURES');
   return { type: LOAD_STRUCTURES, payload };
 }
 
 export function loadMachines(payload) {
-  console.log("CREATOR LOAD MACHINES");
+  console.log('CREATOR LOAD MACHINES');
   return { type: LOAD_MACHINES, payload };
 }
 
@@ -51,12 +51,12 @@ export function displaySensor(payload) {
 }
 
 export function deleteStructure(payload) {
-  console.log("DELETE STRUCTURE");
+  console.log('DELETE STRUCTURE');
   return { type: DELETE_STRUCTURE, payload };
 }
 
 export function deleteMachine(payload) {
-  alert("DELETE MACHINE NOT FUNCTIONAL YET");
+  alert('DELETE MACHINE NOT FUNCTIONAL YET');
   return { type: DELETE_MACHINE, payload };
 }
 

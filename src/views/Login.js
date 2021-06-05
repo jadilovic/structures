@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   Avatar,
   Button,
@@ -10,86 +10,86 @@ import {
   makeStyles,
   Container,
   IconButton,
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import MuiAlert from "@material-ui/lab/Alert";
-import { useDispatch } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import { setAuthorized } from "../actions/creator";
+} from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import { useHistory } from 'react-router-dom'
+import axios from 'axios'
+import MuiAlert from '@material-ui/lab/Alert'
+import { useDispatch } from 'react-redux'
+import { useForm, Controller } from 'react-hook-form'
+import { setAuthorized } from '../actions/creator'
 
 function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
+      {'Copyright © '}
       <Link color="inherit" href="https://www.bildbosnia.org/">
         Tika Technologies
-      </Link>{" "}
+      </Link>{' '}
       {new Date().getFullYear()}.
     </Typography>
-  );
+  )
 }
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(1),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
   root: {
-    width: "100%",
-    "& > * + *": {
+    width: '100%',
+    '& > * + *': {
       marginTop: theme.spacing(4),
     },
   },
-}));
+}))
 
 export default function SignIn(props) {
-  const classes = useStyles();
-  const history = useHistory();
-  const [error, setError] = useState("");
-  const dispatch = useDispatch();
-  const { handleSubmit, control, reset } = useForm();
+  const classes = useStyles()
+  const history = useHistory()
+  const [error, setError] = useState('')
+  const dispatch = useDispatch()
+  const { handleSubmit, control, reset } = useForm()
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log(data)
 
     const payload = {
       email: data.email,
       password: data.password,
-    };
+    }
 
     axios
-      .post("/api/public/login", payload)
+      .post('/api/public/login', payload)
       .then((response) => {
-        localStorage.setItem("user", JSON.stringify(response.data));
-        dispatch(setAuthorized(true));
-        history.push("/");
+        localStorage.setItem('user', JSON.stringify(response.data))
+        dispatch(setAuthorized(true))
+        history.push('/')
       })
       .catch((error) => {
-        console.log(error);
-        setError("Invalid Email or Password");
-        reset({ email: "", password: "" });
-      });
-  };
+        console.log(error)
+        setError('Invalid Email or Password')
+        reset({ email: '', password: '' })
+      })
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -122,7 +122,7 @@ export default function SignIn(props) {
                     color="inherit"
                     size="small"
                     onClick={() => {
-                      setError(null);
+                      setError(null)
                     }}
                   >
                     <CloseIcon fontSize="inherit" />
@@ -154,7 +154,7 @@ export default function SignIn(props) {
                 helperText={error ? error.message : null}
               />
             )}
-            rules={{ required: "Email is required" }}
+            rules={{ required: 'Email is required' }}
           />
           <Controller
             name="password"
@@ -176,7 +176,7 @@ export default function SignIn(props) {
                 helperText={error ? error.message : null}
               />
             )}
-            rules={{ required: "Password is required" }}
+            rules={{ required: 'Password is required' }}
           />
           <Button
             type="submit"
@@ -194,5 +194,5 @@ export default function SignIn(props) {
         <Copyright />
       </Box>
     </Container>
-  );
+  )
 }
