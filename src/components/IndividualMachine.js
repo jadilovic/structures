@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   makeStyles,
   Table,
@@ -11,19 +11,19 @@ import {
   Grid,
   Button,
   Snackbar,
-} from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import MuiAlert from "@material-ui/lab/Alert";
-import _ from "lodash";
+} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import MuiAlert from '@material-ui/lab/Alert';
+import _ from 'lodash';
 import {
   setAuthorized,
   displaySensor,
   deleteMachine,
   clearData,
-} from "../actions/creator";
-import ConfirmDialog from "./ConfirmDialog";
+} from '../actions/creator';
+import ConfirmDialog from './ConfirmDialog';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -34,13 +34,13 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3),
   },
   root: {
-    width: "100%",
-    "& > * + *": {
+    width: '100%',
+    '& > * + *': {
       marginTop: theme.spacing(2),
     },
   },
   row: {
-    cursor: "pointer",
+    cursor: 'pointer',
   },
 }));
 
@@ -57,19 +57,19 @@ export default function IndividualMachineDisplay() {
   };
 
   const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
     setOpenDeleteNotification(false);
-    history.push("/machines-table");
+    history.push('/machines-table');
   };
 
   if (_.isEmpty(machine)) {
-    const machineData = localStorage.getItem("machine-data");
+    const machineData = localStorage.getItem('machine-data');
     machine = JSON.parse(machineData);
     dispatch(setAuthorized(true));
   } else {
-    localStorage.setItem("machine-data", JSON.stringify(machine));
+    localStorage.setItem('machine-data', JSON.stringify(machine));
   }
 
   function deleteIndividualMachine(machineId) {
@@ -80,7 +80,7 @@ export default function IndividualMachineDisplay() {
 
   function displaySensorRow(data) {
     dispatch(displaySensor(data));
-    history.push("/individual-sensor");
+    history.push('/individual-sensor');
   }
 
   return (
@@ -113,7 +113,7 @@ export default function IndividualMachineDisplay() {
                 <TableCell component="th" scope="row">
                   Active:
                 </TableCell>
-                <TableCell>{`${machine.isActive ? "Yes" : "No"}`}</TableCell>
+                <TableCell>{`${machine.isActive ? 'Yes' : 'No'}`}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
@@ -159,27 +159,33 @@ export default function IndividualMachineDisplay() {
       </Grid>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
-          <Table aria-label="simple table">
+          <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Sensors:</TableCell>
+                <TableCell variant="head">Sensors:</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Name:</TableCell>
+                <TableCell>Alias:</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {machine.sensors.map((sensor) => (
-                <TableRow key={sensor.id} variant="contained" color="primary">
-                  <TableCell
-                    onClick={() => {
-                      displaySensorRow(sensor);
-                    }}
-                    align="center"
-                    className={classes.row}
-                  >
-                    {`Name: ${sensor.sensorId}, --- Alias: ${sensor.alias}`}
-                  </TableCell>
+                <TableRow
+                  key={sensor.id}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => {
+                    displaySensorRow(sensor);
+                  }}
+                  align="center"
+                  className={classes.row}
+                >
+                  <TableCell>{sensor.sensorId}</TableCell>
+                  <TableCell>{sensor.alias}</TableCell>
                 </TableRow>
               ))}
-              {machine.sensors.length > 0 ? null : "No Sensors in the Machine"}
+              {machine.sensors.length > 0 ? null : 'No Sensors in the Machine'}
             </TableBody>
           </Table>
         </TableContainer>
