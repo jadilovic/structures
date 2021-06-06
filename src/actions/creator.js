@@ -9,8 +9,11 @@ import {
   DELETE_STRUCTURE,
   DELETE_MACHINE,
   LOAD_MACHINES,
+  LOAD_MACHINE_TYPES,
+  CREATE_MACHINE,
   SET_AUTHORIZED,
   DISPLAY_SENSOR,
+  LOAD_SENSORS,
   LOAD_INDIVIDUAL_MACHINE,
 } from '../constants/action-types';
 
@@ -42,12 +45,27 @@ export function loadMachines(payload) {
   return { type: LOAD_MACHINES, payload };
 }
 
+export function loadMachineTypes(payload) {
+  console.log('CREATOR LOAD MACHINE TYPES');
+  return { type: LOAD_MACHINE_TYPES, payload };
+}
+
+export function createMachine(payload) {
+  console.log(payload);
+  return { type: CREATE_MACHINE, payload };
+}
+
 export function loadIndividualMachine(payload) {
   return { type: LOAD_INDIVIDUAL_MACHINE, payload };
 }
 
 export function displaySensor(payload) {
   return { type: DISPLAY_SENSOR, payload };
+}
+
+export function loadSensors(payload) {
+  console.log('CREATOR LOAD SENSORS');
+  return { type: LOAD_SENSORS, payload };
 }
 
 export function deleteStructure(payload) {

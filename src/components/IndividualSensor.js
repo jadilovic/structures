@@ -45,7 +45,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function IndividualMachineDisplay() {
+// UNDER CONSTRUCTION
+export default function IndividualSensorDisplay() {
   let machine = useSelector((state) => state.main.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();

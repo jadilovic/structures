@@ -1,109 +1,158 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   Button,
-  FormHelperText,
   CssBaseline,
   TextField,
   Grid,
   Typography,
   makeStyles,
   Container,
-  green,
-} from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import TimezoneSelect from "react-timezone-select";
-import { useForm, Controller } from "react-hook-form";
-import { createStructure } from "../actions/creator";
+} from '@material-ui/core';
+import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
+import momentTZ from 'moment-timezone';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
+import _ from 'lodash';
+import axios from 'axios';
+import {
+  createMachine,
+  setAuthorized,
+  loadMachineTypes,
+} from '../actions/creator';
+import { setSnackbar } from '../reducers/snackbarReducer';
+import authHeader from '../service/auth-header';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    marginTop: theme.spacing(1),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
   rounded: {
-    color: "#fff",
-    backgroundColor: green[500],
+    color: '#fff',
+    backgroundColor: 'green',
   },
 }));
 
-export default function FormMachine() {
+export default function FormStructure() {
   const dispatch = useDispatch();
-  const structures = useSelector((state) => state.main.structures);
+  const timeZonesList = momentTZ.tz.names();
+  let structures = useSelector((state) => state.main.structures);
+  const machineTypes = useSelector((state) => state.main.machineTypes);
   const classes = useStyles();
-  const { handleSubmit, control } = useForm();
-  const [submitted, setSubmitted] = useState(false);
-  const [machine, setMachine] = React.useState("");
+  const { handleSubmit, control, reset } = useForm();
+  const [structure, setStructure] = useState('5f0ec597ac1fd626e79f3468');
+  const [timezone, setTimezone] = useState('Africa/Abidjan');
+  const [machineType, setMachineType] = useState('5f0eeee5ac1fd626e79f34ed');
+  const [createdNewMachine, setCreatedNewMachine] = useState(false);
+
+  if (_.isEmpty(structures)) {
+    const structuresData = localStorage.getItem('structures-data');
+    structures = JSON.parse(structuresData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('structures-data', JSON.stringify(structures));
+  }
 
   const initialValues = {
-    businessId: "",
-    name: "",
-    description: "",
-    alias: "",
-    manufacturer: "",
-    timezone: "",
+    name: '',
+    config: null,
     isActive: false,
-    placeNumber: 0,
+    description: '',
+    alias: '',
+    manufacturer: '',
+    placeNumber: '',
+    businessId: '',
+    producedAt: null,
+    launchedAt: '',
+    lastMaintenancedAt: null,
+    schedule: '',
+    timezone: '',
+    type: null,
     structure: null,
-    structures: [],
-    machines: [],
+    sensors: [],
+    updatedAt: '',
+    id: '',
+    createdAt: '',
   };
 
-  const handleChange = (event) => {
+  const handleChangeStructure = (event) => {
     setStructure(event.target.value);
   };
 
+  const handleChangeTimezone = (event) => {
+    setTimezone(event.target.value);
+  };
+
+  const handleChangeMachineType = (event) => {
+    setMachineType(event.target.value);
+  };
+
+  // SNACK BAR DELETE NOTIFICATION
+  const displayCreatedNewMachineNotification = () => {
+    dispatch(
+      setSnackbar(true, 'success', 'New machine has been successfully created!')
+    );
+  };
+
   const onSubmit = (data) => {
-    const newStructure = initialValues;
-    newStructure.businessId = data.businessId;
-    newStructure.name = data.name;
-    newStructure.description = data.description;
-    newStructure.city = data.city;
-    newStructure.country = data.country;
-    newStructure.timezone = selectedTimezone.value;
-    if (structure !== "") {
-      newStructure.structure = structure;
-    }
-    console.log(newStructure);
-    dispatch(createStructure(newStructure));
-    setSubmitted(true);
+    const newMachine = { ...initialValues, ...data };
+    newMachine.timezone = timezone;
+    newMachine.structure = structure;
+    const arrayMachineType = machineTypes.filter(
+      (mType) => machineType === mType.id
+    );
+    newMachine.type = arrayMachineType.pop();
+    console.log(newMachine.type);
+    console.log(newMachine);
+    reset({ ...initialValues });
+    dispatch(createMachine(newMachine));
+    setCreatedNewMachine(true);
+    displayCreatedNewMachineNotification();
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 3000);
-  }, [submitted]);
+    window.scrollTo(0, 0);
+  }, [createdNewMachine]);
+
+  useEffect(() => {
+    axios
+      .get('/api/machines/machine-types', {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        dispatch(loadMachineTypes(response.data));
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar variant="rounded" className={classes.rounded}>
-          <AssignmentIcon />
+          <BallotRoundedIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          Create New Structure
+          Create New Machine
         </Typography>
-        {submitted && (
-          <Alert severity="success">New Structure Was Created</Alert>
-        )}
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -113,6 +162,7 @@ export default function FormMachine() {
                 defaultValue=""
                 render={({ field: { onChange, value } }) => (
                   <TextField
+                    autoFocus
                     name="businessId"
                     variant="outlined"
                     fullWidth
@@ -120,7 +170,6 @@ export default function FormMachine() {
                     label="Business ID"
                     value={value}
                     onChange={onChange}
-                    autoFocus
                   />
                 )}
               />
@@ -139,14 +188,14 @@ export default function FormMachine() {
                     variant="outlined"
                     fullWidth
                     id="name"
-                    label="Structure Name"
+                    label="Machine Name"
                     value={value}
                     onChange={onChange}
                     error={!!error}
                     helperText={error ? error.message : null}
                   />
                 )}
-                rules={{ required: "Name is required" }}
+                rules={{ required: 'Name is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -169,57 +218,56 @@ export default function FormMachine() {
             </Grid>
             <Grid item xs={12}>
               <Controller
-                name="city"
+                name="alias"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { onChange, value } }) => (
                   <TextField
-                    name="city"
+                    name="alias"
                     variant="outlined"
                     fullWidth
-                    id="city"
-                    label="City"
+                    id="alias"
+                    label="Alias"
                     value={value}
                     onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
                   />
                 )}
-                rules={{ required: "City is required" }}
               />
             </Grid>
             <Grid item xs={12}>
               <Controller
-                name="country"
+                name="manufacturer"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { onChange, value } }) => (
                   <TextField
-                    name="country"
+                    name="manufacturer"
                     variant="outlined"
                     fullWidth
-                    id="country"
-                    label="Country"
+                    id="manufacturer"
+                    label="Manufacturer"
                     value={value}
                     onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
                   />
                 )}
-                rules={{ required: "Country is required" }}
               />
             </Grid>
             <Grid item xs={12}>
-              <FormHelperText id="timezone">Timezone required</FormHelperText>
-              <TimezoneSelect
-                value={selectedTimezone}
-                onChange={setSelectedTimezone}
+              <Controller
+                name="placeNumber"
+                control={control}
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <TextField
+                    name="placeNumber"
+                    variant="outlined"
+                    fullWidth
+                    id="placeNumber"
+                    label="Place Number"
+                    value={value}
+                    onChange={onChange}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
@@ -227,16 +275,55 @@ export default function FormMachine() {
                 id="outlined-select-currency-native"
                 fullWidth
                 select
-                value={structure}
-                onChange={handleChange}
+                value={timezone}
+                onChange={handleChangeTimezone}
                 SelectProps={{
                   native: true,
                 }}
-                helperText="Please select parent structure"
+                helperText="Please select timezone"
                 variant="outlined"
               >
-                <option value="">No parent structure</option>
+                {timeZonesList.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency-native"
+                fullWidth
+                select
+                value={structure}
+                onChange={handleChangeStructure}
+                SelectProps={{
+                  native: true,
+                }}
+                helperText="Please select structure"
+                variant="outlined"
+              >
                 {structures.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency-native"
+                fullWidth
+                select
+                value={machineType}
+                onChange={handleChangeMachineType}
+                SelectProps={{
+                  native: true,
+                }}
+                helperText="Please select machine type"
+                variant="outlined"
+              >
+                {machineTypes.map((option) => (
                   <option key={option.id} value={option.id}>
                     {option.name}
                   </option>
@@ -251,16 +338,9 @@ export default function FormMachine() {
             color="primary"
             className={classes.submit}
           >
-            Submit New Structure Data
+            Submit
           </Button>
         </form>
-        <Grid item xs={12}>
-          <Link to="/" className="btn">
-            <Button variant="contained" color="default" p={3}>
-              return home
-            </Button>
-          </Link>
-        </Grid>
       </div>
     </Container>
   );

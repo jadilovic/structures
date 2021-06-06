@@ -29,9 +29,12 @@ import { withRouter, Switch, Route } from 'react-router-dom';
 import { setAuthorized } from '../actions/creator';
 import StructuresTable from '../components/StructuresTable';
 import FormStructure from '../components/FormStructure';
+import FormMachine from '../components/FormMachine';
 import MachinesTable from '../components/MachinesTable';
 import IndividualStructure from '../components/IndividualStructure';
 import IndividualMachine from '../components/IndividualMachine';
+import SensorsTable from '../components/SensorsTable';
+import IndividualSensor from '../components/IndividualSensor';
 import Login from './Login';
 import Error from './Error';
 import PrivateRoute from '../components/PrivateRoute';
@@ -167,6 +170,16 @@ const HeaderDrawer = (props) => {
       pageURL: '/form-machine',
       icon: <CreateMachineIcon />,
     },
+    {
+      title: 'Sensors',
+      pageURL: '/sensors-table',
+      icon: <MachinesIcon />,
+    },
+    {
+      title: 'Create Sensor',
+      pageURL: '/form-sensor',
+      icon: <CreateMachineIcon />,
+    },
   ];
 
   const drawer = (
@@ -258,9 +271,15 @@ const HeaderDrawer = (props) => {
               path="/form-structure"
               exact
             />
+            <PrivateRoute component={FormMachine} path="/form-machine" exact />
             <PrivateRoute
               component={MachinesTable}
               path="/machines-table"
+              exact
+            />
+            <PrivateRoute
+              component={SensorsTable}
+              path="/sensors-table"
               exact
             />
             <PrivateRoute
@@ -271,6 +290,11 @@ const HeaderDrawer = (props) => {
             <PrivateRoute
               component={IndividualMachine}
               path="/individual-machine"
+              exact
+            />
+            <PrivateRoute
+              component={IndividualSensor}
+              path="/individual-sensor"
               exact
             />
             <Route component={Login} path="/login" />

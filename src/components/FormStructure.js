@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   Button,
@@ -8,36 +8,36 @@ import {
   Typography,
   makeStyles,
   Container,
-} from "@material-ui/core";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import momentTZ from "moment-timezone";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import _ from "lodash";
-import { createStructure, setAuthorized } from "../actions/creator";
-import { setSnackbar } from "../reducers/snackbarReducer";
+} from '@material-ui/core';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import momentTZ from 'moment-timezone';
+import { useDispatch, useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
+import _ from 'lodash';
+import { createStructure, setAuthorized } from '../actions/creator';
+import { setSnackbar } from '../reducers/snackbarReducer';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(1),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
   rounded: {
-    color: "#fff",
-    backgroundColor: "green",
+    color: '#fff',
+    backgroundColor: 'green',
   },
 }));
 
@@ -47,25 +47,25 @@ export default function FormStructure() {
   let structures = useSelector((state) => state.main.structures);
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
-  const [structure, setStructure] = useState("");
-  const [timezone, setTimezone] = useState("");
+  const [structure, setStructure] = useState('');
+  const [timezone, setTimezone] = useState('Africa/Abidjan');
   const [createdNewStructure, setCreatedNewStructure] = useState(false);
 
   if (_.isEmpty(structures)) {
-    const structuresData = localStorage.getItem("structures-data");
+    const structuresData = localStorage.getItem('structures-data');
     structures = JSON.parse(structuresData);
     dispatch(setAuthorized(true));
   } else {
-    localStorage.setItem("structures-data", JSON.stringify(structures));
+    localStorage.setItem('structures-data', JSON.stringify(structures));
   }
 
   const initialValues = {
-    businessId: "",
-    name: "",
-    description: "",
-    city: "",
-    country: "",
-    timezone: "",
+    businessId: '',
+    name: '',
+    description: '',
+    city: '',
+    country: '',
+    timezone: '',
     isActive: false,
     sortIndex: 0,
     structure: null,
@@ -86,8 +86,8 @@ export default function FormStructure() {
     dispatch(
       setSnackbar(
         true,
-        "success",
-        "New structure has been successfully created!"
+        'success',
+        'New structure has been successfully created!'
       )
     );
   };
@@ -95,7 +95,7 @@ export default function FormStructure() {
   const onSubmit = (data) => {
     const newStructure = { ...initialValues, ...data };
     newStructure.timezone = timezone;
-    if (structure !== "") {
+    if (structure !== '') {
       newStructure.structure = structure;
     }
     console.log(newStructure);
@@ -161,7 +161,7 @@ export default function FormStructure() {
                     helperText={error ? error.message : null}
                   />
                 )}
-                rules={{ required: "Name is required" }}
+                rules={{ required: 'Name is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -203,7 +203,7 @@ export default function FormStructure() {
                     helperText={error ? error.message : null}
                   />
                 )}
-                rules={{ required: "City is required" }}
+                rules={{ required: 'City is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -228,7 +228,7 @@ export default function FormStructure() {
                     helperText={error ? error.message : null}
                   />
                 )}
-                rules={{ required: "Country is required" }}
+                rules={{ required: 'Country is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -244,7 +244,6 @@ export default function FormStructure() {
                 helperText="Please select timezone"
                 variant="outlined"
               >
-                <option value="">{timeZonesList[0]}</option>
                 {timeZonesList.map((option) => (
                   <option key={option} value={option}>
                     {option}
