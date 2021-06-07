@@ -23,6 +23,7 @@ import {
   displaySensor,
   deleteMachine,
   clearData,
+  displayMachine,
 } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 
@@ -47,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 // UNDER CONSTRUCTION
 export default function IndividualSensorDisplay() {
-  let machine = useSelector((state) => state.main.individualMachine);
+  let sensor = useSelector((state) => state.main.individualSensor);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -63,26 +64,26 @@ export default function IndividualSensorDisplay() {
       return;
     }
     setOpenDeleteNotification(false);
-    history.push('/machines-table');
+    history.push('/sensors-table');
   };
 
-  if (_.isEmpty(machine)) {
-    const machineData = localStorage.getItem('machine-data');
-    machine = JSON.parse(machineData);
+  if (_.isEmpty(sensor)) {
+    const sensorData = localStorage.getItem('sensor-data');
+    sensor = JSON.parse(sensorData);
     dispatch(setAuthorized(true));
   } else {
-    localStorage.setItem('machine-data', JSON.stringify(machine));
+    localStorage.setItem('sensor-data', JSON.stringify(sensor));
   }
 
-  function deleteIndividualMachine(machineId) {
+  function deleteIndividualSensor(sensorId) {
     dispatch(clearData());
-    dispatch(deleteMachine(machineId));
+    // dispatch(deleteSensor(sensorId));
     displayDeleteNotification();
   }
 
-  function displaySensorRow(data) {
-    dispatch(displaySensor(data));
-    history.push('/individual-sensor');
+  function displayMachineRow(data) {
+    dispatch(displayMachine(data));
+    history.push('/individual-machine');
   }
 
   return (
@@ -95,8 +96,8 @@ export default function IndividualSensorDisplay() {
             onClose={handleClose}
           >
             <Alert onClose={handleClose} severity="success">
-              You have successfuly deleted selected machine! You will now be
-              returned to the Machines page.
+              You have successfuly deleted selected sensor! You will now be
+              returned to the Sensors page.
             </Alert>
           </Snackbar>
         </div>
@@ -107,33 +108,27 @@ export default function IndividualSensorDisplay() {
             <TableBody>
               <TableRow>
                 <TableCell component="th" scope="row">
-                  Name:
+                  Sensor ID:
                 </TableCell>
-                <TableCell>{machine.name}</TableCell>
+                <TableCell>{sensor.sensorId}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Active:
                 </TableCell>
-                <TableCell>{`${machine.isActive ? 'Yes' : 'No'}`}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Business ID:
-                </TableCell>
-                <TableCell>{machine.businessId}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  Description:
-                </TableCell>
-                <TableCell>{machine.description}</TableCell>
+                <TableCell>{`${sensor.isActive ? 'Yes' : 'No'}`}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Alias:
                 </TableCell>
-                <TableCell>{machine.alias}</TableCell>
+                <TableCell>{sensor.alias}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Sensor Type:
+                </TableCell>
+                <TableCell>{sensor.type.name}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -153,7 +148,7 @@ export default function IndividualSensorDisplay() {
             title="Delete Machine?"
             open={confirmOpen}
             setOpen={setConfirmOpen}
-            onConfirm={() => deleteIndividualMachine(machine.id)}
+            onConfirm={() => deleteIndividualSensor(sensor.id)}
           >
             Are you sure you want to delete this machine?
           </ConfirmDialog>
@@ -165,36 +160,25 @@ export default function IndividualSensorDisplay() {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  <Typography>Sensors</Typography>
+                  <Typography>Machine</Typography>
                 </TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>
-            {machine.sensors.length > 0 ? (
-              <TableRow>
-                <TableCell>Name:</TableCell>
-                <TableCell>Alias:</TableCell>
-              </TableRow>
-            ) : (
-              'No Sensors in the Machine'
-            )}
-            <TableBody>
-              {machine.sensors.map((sensor) => (
-                <TableRow
-                  key={sensor.id}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    displaySensorRow(sensor);
-                  }}
-                  align="center"
-                  className={classes.row}
-                >
-                  <TableCell>{sensor.sensorId}</TableCell>
-                  <TableCell>{sensor.alias}</TableCell>
+            {sensor.machine ? (
+              <TableBody>
+                <TableRow>
+                  <TableCell>Name:</TableCell>
+                  <TableCell>Type:</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
+                <TableRow>
+                  <TableCell>{sensor.machine.name}</TableCell>
+                  <TableCell>{sensor.machine.type.name}</TableCell>
+                </TableRow>
+              </TableBody>
+            ) : (
+              'No Machine for this sensor'
+            )}
           </Table>
         </TableContainer>
       </Grid>

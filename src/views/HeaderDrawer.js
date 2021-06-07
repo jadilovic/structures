@@ -26,7 +26,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { withRouter, Switch, Route } from 'react-router-dom';
-import { setAuthorized } from '../actions/creator';
+import { clearData, setAuthorized } from '../actions/creator';
 import StructuresTable from '../components/StructuresTable';
 import FormStructure from '../components/FormStructure';
 import FormMachine from '../components/FormMachine';
@@ -146,6 +146,7 @@ const HeaderDrawer = (props) => {
   function logout() {
     localStorage.removeItem('user');
     dispatch(setAuthorized(false));
+    dispatch(clearData());
     history.push('/login');
   }
 

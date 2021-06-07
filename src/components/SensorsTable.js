@@ -43,13 +43,15 @@ export default function SensorsTable() {
     {
       field: 'type',
       headerName: 'Sensor Type',
-      valueGetter: (params) => params,
+      valueGetter: (params) =>
+        params.row.type ? params.row.type.name : 'No Type',
       flex: 1,
     },
     {
       field: 'machine',
       headerName: 'Machine',
-      valueGetter: (params) => params,
+      valueGetter: (params) =>
+        params.row.machine ? params.row.machine.name : 'No machine',
       flex: 1,
     },
   ];
