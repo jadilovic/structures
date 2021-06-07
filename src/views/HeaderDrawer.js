@@ -22,6 +22,8 @@ import StructuresIcon from '@material-ui/icons/AccountBalanceOutlined';
 import CreateStructureIcon from '@material-ui/icons/BuildOutlined';
 import MachinesIcon from '@material-ui/icons/SettingsApplicationsOutlined';
 import CreateMachineIcon from '@material-ui/icons/GavelOutlined';
+import SensorsIcon from '@material-ui/icons/DeviceHub';
+import CreateSensorIcon from '@material-ui/icons/Build';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -174,12 +176,12 @@ const HeaderDrawer = (props) => {
     {
       title: 'Sensors',
       pageURL: '/sensors-table',
-      icon: <MachinesIcon />,
+      icon: <SensorsIcon />,
     },
     {
       title: 'Create Sensor',
       pageURL: '/form-sensor',
-      icon: <CreateMachineIcon />,
+      icon: <CreateSensorIcon />,
     },
   ];
 
@@ -188,14 +190,17 @@ const HeaderDrawer = (props) => {
       {menuItems.map((item) => {
         const { title, pageURL, icon } = item;
         return (
-          <ListItem
-            button
-            key={title}
-            onClick={() => handleDrawerCloseAfterSelection(pageURL)}
-          >
-            <ListItemIcon>{icon}</ListItemIcon>
-            <ListItemText primary={title} />
-          </ListItem>
+          <>
+            <ListItem
+              button
+              key={title}
+              onClick={() => handleDrawerCloseAfterSelection(pageURL)}
+            >
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={title} />
+            </ListItem>
+            <Divider />
+          </>
         );
       })}
     </List>

@@ -18,14 +18,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
-import {
-  setAuthorized,
-  displaySensor,
-  deleteMachine,
-  clearData,
-  displayMachine,
-} from '../actions/creator';
+import { setAuthorized, clearData, displayMachine } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
+import useMachines from '../hooks/useMachines';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -48,7 +43,9 @@ const useStyles = makeStyles((theme) => ({
 
 // UNDER CONSTRUCTION
 export default function IndividualSensorDisplay() {
+  useMachines();
   let sensor = useSelector((state) => state.main.individualSensor);
+  const machines = useSelector((state) => state.main.machines);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -81,8 +78,10 @@ export default function IndividualSensorDisplay() {
     displayDeleteNotification();
   }
 
-  function displayMachineRow(data) {
-    dispatch(displayMachine(data));
+  function displaySensorMachine(machineId) {
+    const machineArray = machines.filter((machine) => machine.id === machineId);
+    const machineData = machineArray.pop();
+    dispatch(displayMachine(machineData));
     history.push('/individual-machine');
   }
 
@@ -142,15 +141,15 @@ export default function IndividualSensorDisplay() {
             startIcon={<DeleteIcon />}
             onClick={() => setConfirmOpen(true)}
           >
-            Delete Machine
+            Delete Sensor
           </Button>
           <ConfirmDialog
-            title="Delete Machine?"
+            title="Delete Sensor?"
             open={confirmOpen}
             setOpen={setConfirmOpen}
             onConfirm={() => deleteIndividualSensor(sensor.id)}
           >
-            Are you sure you want to delete this machine?
+            Are you sure you want to delete this sensor?
           </ConfirmDialog>
         </div>
       </Grid>
@@ -171,7 +170,15 @@ export default function IndividualSensorDisplay() {
                   <TableCell>Name:</TableCell>
                   <TableCell>Type:</TableCell>
                 </TableRow>
-                <TableRow>
+                <TableRow
+                  variant="contained"
+                  color="primary"
+                  align="center"
+                  className={classes.row}
+                  onClick={() => {
+                    displaySensorMachine(sensor.machine);
+                  }}
+                >
                   <TableCell>{sensor.machine.name}</TableCell>
                   <TableCell>{sensor.machine.type.name}</TableCell>
                 </TableRow>

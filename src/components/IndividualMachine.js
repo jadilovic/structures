@@ -25,6 +25,7 @@ import {
   clearData,
 } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
+import useSensors from '../hooks/useSensors';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -46,7 +47,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IndividualMachineDisplay() {
+  useSensors();
   let machine = useSelector((state) => state.main.individualMachine);
+  const sensors = useSelector((state) => state.main.sensors);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -79,8 +82,10 @@ export default function IndividualMachineDisplay() {
     displayDeleteNotification();
   }
 
-  function displaySensorRow(data) {
-    dispatch(displaySensor(data));
+  function displaySensorRow(sensorId) {
+    const sensorArray = sensors.filter((sensor) => sensor.id === sensorId);
+    const sensorData = sensorArray.pop();
+    dispatch(displaySensor(sensorData));
     history.push('/individual-sensor');
   }
 
@@ -171,7 +176,7 @@ export default function IndividualMachineDisplay() {
             </TableHead>
             {machine.sensors.length > 0 ? (
               <TableRow>
-                <TableCell>Name:</TableCell>
+                <TableCell>Sensor ID:</TableCell>
                 <TableCell>Alias:</TableCell>
               </TableRow>
             ) : (
@@ -184,7 +189,7 @@ export default function IndividualMachineDisplay() {
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    displaySensorRow(sensor);
+                    displaySensorRow(sensor.id);
                   }}
                   align="center"
                   className={classes.row}

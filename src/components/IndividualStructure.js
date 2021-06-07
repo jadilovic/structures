@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   makeStyles,
   Table,
@@ -10,39 +10,40 @@ import {
   Paper,
   Grid,
   Button,
-} from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import _ from "lodash";
+} from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { useHistory } from 'react-router-dom';
+import _ from 'lodash';
 import {
   deleteStructure,
   clearData,
   displayMachine,
   setAuthorized,
-} from "../actions/creator";
-import { setSnackbar } from "../reducers/snackbarReducer";
-import ConfirmDialog from "./ConfirmDialog";
-import authHeader from "../service/auth-header";
+} from '../actions/creator';
+import { setSnackbar } from '../reducers/snackbarReducer';
+import ConfirmDialog from './ConfirmDialog';
+import useMachines from '../hooks/useMachines';
 
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(3),
   },
   root: {
-    width: "100%",
-    "& > * + *": {
+    width: '100%',
+    '& > * + *': {
       marginTop: theme.spacing(2),
     },
   },
   row: {
-    cursor: "pointer",
+    cursor: 'pointer',
   },
 }));
 
 export default function IndividualStructureDisplay() {
+  useMachines();
   let structure = useSelector((state) => state.main.individualStructure);
+  const machines = useSelector((state) => state.main.machines);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -50,26 +51,18 @@ export default function IndividualStructureDisplay() {
 
   // SAVING AND GETTING STRUCTURE DATA ON REFRESH PAGE
   if (_.isEmpty(structure)) {
-    const structureData = localStorage.getItem("structure-data");
+    const structureData = localStorage.getItem('structure-data');
     structure = JSON.parse(structureData);
     dispatch(setAuthorized(true));
   } else {
-    localStorage.setItem("structure-data", JSON.stringify(structure));
+    localStorage.setItem('structure-data', JSON.stringify(structure));
   }
 
-  const displayMachineRow = async (machineId) => {
-    dispatch(clearData());
-    const response = await axios
-      .get(`/api/machines/${machineId}?populate=sensors`, {
-        headers: authHeader(),
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (response) {
-      dispatch(displayMachine(response.data));
-      history.push("/individual-machine");
-    }
+  const displayMachineRow = (machineId) => {
+    const machineArray = machines.filter((machine) => machine.id === machineId);
+    const machineData = machineArray.pop();
+    dispatch(displayMachine(machineData));
+    history.push('/individual-machine');
   };
 
   // SNACK BAR DELETE NOTIFICATION
@@ -77,11 +70,11 @@ export default function IndividualStructureDisplay() {
     dispatch(
       setSnackbar(
         true,
-        "success",
-        "Selected structure has been successfully deleted!"
+        'success',
+        'Selected structure has been successfully deleted!'
       )
     );
-    history.push("/");
+    history.push('/');
   };
 
   function deleteIndividualStructure(structureId) {
@@ -176,7 +169,7 @@ export default function IndividualStructureDisplay() {
               ))}
               {structure.machines.length > 0
                 ? null
-                : "No Machines in the Structure"}
+                : 'No Machines in the Structure'}
             </TableBody>
           </Table>
         </TableContainer>

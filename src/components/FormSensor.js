@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FormMachine() {
+export default function FormSensor() {
   const dispatch = useDispatch();
   const timeZonesList = momentTZ.tz.names();
   let structures = useSelector((state) => state.main.structures);
@@ -68,25 +68,17 @@ export default function FormMachine() {
   }
 
   const initialValues = {
-    name: '',
-    config: {},
+    sensorId: '',
     isActive: false,
-    description: '',
     alias: '',
-    manufacturer: '',
-    placeNumber: '',
-    businessId: '',
-    producedAt: null,
-    launchedAt: '',
-    lastMaintenancedAt: null,
-    schedule: '',
-    timezone: '',
+    lastSeenAt: null,
+    registeredAt: null,
     type: null,
-    structure: null,
-    sensors: [],
-    // updatedAt: '',
-    // id: '',
-    // createdAt: '',
+    rssi: 0,
+    ssid: '',
+    version: '',
+    module: '',
+    machine: null,
   };
 
   const handleChangeStructure = (event) => {
