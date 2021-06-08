@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormStructure() {
+  console.log('FORM STRUCTURE RENDERING');
   const timeZonesList = momentTZ.tz.names();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);

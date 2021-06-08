@@ -14,6 +14,7 @@ import {
   SET_AUTHORIZED,
   DISPLAY_SENSOR,
   LOAD_SENSORS,
+  CREATE_SENSOR,
   LOAD_INDIVIDUAL_MACHINE,
 } from '../constants/action-types';
 
@@ -66,6 +67,11 @@ export function displaySensor(payload) {
 export function loadSensors(payload) {
   console.log('CREATOR LOAD SENSORS');
   return { type: LOAD_SENSORS, payload };
+}
+
+export function createSensor(payload) {
+  console.log(payload);
+  return { type: CREATE_SENSOR, payload };
 }
 
 export function deleteStructure(payload) {

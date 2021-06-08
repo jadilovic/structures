@@ -15,6 +15,7 @@ import {
   CREATE_MACHINE,
   LOAD_SENSORS,
   DISPLAY_SENSOR,
+  CREATE_SENSOR,
 } from '../constants/action-types';
 import authHeader from '../service/auth-header';
 
@@ -107,6 +108,20 @@ function RootReducer(state = initialState, action) {
       })
       .catch((error) => {
         console.log('ERROR CRATING MACHINE');
+        console.log(error.response.data);
+      });
+  } else if (action.type === CREATE_SENSOR) {
+    // CREATING MACHINE IN API
+    console.log(action.payload);
+    axios
+      .post('/api/sensors', action.payload, {
+        headers: authHeader(),
+      })
+      .then(() => {
+        console.log('CREATED SENSOR');
+      })
+      .catch((error) => {
+        console.log('ERROR CRATING SENSOR');
         console.log(error.response.data);
       });
   } else if (action.type === LOAD_SENSORS) {

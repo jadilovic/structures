@@ -10,15 +10,14 @@ import {
   Container,
 } from '@material-ui/core';
 import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
-import momentTZ from 'moment-timezone';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import axios from 'axios';
 import {
-  createMachine,
+  createSensor,
   setAuthorized,
-  loadMachineTypes,
+  loadSensorTypes,
 } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import authHeader from '../service/auth-header';
@@ -49,22 +48,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormSensor() {
   const dispatch = useDispatch();
-  const timeZonesList = momentTZ.tz.names();
-  let structures = useSelector((state) => state.main.structures);
-  const machineTypes = useSelector((state) => state.main.machineTypes);
+  let machines = useSelector((state) => state.main.machines);
+  const sensorTypes = useSelector((state) => state.main.sensorTypes);
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
-  const [structure, setStructure] = useState('5f0ec597ac1fd626e79f3468');
-  const [timezone, setTimezone] = useState('Africa/Abidjan');
-  const [machineType, setMachineType] = useState('5f0eeee5ac1fd626e79f34ed');
-  const [createdNewMachine, setCreatedNewMachine] = useState(false);
+  const [machine, setMachine] = useState('');
+  const [isActive, setIsActive] = useState(false);
+  const [sensorType, setSensorType] = useState('');
+  const [createdNewSensor, setCreatedNewSensor] = useState(false);
 
-  if (_.isEmpty(structures)) {
-    const structuresData = localStorage.getItem('structures-data');
-    structures = JSON.parse(structuresData);
+  if (_.isEmpty(machines)) {
+    const structuresData = localStorage.getItem('machines-data');
+    machines = JSON.parse(structuresData);
     dispatch(setAuthorized(true));
   } else {
-    localStorage.setItem('structures-data', JSON.stringify(structures));
+    localStorage.setItem('machines-data', JSON.stringify(machines));
   }
 
   const initialValues = {
@@ -81,44 +79,44 @@ export default function FormSensor() {
     machine: null,
   };
 
-  const handleChangeStructure = (event) => {
-    setStructure(event.target.value);
+  const handleChangeMachine = (event) => {
+    setMachine(event.target.value);
   };
 
-  const handleChangeTimezone = (event) => {
-    setTimezone(event.target.value);
+  const handleChangeIsActive = (event) => {
+    setIsActive(event.target.value);
   };
 
-  const handleChangeMachineType = (event) => {
-    setMachineType(event.target.value);
+  const handleChangeSensorType = (event) => {
+    setSensorType(event.target.value);
   };
 
   // SNACK BAR DELETE NOTIFICATION
-  const displayCreatedNewMachineNotification = () => {
+  const displayCreatedNewSensorNotification = () => {
     dispatch(
-      setSnackbar(true, 'success', 'New machine has been successfully created!')
+      setSnackbar(true, 'success', 'New sensor has been successfully created!')
     );
   };
 
   const onSubmit = (data) => {
-    const newMachine = { ...initialValues, ...data };
-    newMachine.timezone = timezone;
-    newMachine.structure = structure;
-    const arrayMachineType = machineTypes.filter(
-      (mType) => machineType === mType.id
+    const newSensor = { ...initialValues, ...data };
+    newSensor.isActive = isActive;
+    newSensor.machine = machine;
+    const arraySensorType = sensorTypes.filter(
+      (sType) => sensorType === sType.id
     );
-    newMachine.type = arrayMachineType.pop();
-    console.log(newMachine.type);
-    console.log(newMachine);
+    newSensor.type = arraySensorType.pop();
+    console.log(newSensor.type);
+    console.log(newSensor);
     reset({ ...initialValues });
-    dispatch(createMachine(newMachine));
-    setCreatedNewMachine(true);
-    displayCreatedNewMachineNotification();
+    dispatch(createSensor(newSensor));
+    setCreatedNewSensor(true);
+    displayCreatedNewSensorNotification();
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [createdNewMachine]);
+  }, [createdNewSensor]);
 
   useEffect(() => {
     axios

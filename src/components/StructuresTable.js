@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
-import { useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { Container, Grid, Typography, makeStyles } from "@material-ui/core";
-import { displayStructure, clearData } from "../actions/creator";
-import useStructures from "../hooks/useStructures";
+import React, { useEffect, memo } from 'react';
+import { DataGrid } from '@material-ui/data-grid';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Container, Grid, Typography, makeStyles } from '@material-ui/core';
+import { displayStructure, clearData } from '../actions/creator';
+import useStructures from '../hooks/useStructures';
 
 const useStyles = makeStyles((theme) => ({
   row: {
-    cursor: "pointer",
+    cursor: 'pointer',
   },
   toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StructuresTable() {
+  console.log('RENDERING STRUCTURES TABLE');
   useStructures();
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -33,7 +34,7 @@ export default function StructuresTable() {
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
-    console.log("CLeAR DATA");
+    console.log('CLeAR DATA');
     dispatch(clearData());
   }, []);
 
@@ -44,34 +45,34 @@ export default function StructuresTable() {
 
   const dataColumns = [
     {
-      field: "name",
-      headerName: "Name",
+      field: 'name',
+      headerName: 'Name',
       flex: 1,
     },
     {
-      field: "description",
-      headerName: "Description",
+      field: 'description',
+      headerName: 'Description',
       flex: 1,
     },
     {
-      field: "city",
-      headerName: "City",
+      field: 'city',
+      headerName: 'City',
       flex: 1,
     },
     {
-      field: "country",
-      headerName: "Country",
+      field: 'country',
+      headerName: 'Country',
       flex: 1,
     },
     {
-      field: "timezone",
-      headerName: "Timezone",
+      field: 'timezone',
+      headerName: 'Timezone',
       flex: 1,
     },
     {
-      field: "isActive",
-      headerName: "Active",
-      valueFormatter: (params) => (params.value ? "Yes" : "No"),
+      field: 'isActive',
+      headerName: 'Active',
+      valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
       flex: 1,
     },
   ];
@@ -80,7 +81,7 @@ export default function StructuresTable() {
 
   function displayStructureRow(data) {
     dispatch(displayStructure(data));
-    history.push("/individual-structure");
+    history.push('/individual-structure');
   }
 
   if (loading) {
@@ -91,7 +92,7 @@ export default function StructuresTable() {
         direction="column"
         alignItems="center"
         justify="center"
-        style={{ minHeight: "100vh" }}
+        style={{ minHeight: '100vh' }}
       >
         <Typography>Loading...</Typography>
         <CircularProgress />
@@ -99,15 +100,15 @@ export default function StructuresTable() {
     );
   }
   if (error) {
-    return "Error!";
+    return 'Error!';
   }
   return (
     <Container maxWidth="lg">
       <div
         style={{
           height: userScreenHeight - 112,
-          width: "100%",
-          cursor: "pointer",
+          width: '100%',
+          cursor: 'pointer',
         }}
       >
         <DataGrid
@@ -119,9 +120,9 @@ export default function StructuresTable() {
           filterModel={{
             items: [
               {
-                columnField: "description",
-                operatorValue: "contains",
-                value: "",
+                columnField: 'description',
+                operatorValue: 'contains',
+                value: '',
               },
             ],
           }}
