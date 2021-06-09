@@ -1,9 +1,15 @@
 import React, { useEffect, memo } from 'react';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridOverlay } from '@material-ui/data-grid';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Container, Grid, Typography, makeStyles } from '@material-ui/core';
+import {
+  Container,
+  Grid,
+  Typography,
+  makeStyles,
+  LinearProgress,
+} from '@material-ui/core';
 import { displayStructure, clearData } from '../actions/creator';
 import useStructures from '../hooks/useStructures';
 
@@ -84,24 +90,24 @@ export default function StructuresTable() {
     history.push('/individual-structure');
   }
 
-  if (loading) {
+  function CustomLoadingOverlay() {
     return (
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justify="center"
-        style={{ minHeight: '100vh' }}
-      >
-        <Typography>Loading...</Typography>
-        <CircularProgress />
-      </Grid>
+      <GridOverlay>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justify="center"
+          style={{ minHeight: '100vh' }}
+        >
+          <Typography>Loading...</Typography>
+          <CircularProgress />
+        </Grid>
+      </GridOverlay>
     );
   }
-  if (error) {
-    return 'Error!';
-  }
+
   return (
     <Container maxWidth="lg">
       <div
@@ -112,6 +118,10 @@ export default function StructuresTable() {
         }}
       >
         <DataGrid
+          components={{
+            LoadingOverlay: CustomLoadingOverlay,
+          }}
+          loading={loading}
           {...structures}
           className={classes.row}
           onRowClick={(props) => {

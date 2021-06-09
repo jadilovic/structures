@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import React, { memo, useCallback, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import {
   makeStyles,
@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     }),
     width: theme.spacing.unit * 7,
     [theme.breakpoints.up('xs')]: {
-      width: theme.spacing.unit * 9,
+      width: theme.spacing.unit * 7,
     },
     [theme.breakpoints.down('xs')]: {
       width: 0,
@@ -123,7 +123,6 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
 }));
-
 const HeaderDrawer = (props) => {
   const { history } = props;
   const dispatch = useDispatch();
@@ -131,6 +130,7 @@ const HeaderDrawer = (props) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const isAuthorized = localStorage.getItem('user');
+  console.log(props);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -196,7 +196,7 @@ const HeaderDrawer = (props) => {
               key={title}
               onClick={() => handleDrawerCloseAfterSelection(pageURL)}
             >
-              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemIcon> {icon}</ListItemIcon>
               <ListItemText primary={title} />
             </ListItem>
             <Divider />
@@ -204,6 +204,36 @@ const HeaderDrawer = (props) => {
         );
       })}
     </List>
+  );
+
+  const toggleDrawer = (
+    <div>
+      <Drawer
+        variant="permanent"
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open,
+        })}
+        classes={{
+          paper: clsx({
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open,
+          }),
+        }}
+      >
+        <div className={classes.toolbar}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
+          </IconButton>
+        </div>
+        <Divider />
+        {drawer}
+      </Drawer>
+    </div>
   );
 
   if (isAuthorized) {
@@ -243,31 +273,7 @@ const HeaderDrawer = (props) => {
             </div>
           </Toolbar>
         </AppBar>
-        <Drawer
-          variant="permanent"
-          className={clsx(classes.drawer, {
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
-          }}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'rtl' ? (
-                <ChevronRightIcon />
-              ) : (
-                <ChevronLeftIcon />
-              )}
-            </IconButton>
-          </div>
-          <Divider />
-          {drawer}
-        </Drawer>
+        {toggleDrawer}
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
