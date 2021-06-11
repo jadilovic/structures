@@ -14,6 +14,7 @@ import momentTZ from 'moment-timezone';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { createStructure, setAuthorized } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 
@@ -49,8 +50,8 @@ export default function FormStructure() {
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
   const [structure, setStructure] = useState('');
-  const [timezone, setTimezone] = useState('Africa/Abidjan');
-  const [createdNewStructure, setCreatedNewStructure] = useState(false);
+  const [timezone, setTimezone] = useState(null);
+  const [error, setError] = useState(false);
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -74,12 +75,13 @@ export default function FormStructure() {
     machines: [],
   };
 
-  const handleChangeStructure = (event) => {
-    setStructure(event.target.value);
+  const handleChangeStructure = (value) => {
+    setStructure(value);
   };
 
-  const handleChangeTimezone = (event) => {
-    setTimezone(event.target.value);
+  const handleChangeTimezone = (value) => {
+    setError(false);
+    setTimezone(value);
   };
 
   // SNACK BAR DELETE NOTIFICATION
@@ -94,21 +96,35 @@ export default function FormStructure() {
   };
 
   const onSubmit = (data) => {
-    const newStructure = { ...initialValues, ...data };
-    newStructure.timezone = timezone;
-    if (structure !== '') {
-      newStructure.structure = structure;
+    if (!timezone) {
+      setError(true);
+      return;
     }
-    console.log(newStructure);
+
+    const newStructure = { ...initialValues, ...data };
+
+    newStructure.timezone = timezone;
+
+    if (structure) {
+      const arrayStructure = structures.filter(
+        (selectedStructure) => structure === selectedStructure.name
+      );
+      newStructure.structure = arrayStructure.pop().id;
+    }
+
     reset({ ...initialValues });
     dispatch(createStructure(newStructure));
-    setCreatedNewStructure(true);
     displayCreatedNewStructureNotification();
   };
 
   useEffect(() => {
+    console.log('use effect');
+    setTimezone(null);
+    setStructure(null);
     window.scrollTo(0, 0);
-  }, [createdNewStructure]);
+  }, []);
+
+  const stringStructures = structures.map((structure) => structure.name);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -233,46 +249,40 @@ export default function FormStructure() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={timezone}
-                onChange={handleChangeTimezone}
-                SelectProps={{
-                  native: true,
+              <Autocomplete
+                defaultValue={null}
+                options={timeZonesList}
+                style={{ width: '100%' }}
+                onChange={(event, value) => handleChangeTimezone(value)}
+                onInputChange={() => {
+                  setError(false);
                 }}
-                helperText="Please select timezone"
-                variant="outlined"
-              >
-                {timeZonesList.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </TextField>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    error={error}
+                    id="outlined-error-helper-text"
+                    label={error ? 'Select timezone' : 'Select timezone'}
+                    helperText={error ? 'Timezone is required.' : ''}
+                  />
+                )}
+              />
             </Grid>
-
             <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={structure}
-                onChange={handleChangeStructure}
-                SelectProps={{
-                  native: true,
-                }}
-                helperText="Please select parent structure"
-                variant="outlined"
-              >
-                <option value="">No parent structure</option>
-                {structures.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </TextField>
+              <Autocomplete
+                options={stringStructures}
+                style={{ width: '100%' }}
+                onChange={(event, value) => handleChangeStructure(value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    id="outlined-error-helper-text"
+                    label="Select parent structure"
+                  />
+                )}
+              />
             </Grid>
           </Grid>
           <Button

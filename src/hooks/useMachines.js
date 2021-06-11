@@ -1,11 +1,11 @@
-import { useEffect } from 'react'
-import axios from 'axios'
-import { useDispatch } from 'react-redux'
-import authHeader from '../service/auth-header'
-import { loadMachines } from '../actions/creator'
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import authHeader from '../service/auth-header';
+import { loadMachines } from '../actions/creator';
 
 export default function useMachines() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
@@ -13,12 +13,12 @@ export default function useMachines() {
         headers: authHeader(),
       })
       .then((response) => {
-        dispatch(loadMachines(response.data))
-        console.log(response.data)
+        dispatch(loadMachines(response.data));
+        console.log(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching data: ', error)
-        console.log(error)
-      })
-  }, [])
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }, []);
 }

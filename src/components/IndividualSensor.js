@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   makeStyles,
   Table,
@@ -18,9 +19,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
+import authHeader from '../service/auth-header';
 import { setAuthorized, clearData, displayMachine } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
-import useMachines from '../hooks/useMachines';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -43,9 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 // UNDER CONSTRUCTION
 export default function IndividualSensorDisplay() {
-  useMachines();
   let sensor = useSelector((state) => state.main.individualSensor);
-  const machines = useSelector((state) => state.main.machines);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -78,12 +77,20 @@ export default function IndividualSensorDisplay() {
     displayDeleteNotification();
   }
 
-  function displaySensorMachine(machineId) {
-    const machineArray = machines.filter((machine) => machine.id === machineId);
-    const machineData = machineArray.pop();
-    dispatch(displayMachine(machineData));
-    history.push('/individual-machine');
-  }
+  const displaySensorMachine = async (machineId) => {
+    dispatch(clearData());
+    const response = await axios
+      .get(`/api/machines/${machineId.id}?populate=sensors`, {
+        headers: authHeader(),
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    if (response) {
+      dispatch(displayMachine(response.data));
+      history.push('/individual-machine');
+    }
+  };
 
   return (
     <Grid container spacing={3}>
@@ -158,9 +165,7 @@ export default function IndividualSensorDisplay() {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>
-                  <Typography>Machine</Typography>
-                </TableCell>
+                <TableCell>Machine with the Sensor</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   makeStyles,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Paper,
   Grid,
   Button,
 } from '@material-ui/core';
+import { DataGrid } from '@material-ui/data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useHistory } from 'react-router-dom';
@@ -23,7 +24,8 @@ import {
 } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
-import useMachines from '../hooks/useMachines';
+import authHeader from '../service/auth-header';
+import CustomNoRowsOverlay from './NoRowsOverlay';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -41,9 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IndividualStructureDisplay() {
-  useMachines();
   let structure = useSelector((state) => state.main.individualStructure);
-  const machines = useSelector((state) => state.main.machines);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -58,11 +58,19 @@ export default function IndividualStructureDisplay() {
     localStorage.setItem('structure-data', JSON.stringify(structure));
   }
 
-  const displayMachineRow = (machineId) => {
-    const machineArray = machines.filter((machine) => machine.id === machineId);
-    const machineData = machineArray.pop();
-    dispatch(displayMachine(machineData));
-    history.push('/individual-machine');
+  const displayMachineRow = async (selectedMachine) => {
+    dispatch(clearData());
+    const response = await axios
+      .get(`/api/machines/${selectedMachine.id}?populate=sensors`, {
+        headers: authHeader(),
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    if (response) {
+      dispatch(displayMachine(response.data));
+      history.push('/individual-machine');
+    }
   };
 
   // SNACK BAR DELETE NOTIFICATION
@@ -83,6 +91,37 @@ export default function IndividualStructureDisplay() {
     displayDeleteNotification();
   }
 
+  const machinesColumns = [
+    {
+      field: 'name',
+      headerName: 'Name',
+      flex: 1,
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      flex: 1,
+    },
+    {
+      field: 'alias',
+      headerName: 'Alias',
+      flex: 1,
+    },
+    {
+      field: 'type',
+      headerName: 'Machine Type',
+      valueGetter: (params) => params.row.type.name,
+      flex: 1,
+    },
+  ];
+
+  const userScreenHeight = window.innerHeight;
+
+  const machinesDataGrid = {
+    columns: machinesColumns,
+    rows: structure.machines,
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={6}>
@@ -90,8 +129,8 @@ export default function IndividualStructureDisplay() {
           <Table aria-label="simple table">
             <TableBody>
               <TableRow>
-                <TableCell component="th" scope="row">
-                  Name:
+                <TableCell variant="head" component="th" scope="row">
+                  Structure Name:
                 </TableCell>
                 <TableCell>{structure.name}</TableCell>
               </TableRow>
@@ -118,6 +157,24 @@ export default function IndividualStructureDisplay() {
                   Timezone:
                 </TableCell>
                 <TableCell>{structure.timezone}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Business ID:
+                </TableCell>
+                <TableCell>{structure.businessId}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Created at:
+                </TableCell>
+                <TableCell>{structure.createdAt}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Active:
+                </TableCell>
+                <TableCell>{structure.isActive ? 'Yes' : 'No'}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -147,31 +204,36 @@ export default function IndividualStructureDisplay() {
       </Grid>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Machines:</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {structure.machines.map((machine) => (
-                <TableRow key={machine.id} variant="contained" color="primary">
-                  <TableCell
-                    onClick={() => {
-                      displayMachineRow(machine.id);
-                    }}
-                    align="justify"
-                    className={classes.row}
-                  >
-                    {machine.name}
-                  </TableCell>
-                </TableRow>
-              ))}
-              {structure.machines.length > 0
-                ? null
-                : 'No Machines in the Structure'}
-            </TableBody>
-          </Table>
+          <div
+            style={{
+              height: userScreenHeight - 112,
+              width: '100%',
+              cursor: 'pointer',
+            }}
+          >
+            <DataGrid
+              components={{
+                NoRowsOverlay: CustomNoRowsOverlay,
+              }}
+              size="small"
+              aria-label="a dense table"
+              {...machinesDataGrid}
+              onRowClick={(props) => {
+                console.log(props.row);
+                displayMachineRow(props.row);
+              }}
+              filterModel={{
+                items: [
+                  {
+                    columnField: 'description',
+                    operatorValue: 'contains',
+                    value: '',
+                  },
+                ],
+              }}
+              localeText
+            />
+          </div>
         </TableContainer>
       </Grid>
     </Grid>

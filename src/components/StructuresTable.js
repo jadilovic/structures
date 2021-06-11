@@ -1,17 +1,11 @@
-import React, { useEffect, memo } from 'react';
-import { DataGrid, GridOverlay } from '@material-ui/data-grid';
+import React, { useEffect } from 'react';
+import { DataGrid } from '@material-ui/data-grid';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import {
-  Container,
-  Grid,
-  Typography,
-  makeStyles,
-  LinearProgress,
-} from '@material-ui/core';
+import { Container, makeStyles } from '@material-ui/core';
 import { displayStructure, clearData } from '../actions/creator';
 import useStructures from '../hooks/useStructures';
+import CustomLoadingOverlay from './CustomLoadingOverlay';
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -46,7 +40,6 @@ export default function StructuresTable() {
 
   const structuresData = useSelector((state) => state.main.structures);
   const loading = useSelector((state) => state.main.loading);
-  const error = useSelector((state) => state.main.error);
   const history = useHistory();
 
   const dataColumns = [
@@ -88,24 +81,6 @@ export default function StructuresTable() {
   function displayStructureRow(data) {
     dispatch(displayStructure(data));
     history.push('/individual-structure');
-  }
-
-  function CustomLoadingOverlay() {
-    return (
-      <GridOverlay>
-        <Grid
-          container
-          spacing={0}
-          direction="column"
-          alignItems="center"
-          justify="center"
-          style={{ minHeight: '100vh' }}
-        >
-          <Typography>Loading...</Typography>
-          <CircularProgress />
-        </Grid>
-      </GridOverlay>
-    );
   }
 
   return (

@@ -10,14 +10,15 @@ import {
   Paper,
   Grid,
   Button,
-  Snackbar,
-  Typography,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
+import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import authHeader from '../service/auth-header';
 import {
   setAuthorized,
   displaySensor,
@@ -25,11 +26,7 @@ import {
   clearData,
 } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
-import useSensors from '../hooks/useSensors';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { setSnackbar } from '../reducers/snackbarReducer';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -47,26 +44,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IndividualMachineDisplay() {
-  useSensors();
   let machine = useSelector((state) => state.main.individualMachine);
-  const sensors = useSelector((state) => state.main.sensors);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
-
-  const displayDeleteNotification = () => {
-    setOpenDeleteNotification(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenDeleteNotification(false);
-    history.push('/machines-table');
-  };
 
   if (_.isEmpty(machine)) {
     const machineData = localStorage.getItem('machine-data');
@@ -76,42 +58,50 @@ export default function IndividualMachineDisplay() {
     localStorage.setItem('machine-data', JSON.stringify(machine));
   }
 
+  // SNACK BAR DELETE NOTIFICATION
+  const displayDeleteNotification = () => {
+    dispatch(
+      setSnackbar(
+        true,
+        'success',
+        'Selected machine has been successfully deleted!'
+      )
+    );
+    history.push('/machines-table');
+  };
+
   function deleteIndividualMachine(machineId) {
     dispatch(clearData());
     dispatch(deleteMachine(machineId));
     displayDeleteNotification();
   }
 
-  function displaySensorRow(sensorId) {
-    const sensorArray = sensors.filter((sensor) => sensor.id === sensorId);
-    const sensorData = sensorArray.pop();
-    dispatch(displaySensor(sensorData));
-    history.push('/individual-sensor');
-  }
+  const displaySensorRow = async (sensorId) => {
+    dispatch(clearData());
+    const response = await axios
+      .get(`/api/sensors/${sensorId}?populate=machine`, {
+        headers: authHeader(),
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    if (response) {
+      dispatch(displaySensor(response.data));
+      history.push('/individual-sensor');
+    }
+  };
 
   return (
     <Grid container spacing={3}>
-      {openDeleteNotification && (
-        <div className={classes.root}>
-          <Snackbar
-            open={openDeleteNotification}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert onClose={handleClose} severity="success">
-              You have successfuly deleted selected machine! You will now be
-              returned to the Machines page.
-            </Alert>
-          </Snackbar>
-        </div>
-      )}
       <Grid item xs={6}>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableBody>
               <TableRow>
                 <TableCell component="th" scope="row">
-                  Name:
+                  <FontAwesomeIcon icon="fa-solid fa-puzzle-piece" />
+                  <FontAwesomeIcon icon="fa-solid fa-phone" />
+                  Machine Name:
                 </TableCell>
                 <TableCell>{machine.name}</TableCell>
               </TableRow>
@@ -138,6 +128,24 @@ export default function IndividualMachineDisplay() {
                   Alias:
                 </TableCell>
                 <TableCell>{machine.alias}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Place Number:
+                </TableCell>
+                <TableCell>{machine.placeNumber}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Manufacturer:
+                </TableCell>
+                <TableCell>{machine.manufacturer}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Timezone:
+                </TableCell>
+                <TableCell>{machine.timezone}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -168,9 +176,7 @@ export default function IndividualMachineDisplay() {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>
-                  <Typography>Sensors</Typography>
-                </TableCell>
+                <TableCell>Sensor in the Machine</TableCell>
                 <TableCell />
               </TableRow>
             </TableHead>

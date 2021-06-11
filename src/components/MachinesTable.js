@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { Grid, Container, Typography } from '@material-ui/core';
+import { Container } from '@material-ui/core';
+import CustomLoadingOverlay from './CustomLoadingOverlay';
 import { clearData, displayMachine } from '../actions/creator';
 import useMachines from '../hooks/useMachines';
 
 export default function MachinesTable() {
-  useMachines();
   const dispatch = useDispatch();
+  useMachines();
 
   const userScreenHeight = window.innerHeight;
 
@@ -20,7 +20,6 @@ export default function MachinesTable() {
 
   const machinesData = useSelector((state) => state.main.machines);
   const loading = useSelector((state) => state.main.loading);
-  const error = useSelector((state) => state.main.error);
   const history = useHistory();
 
   const machinesColumns = [
@@ -87,24 +86,6 @@ export default function MachinesTable() {
     history.push('/individual-machine');
   }
 
-  if (loading) {
-    return (
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justify="center"
-        style={{ minHeight: '100vh' }}
-      >
-        <Typography>Loading...</Typography>
-        <CircularProgress />
-      </Grid>
-    );
-  }
-  if (error) {
-    return 'Error!';
-  }
   return (
     <Container maxWidth="lg">
       <div
@@ -115,6 +96,10 @@ export default function MachinesTable() {
         }}
       >
         <DataGrid
+          components={{
+            LoadingOverlay: CustomLoadingOverlay,
+          }}
+          loading={loading}
           size="small"
           aria-label="a dense table"
           {...machines}

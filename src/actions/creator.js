@@ -80,7 +80,7 @@ export function deleteStructure(payload) {
 }
 
 export function deleteMachine(payload) {
-  alert('DELETE MACHINE NOT FUNCTIONAL YET');
+  console.log('DELETE MACHINE');
   return { type: DELETE_MACHINE, payload };
 }
 

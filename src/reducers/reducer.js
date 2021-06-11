@@ -16,6 +16,7 @@ import {
   LOAD_SENSORS,
   DISPLAY_SENSOR,
   CREATE_SENSOR,
+  DELETE_MACHINE,
 } from '../constants/action-types';
 import authHeader from '../service/auth-header';
 
@@ -109,6 +110,18 @@ function RootReducer(state = initialState, action) {
       .catch((error) => {
         console.log('ERROR CRATING MACHINE');
         console.log(error.response.data);
+      });
+  } else if (action.type === DELETE_MACHINE) {
+    console.log('DELETE MACHINE');
+    axios
+      .delete(`/api/machines/${action.payload}`, {
+        headers: authHeader(),
+      })
+      .then(() => {
+        console.log('Delete successful');
+      })
+      .catch((error) => {
+        console.log('There was an error!', error);
       });
   } else if (action.type === CREATE_SENSOR) {
     // CREATING MACHINE IN API

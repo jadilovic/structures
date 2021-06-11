@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { Grid, Container, Typography } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import { clearData, displaySensor } from '../actions/creator';
+import CustomLoadingOverlay from './CustomLoadingOverlay';
 import useSensors from '../hooks/useSensors';
 
 export default function SensorsTable() {
@@ -20,7 +20,6 @@ export default function SensorsTable() {
 
   const sensorsData = useSelector((state) => state.main.sensors);
   const loading = useSelector((state) => state.main.loading);
-  const error = useSelector((state) => state.main.error);
   const history = useHistory();
 
   const sensorsColumns = [
@@ -64,24 +63,6 @@ export default function SensorsTable() {
     history.push('/individual-sensor');
   }
 
-  if (loading) {
-    return (
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justify="center"
-        style={{ minHeight: '100vh' }}
-      >
-        <Typography>Loading...</Typography>
-        <CircularProgress />
-      </Grid>
-    );
-  }
-  if (error) {
-    return 'Error!';
-  }
   return (
     <Container maxWidth="lg">
       <div
@@ -92,6 +73,10 @@ export default function SensorsTable() {
         }}
       >
         <DataGrid
+          components={{
+            LoadingOverlay: CustomLoadingOverlay,
+          }}
+          loading={loading}
           size="small"
           aria-label="a dense table"
           {...sensors}

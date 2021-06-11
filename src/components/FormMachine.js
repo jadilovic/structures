@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import axios from 'axios';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
   createMachine,
   setAuthorized,
@@ -54,10 +55,13 @@ export default function FormMachine() {
   const machineTypes = useSelector((state) => state.main.machineTypes);
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
-  const [structure, setStructure] = useState('5f0ec597ac1fd626e79f3468');
-  const [timezone, setTimezone] = useState('Africa/Abidjan');
-  const [machineType, setMachineType] = useState('5f0eeee5ac1fd626e79f34ed');
+  const [structure, setStructure] = useState(null);
+  const [timezone, setTimezone] = useState(null);
+  const [machineType, setMachineType] = useState(null);
   const [createdNewMachine, setCreatedNewMachine] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorStructure, setErrorStructure] = useState(false);
+  const [errorMachineType, setErrorMachineType] = useState(false);
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -79,7 +83,7 @@ export default function FormMachine() {
     producedAt: null,
     launchedAt: '',
     lastMaintenancedAt: null,
-    schedule: '',
+    schedule: null,
     timezone: '',
     type: null,
     structure: null,
@@ -89,16 +93,20 @@ export default function FormMachine() {
     // createdAt: '',
   };
 
-  const handleChangeStructure = (event) => {
-    setStructure(event.target.value);
+  const handleChangeStructure = (value) => {
+    setErrorStructure(false);
+    setStructure(value);
   };
 
-  const handleChangeTimezone = (event) => {
-    setTimezone(event.target.value);
+  const handleChangeTimezone = (value) => {
+    setError(false);
+    setTimezone(value);
   };
 
-  const handleChangeMachineType = (event) => {
-    setMachineType(event.target.value);
+  const handleChangeMachineType = (value) => {
+    console.log(value);
+    setErrorMachineType(false);
+    setMachineType(value);
   };
 
   // SNACK BAR DELETE NOTIFICATION
@@ -110,18 +118,39 @@ export default function FormMachine() {
 
   const onSubmit = (data) => {
     const newMachine = { ...initialValues, ...data };
+
+    if (!timezone) {
+      setError(true);
+      return;
+    }
+
+    if (!structure) {
+      setErrorStructure(true);
+      return;
+    }
+
+    if (!machineType) {
+      setErrorMachineType(true);
+      return;
+    }
+
     newMachine.timezone = timezone;
-    newMachine.structure = structure;
+
+    const arrayStructure = structures.filter(
+      (selectedStructure) => structure === selectedStructure.name
+    );
+    newMachine.structure = arrayStructure.pop();
+
     const arrayMachineType = machineTypes.filter(
-      (mType) => machineType === mType.id
+      (mType) => machineType === mType.name
     );
     newMachine.type = arrayMachineType.pop();
-    console.log(newMachine.type);
-    console.log(newMachine);
-    reset({ ...initialValues });
+
+    reset({ ...initialValues, timezone });
     dispatch(createMachine(newMachine));
     setCreatedNewMachine(true);
     displayCreatedNewMachineNotification();
+    window.location.reload(false);
   };
 
   useEffect(() => {
@@ -135,13 +164,15 @@ export default function FormMachine() {
       })
       .then((response) => {
         dispatch(loadMachineTypes(response.data));
-        console.log(response.data);
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);
         console.log(error);
       });
   }, []);
+
+  const stringStructures = structures.map((structure) => structure.name);
+  const stringMachineTypes = machineTypes.map((type) => type.name);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -271,64 +302,72 @@ export default function FormMachine() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={timezone}
-                onChange={handleChangeTimezone}
-                SelectProps={{
-                  native: true,
+              <Autocomplete
+                options={timeZonesList}
+                style={{ width: '100%' }}
+                onChange={(event, value) => handleChangeTimezone(value)}
+                onInputChange={() => {
+                  setError(false);
                 }}
-                helperText="Please select timezone"
-                variant="outlined"
-              >
-                {timeZonesList.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </TextField>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    error={error}
+                    id="outlined-error-helper-text"
+                    label={error ? 'Select timezone' : 'Select timezone'}
+                    helperText={error ? 'Timezone is required.' : ''}
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={structure}
-                onChange={handleChangeStructure}
-                SelectProps={{
-                  native: true,
+              <Autocomplete
+                options={stringStructures}
+                style={{ width: '100%' }}
+                onChange={(event, value) => handleChangeStructure(value)}
+                onInputChange={() => {
+                  setErrorStructure(false);
                 }}
-                helperText="Please select structure"
-                variant="outlined"
-              >
-                {structures.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </TextField>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    error={errorStructure}
+                    id="outlined-error-helper-text"
+                    label={
+                      errorStructure ? 'Select structure' : 'Select structure'
+                    }
+                    helperText={errorStructure ? 'Structure is required.' : ''}
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={machineType}
-                onChange={handleChangeMachineType}
-                SelectProps={{
-                  native: true,
+              <Autocomplete
+                options={stringMachineTypes}
+                style={{ width: '100%' }}
+                onChange={(event, value) => handleChangeMachineType(value)}
+                onInputChange={() => {
+                  setErrorMachineType(false);
                 }}
-                helperText="Please select machine type"
-                variant="outlined"
-              >
-                {machineTypes.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </TextField>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    error={errorMachineType}
+                    id="outlined-error-helper-text"
+                    label={
+                      errorMachineType
+                        ? 'Select machine type'
+                        : 'Select machine type'
+                    }
+                    helperText={
+                      errorStructure ? 'Machine type is required.' : ''
+                    }
+                  />
+                )}
+              />
             </Grid>
           </Grid>
           <Button
