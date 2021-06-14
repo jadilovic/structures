@@ -50,8 +50,8 @@ export default function FormStructure() {
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
   const [structure, setStructure] = useState('');
-  const [timezone, setTimezone] = useState(null);
-  const [error, setError] = useState(false);
+  // const [timezone, setTimezone] = useState(null);
+  // const [error, setError] = useState(false);
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -79,10 +79,10 @@ export default function FormStructure() {
     setStructure(value);
   };
 
-  const handleChangeTimezone = (value) => {
-    setError(false);
-    setTimezone(value);
-  };
+  //  const handleChangeTimezone = (value) => {
+  //   setError(false);
+  //   setTimezone(value);
+  // };
 
   // SNACK BAR DELETE NOTIFICATION
   const displayCreatedNewStructureNotification = () => {
@@ -96,14 +96,17 @@ export default function FormStructure() {
   };
 
   const onSubmit = (data) => {
+    /*
     if (!timezone) {
       setError(true);
       return;
     }
+*/
+    console.log(data);
 
     const newStructure = { ...initialValues, ...data };
 
-    newStructure.timezone = timezone;
+    //  newStructure.timezone = timezone;
 
     if (structure) {
       const arrayStructure = structures.filter(
@@ -119,7 +122,7 @@ export default function FormStructure() {
 
   useEffect(() => {
     console.log('use effect');
-    setTimezone(null);
+    //  setTimezone(null);
     setStructure(null);
     window.scrollTo(0, 0);
   }, []);
@@ -249,22 +252,33 @@ export default function FormStructure() {
               />
             </Grid>
             <Grid item xs={12}>
-              <Autocomplete
-                defaultValue={null}
-                options={timeZonesList}
-                style={{ width: '100%' }}
-                onChange={(event, value) => handleChangeTimezone(value)}
-                onInputChange={() => {
-                  setError(false);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    error={error}
-                    id="outlined-error-helper-text"
-                    label={error ? 'Select timezone' : 'Select timezone'}
-                    helperText={error ? 'Timezone is required.' : ''}
+              <Controller
+                name="timezone"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={timeZonesList}
+                    getOptionLabel={(option) => option}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="timezone"
+                        variant="outlined"
+                        fullWidth
+                        id="timezone"
+                        label="Timezone"
+                        value={value}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                    rules={{ required: 'Timezone is required' }}
                   />
                 )}
               />

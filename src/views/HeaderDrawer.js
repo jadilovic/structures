@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import {
   makeStyles,
@@ -18,15 +18,18 @@ import {
   Button,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import StructuresIcon from '@material-ui/icons/AccountBalanceOutlined';
-import CreateStructureIcon from '@material-ui/icons/BuildOutlined';
 import MachinesIcon from '@material-ui/icons/SettingsApplicationsOutlined';
-import CreateMachineIcon from '@material-ui/icons/GavelOutlined';
 import SensorsIcon from '@material-ui/icons/DeviceHub';
-import CreateSensorIcon from '@material-ui/icons/Build';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import {
+  faIndustry,
+  faFolderPlus,
+  faCalendarPlus,
+  faPlusSquare,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, Switch, Route } from 'react-router-dom';
 import { clearData, setAuthorized } from '../actions/creator';
 import StructuresTable from '../components/StructuresTable';
@@ -122,6 +125,11 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  icons: {
+    paddingRight: '5px',
+    fontSize: '30px',
+    color: 'rgb(0, 123, 255)',
+  },
 }));
 const HeaderDrawer = (props) => {
   const { history } = props;
@@ -156,32 +164,40 @@ const HeaderDrawer = (props) => {
     {
       title: 'Structures',
       pageURL: '/',
-      icon: <StructuresIcon />,
+      icon: <FontAwesomeIcon icon={faIndustry} className={classes.icons} />,
     },
     {
       title: 'Create Structure',
       pageURL: '/form-structure',
-      icon: <CreateStructureIcon />,
+      icon: <FontAwesomeIcon icon={faFolderPlus} className={classes.icons} />,
     },
     {
       title: 'Machines',
       pageURL: '/machines-table',
-      icon: <MachinesIcon />,
+      icon: (
+        <MachinesIcon
+          style={{
+            fontSize: '35px',
+            paddingRight: '7px',
+            color: 'rgb(0, 123, 255)',
+          }}
+        />
+      ),
     },
     {
       title: 'Create Machine',
       pageURL: '/form-machine',
-      icon: <CreateMachineIcon />,
+      icon: <FontAwesomeIcon icon={faPlusSquare} className={classes.icons} />,
     },
     {
       title: 'Sensors',
       pageURL: '/sensors-table',
-      icon: <SensorsIcon />,
+      icon: <SensorsIcon className={classes.icons} />,
     },
     {
       title: 'Create Sensor',
       pageURL: '/form-sensor',
-      icon: <CreateSensorIcon />,
+      icon: <FontAwesomeIcon icon={faCalendarPlus} className={classes.icons} />,
     },
   ];
 
