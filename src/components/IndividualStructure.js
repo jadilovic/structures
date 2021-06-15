@@ -26,6 +26,7 @@ import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
 import authHeader from '../service/auth-header';
 import CustomNoRowsOverlay from './NoRowsOverlay';
+import WithHook from '../hooks/WithHook';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -58,6 +59,8 @@ export default function IndividualStructureDisplay() {
     localStorage.setItem('structure-data', JSON.stringify(structure));
   }
 
+  // OLD VERSION API LOGIC IN THE COMPONENT
+  /*
   const displayMachineRow = async (selectedMachine) => {
     dispatch(clearData());
     const response = await axios
@@ -71,6 +74,11 @@ export default function IndividualStructureDisplay() {
       dispatch(displayMachine(response.data));
       history.push('/individual-machine');
     }
+  };
+*/
+  // NEW VERSION API LOGIC IN THE HOOK
+  const displayMachineRow = (selectedMachine) => {
+    WithHook(selectedMachine.id);
   };
 
   // SNACK BAR DELETE NOTIFICATION

@@ -82,13 +82,11 @@ function RootReducer(state = initialState, action) {
     };
   } else if (action.type === DISPLAY_MACHINE) {
     // DISPLAYING INDIVIDUAL MACHINE
-    console.log('DISPLAY MACHINE REDUCER');
     return {
       ...state,
       individualMachine: action.payload,
     };
   } else if (action.type === LOAD_INDIVIDUAL_MACHINE) {
-    console.log('LOAD IND MACHINE REDUCER');
     // SAVING INDIVIDUAL MACHINE IN STORE
     return {
       ...state,
@@ -122,7 +120,6 @@ function RootReducer(state = initialState, action) {
       });
   } else if (action.type === CREATE_SENSOR) {
     // CREATING MACHINE IN API
-    console.log(action.payload);
     axios
       .post('/api/sensors', action.payload, {
         headers: authHeader(),
@@ -135,7 +132,6 @@ function RootReducer(state = initialState, action) {
         console.log(error.response.data);
       });
   } else if (action.type === LOAD_SENSORS) {
-    console.log('REDUCER LOAD SENSORS');
     // SAVING DOWNLOADED API SENSORS DATA IN STORE
     return {
       ...state,
@@ -164,7 +160,6 @@ function RootReducer(state = initialState, action) {
     };
     // DELETING SELECTED STRUCTURE
   } else if (action.type === DELETE_STRUCTURE) {
-    console.log('DELETE STRUCTURE');
     axios
       .delete(`/api/structures/${action.payload}`, {
         headers: authHeader(),

@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import authHeader from '../service/auth-header';
 import {
@@ -99,8 +98,6 @@ export default function IndividualMachineDisplay() {
             <TableBody>
               <TableRow>
                 <TableCell component="th" scope="row">
-                  <FontAwesomeIcon icon="fa-solid fa-puzzle-piece" />
-                  <FontAwesomeIcon icon="fa-solid fa-phone" />
                   Machine Name:
                 </TableCell>
                 <TableCell>{machine.name}</TableCell>
@@ -146,6 +143,12 @@ export default function IndividualMachineDisplay() {
                   Timezone:
                 </TableCell>
                 <TableCell>{machine.timezone}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Type:
+                </TableCell>
+                <TableCell>{machine.type.name}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

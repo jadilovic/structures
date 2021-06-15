@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container } from '@material-ui/core';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
 import { clearData, displayMachine } from '../actions/creator';
-import useMachines from '../hooks/useMachines';
+// import useMachines from '../hooks/useMachines';
+import { useMachines } from '../hooks/useMachine';
 
 export default function MachinesTable() {
   const dispatch = useDispatch();
