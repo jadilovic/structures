@@ -13,12 +13,14 @@ import {
   Button,
   Snackbar,
 } from '@material-ui/core';
+import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
 import authHeader from '../service/auth-header';
+import CustomNoRowsOverlay from './NoRowsOverlay';
 import { setAuthorized, clearData, displayMachine } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 
@@ -76,10 +78,11 @@ export default function IndividualSensorDisplay() {
     displayDeleteNotification();
   }
 
-  const displaySensorMachine = async (machineId) => {
+  const displaySensorMachine = async (machine) => {
+    console.log(machine.id);
     dispatch(clearData());
     const response = await axios
-      .get(`/api/machines/${machineId.id}?populate=sensors`, {
+      .get(`/api/machines/${machine.id}?populate=sensors`, {
         headers: authHeader(),
       })
       .catch((error) => {
@@ -90,6 +93,39 @@ export default function IndividualSensorDisplay() {
       history.push('/individual-machine');
     }
   };
+
+  const machinesColumns = [
+    {
+      field: 'name',
+      headerName: 'Name',
+      flex: 1,
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      flex: 1,
+    },
+    {
+      field: 'alias',
+      headerName: 'Alias',
+      flex: 1,
+    },
+    {
+      field: 'type',
+      headerName: 'Machine Type',
+      valueGetter: (params) => params.row.type.name,
+      flex: 1,
+    },
+  ];
+
+  const userScreenHeight = window.innerHeight;
+
+  const machinesDataGrid = {
+    columns: machinesColumns,
+    rows: [sensor.machine],
+  };
+
+  console.log(sensor);
 
   return (
     <Grid container spacing={3}>
@@ -135,6 +171,12 @@ export default function IndividualSensorDisplay() {
                 </TableCell>
                 <TableCell>{sensor.type.name}</TableCell>
               </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Machine:
+                </TableCell>
+                <TableCell>{sensor.machine.name}</TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
@@ -161,36 +203,36 @@ export default function IndividualSensorDisplay() {
       </Grid>
       <Grid item xs={6}>
         <TableContainer component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Machine with the Sensor</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            {sensor.machine ? (
-              <TableBody>
-                <TableRow>
-                  <TableCell>Name:</TableCell>
-                  <TableCell>Type:</TableCell>
-                </TableRow>
-                <TableRow
-                  variant="contained"
-                  color="primary"
-                  align="center"
-                  className={classes.row}
-                  onClick={() => {
-                    displaySensorMachine(sensor.machine);
-                  }}
-                >
-                  <TableCell>{sensor.machine.name}</TableCell>
-                  <TableCell>{sensor.machine.type.name}</TableCell>
-                </TableRow>
-              </TableBody>
-            ) : (
-              'No Machine for this sensor'
-            )}
-          </Table>
+          <div
+            style={{
+              height: userScreenHeight - 112,
+              width: '100%',
+              cursor: 'pointer',
+            }}
+          >
+            <DataGrid
+              components={{
+                NoRowsOverlay: CustomNoRowsOverlay,
+              }}
+              size="small"
+              aria-label="a dense table"
+              {...machinesDataGrid}
+              onRowClick={(props) => {
+                console.log(props.row);
+                displaySensorMachine(props.row);
+              }}
+              filterModel={{
+                items: [
+                  {
+                    columnField: 'description',
+                    operatorValue: 'contains',
+                    value: '',
+                  },
+                ],
+              }}
+              localeText
+            />
+          </div>
         </TableContainer>
       </Grid>
     </Grid>
