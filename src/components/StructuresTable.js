@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StructuresTable() {
-  console.log('RENDERING STRUCTURES TABLE');
   useStructures();
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -34,7 +33,6 @@ export default function StructuresTable() {
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
-    console.log('CLeAR DATA');
     dispatch(clearData());
   }, []);
 

@@ -60,7 +60,6 @@ function RootReducer(state = initialState, action) {
       individualStructure: action.payload,
     };
   } else if (action.type === LOAD_STRUCTURES) {
-    console.log('REDUCER LOAD STRUCTURES');
     // SAVING DOWNLOADED API STRUCTURES DATA IN STORE
     return {
       ...state,
@@ -68,7 +67,6 @@ function RootReducer(state = initialState, action) {
       loading: false,
     };
   } else if (action.type === LOAD_MACHINES) {
-    console.log('REDUCER LOAD MACHINES');
     // SAVING DOWNLOADED API MACHINES DATA IN STORE
     return {
       ...state,
@@ -76,7 +74,6 @@ function RootReducer(state = initialState, action) {
       loading: false,
     };
   } else if (action.type === LOAD_MACHINE_TYPES) {
-    console.log('REDUCER LOAD MACHINE TYPES');
     // SAVING DOWNLOADED API MACHINE TYPES DATA IN STORE
     return {
       ...state,
@@ -152,7 +149,6 @@ function RootReducer(state = initialState, action) {
       individualSensor: action.payload,
     };
   } else if (action.type === CLEAR_DATA) {
-    console.log('CLEAR DATA');
     // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
     return {
       ...state,

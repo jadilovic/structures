@@ -138,7 +138,6 @@ const HeaderDrawer = (props) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const isAuthorized = localStorage.getItem('user');
-  console.log(props);
 
   const handleDrawerOpen = () => {
     setOpen(true);

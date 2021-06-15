@@ -19,12 +19,10 @@ import {
 } from '../constants/action-types';
 
 export function setAuthorized(payload) {
-  console.log('SET AUTHORIZED');
   return { type: SET_AUTHORIZED, payload };
 }
 
 export function createStructure(payload) {
-  console.log(payload);
   return { type: CREATE_STRUCTURE, payload };
 }
 
@@ -37,22 +35,18 @@ export function displayMachine(payload) {
 }
 
 export function loadStructures(payload) {
-  console.log('CREATOR LOAD STRUCTURES');
   return { type: LOAD_STRUCTURES, payload };
 }
 
 export function loadMachines(payload) {
-  console.log('CREATOR LOAD MACHINES');
   return { type: LOAD_MACHINES, payload };
 }
 
 export function loadMachineTypes(payload) {
-  console.log('CREATOR LOAD MACHINE TYPES');
   return { type: LOAD_MACHINE_TYPES, payload };
 }
 
 export function createMachine(payload) {
-  console.log(payload);
   return { type: CREATE_MACHINE, payload };
 }
 
@@ -65,22 +59,18 @@ export function displaySensor(payload) {
 }
 
 export function loadSensors(payload) {
-  console.log('CREATOR LOAD SENSORS');
   return { type: LOAD_SENSORS, payload };
 }
 
 export function createSensor(payload) {
-  console.log(payload);
   return { type: CREATE_SENSOR, payload };
 }
 
 export function deleteStructure(payload) {
-  console.log('DELETE STRUCTURE');
   return { type: DELETE_STRUCTURE, payload };
 }
 
 export function deleteMachine(payload) {
-  console.log('DELETE MACHINE');
   return { type: DELETE_MACHINE, payload };
 }
 

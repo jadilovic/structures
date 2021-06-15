@@ -12,7 +12,6 @@ import {
   Grid,
   Button,
   Snackbar,
-  Typography,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';

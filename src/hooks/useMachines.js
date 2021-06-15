@@ -14,7 +14,6 @@ export default function useMachines() {
       })
       .then((response) => {
         dispatch(loadMachines(response.data));
-        console.log(response.data);
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);

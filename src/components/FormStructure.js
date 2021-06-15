@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormStructure() {
-  console.log('FORM STRUCTURE RENDERING');
   const timeZonesList = momentTZ.tz.names();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);
@@ -121,7 +120,6 @@ export default function FormStructure() {
   };
 
   useEffect(() => {
-    console.log('use effect');
     //  setTimezone(null);
     setStructure(null);
     window.scrollTo(0, 0);
