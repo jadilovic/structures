@@ -5,30 +5,21 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Paper,
   Grid,
   Button,
 } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
-
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
-import axios from 'axios';
 import { CustomSensorsRowsOverlay } from './NoRowsOverlay';
-
-import authHeader from '../service/auth-header';
-import {
-  setAuthorized,
-  displaySensor,
-  deleteMachine,
-  clearData,
-} from '../actions/creator';
+import { setAuthorized, deleteMachine, clearData } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 import { setSnackbar } from '../reducers/snackbarReducer';
+import useSensor from '../hooks/useSensor';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -46,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IndividualMachineDisplay() {
+  const { fetchSensorById } = useSensor();
   let machine = useSelector((state) => state.main.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -78,20 +70,9 @@ export default function IndividualMachineDisplay() {
     displayDeleteNotification();
   }
 
-  const displaySensorRow = async (sensorId) => {
-    dispatch(clearData());
-    const response = await axios
-      .get(`/api/sensors/${sensorId}?populate=machine`, {
-        headers: authHeader(),
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (response) {
-      dispatch(displaySensor(response.data));
-      history.push('/individual-sensor');
-    }
-  };
+  function displaySensorRow(sensorId) {
+    fetchSensorById(sensorId);
+  }
 
   const sensorColumns = [
     {

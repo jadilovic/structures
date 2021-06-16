@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Avatar,
   Button,
@@ -17,6 +17,7 @@ import _ from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { createStructure, setAuthorized } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
+import useStructure from '../hooks/useStructure';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,13 +45,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormStructure() {
   const timeZonesList = momentTZ.tz.names();
+  const { fetchStructuresOnly } = useStructure();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);
   const classes = useStyles();
-  const { handleSubmit, control, reset } = useForm();
-  const [structure, setStructure] = useState('');
-  // const [timezone, setTimezone] = useState(null);
-  // const [error, setError] = useState(false);
+  const { handleSubmit, control, reset, setValue } = useForm();
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -74,15 +73,6 @@ export default function FormStructure() {
     machines: [],
   };
 
-  const handleChangeStructure = (value) => {
-    setStructure(value);
-  };
-
-  //  const handleChangeTimezone = (value) => {
-  //   setError(false);
-  //   setTimezone(value);
-  // };
-
   // SNACK BAR DELETE NOTIFICATION
   const displayCreatedNewStructureNotification = () => {
     dispatch(
@@ -94,38 +84,18 @@ export default function FormStructure() {
     );
   };
 
-  const onSubmit = (data) => {
-    /*
-    if (!timezone) {
-      setError(true);
-      return;
-    }
-*/
-    console.log(data);
-
+  const onSubmit = (data, e) => {
     const newStructure = { ...initialValues, ...data };
-
-    //  newStructure.timezone = timezone;
-
-    if (structure) {
-      const arrayStructure = structures.filter(
-        (selectedStructure) => structure === selectedStructure.name
-      );
-      newStructure.structure = arrayStructure.pop().id;
-    }
-
     reset({ ...initialValues });
+    e.target.reset();
     dispatch(createStructure(newStructure));
     displayCreatedNewStructureNotification();
   };
 
   useEffect(() => {
-    //  setTimezone(null);
-    setStructure(null);
     window.scrollTo(0, 0);
+    fetchStructuresOnly();
   }, []);
-
-  const stringStructures = structures.map((structure) => structure.name);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -261,6 +231,9 @@ export default function FormStructure() {
                   <Autocomplete
                     options={timeZonesList}
                     getOptionLabel={(option) => option}
+                    onChange={(e, newValue) => {
+                      setValue('timezone', newValue);
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -282,16 +255,30 @@ export default function FormStructure() {
               />
             </Grid>
             <Grid item xs={12}>
-              <Autocomplete
-                options={stringStructures}
-                style={{ width: '100%' }}
-                onChange={(event, value) => handleChangeStructure(value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    id="outlined-error-helper-text"
-                    label="Select parent structure"
+              <Controller
+                name="structure"
+                control={control}
+                defaultValue=""
+                render={({ field: { onChange, value } }) => (
+                  <Autocomplete
+                    options={structures}
+                    getOptionLabel={(option) => option.name}
+                    onChange={(e, newValue) => {
+                      setValue('structure', newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="structure"
+                        variant="outlined"
+                        fullWidth
+                        id="structure"
+                        label="Structure"
+                        value={value}
+                        onChange={onChange}
+                      />
+                    )}
                   />
                 )}
               />

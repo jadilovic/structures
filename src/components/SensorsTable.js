@@ -5,10 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container } from '@material-ui/core';
 import { clearData, displaySensor } from '../actions/creator';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
-import useSensors from '../hooks/useSensors';
+import useSensor from '../hooks/useSensor';
 
 export default function SensorsTable() {
-  useSensors();
+  const { fetchSensorsWithMachines } = useSensor();
   const dispatch = useDispatch();
 
   const userScreenHeight = window.innerHeight;
@@ -16,6 +16,7 @@ export default function SensorsTable() {
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
     dispatch(clearData());
+    fetchSensorsWithMachines();
   }, []);
 
   const sensorsData = useSelector((state) => state.main.sensors);

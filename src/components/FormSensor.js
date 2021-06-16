@@ -20,7 +20,7 @@ import {
   setAuthorized,
   loadSensorTypes,
 } from '../actions/creator';
-import { useAllMachines } from '../hooks/useMachine';
+import useMachine from '../hooks/useMachine';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import authHeader from '../service/auth-header';
 
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormSensor() {
   const dispatch = useDispatch();
-  useAllMachines();
+  const { fetchMachinesOnly } = useMachine();
   let machines = useSelector((state) => state.main.machines);
   const sensorTypes = useSelector((state) => state.main.sensorTypes);
   const classes = useStyles();
@@ -113,6 +113,7 @@ export default function FormSensor() {
         console.error('Error fetching data: ', error);
         console.log(error);
       });
+    fetchMachinesOnly();
   }, []);
 
   const active = [

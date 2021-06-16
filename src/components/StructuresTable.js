@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, makeStyles } from '@material-ui/core';
 import { displayStructure, clearData } from '../actions/creator';
-import useStructures from '../hooks/useStructures';
+import useStructure from '../hooks/useStructure';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StructuresTable() {
-  useStructures();
+  const { fetchStructuresWithMachines } = useStructure();
   const dispatch = useDispatch();
   const classes = useStyles();
   const userScreenHeight = window.innerHeight;
@@ -34,6 +34,7 @@ export default function StructuresTable() {
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
     dispatch(clearData());
+    fetchStructuresWithMachines();
   }, []);
 
   const structuresData = useSelector((state) => state.main.structures);

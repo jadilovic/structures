@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import {
   makeStyles,
   Table,
@@ -16,17 +15,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
-import {
-  deleteStructure,
-  clearData,
-  displayMachine,
-  setAuthorized,
-} from '../actions/creator';
+import { deleteStructure, clearData, setAuthorized } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
-import authHeader from '../service/auth-header';
 import { CustomMachinesRowsOverlay } from './NoRowsOverlay';
-import WithHook from '../hooks/WithHook';
+import useMachine from '../hooks/useMachine';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -44,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function IndividualStructureDisplay() {
+  const { fetchMachineById } = useMachine();
   let structure = useSelector((state) => state.main.individualStructure);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -59,26 +53,8 @@ export default function IndividualStructureDisplay() {
     localStorage.setItem('structure-data', JSON.stringify(structure));
   }
 
-  // OLD VERSION API LOGIC IN THE COMPONENT
-  /*
-  const displayMachineRow = async (selectedMachine) => {
-    dispatch(clearData());
-    const response = await axios
-      .get(`/api/machines/${selectedMachine.id}?populate=sensors`, {
-        headers: authHeader(),
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (response) {
-      dispatch(displayMachine(response.data));
-      history.push('/individual-machine');
-    }
-  };
-*/
-  // NEW VERSION API LOGIC IN THE HOOK
   const displayMachineRow = (selectedMachine) => {
-    WithHook(selectedMachine.id);
+    fetchMachineById(selectedMachine.id);
   };
 
   // SNACK BAR DELETE NOTIFICATION
@@ -183,6 +159,12 @@ export default function IndividualStructureDisplay() {
                   Active:
                 </TableCell>
                 <TableCell>{structure.isActive ? 'Yes' : 'No'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell component="th" scope="row">
+                  Parent Structure:
+                </TableCell>
+                <TableCell>{structure.structure}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

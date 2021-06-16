@@ -5,18 +5,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container } from '@material-ui/core';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
 import { clearData, displayMachine } from '../actions/creator';
-// import useMachines from '../hooks/useMachines';
-import { useMachines } from '../hooks/useMachine';
+import useMachine from '../hooks/useMachine';
 
 export default function MachinesTable() {
   const dispatch = useDispatch();
-  useMachines();
+  const { fetchMachinesWithSensors } = useMachine();
 
   const userScreenHeight = window.innerHeight;
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
     dispatch(clearData());
+    fetchMachinesWithSensors();
   }, []);
 
   const machinesData = useSelector((state) => state.main.machines);

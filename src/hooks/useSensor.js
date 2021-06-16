@@ -2,19 +2,19 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import authHeader from '../service/auth-header';
-import { displayMachine, loadMachines } from '../actions/creator';
+import { loadSensors, displaySensor } from '../actions/creator';
 
-const useMachine = () => {
+const useSensor = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  function fetchMachinesWithSensors() {
+  function fetchSensorsWithMachines() {
     axios
-      .get('/api/machines?populate=sensors', {
+      .get('/api/sensors?populate=machine', {
         headers: authHeader(),
       })
       .then((response) => {
-        dispatch(loadMachines(response.data));
+        dispatch(loadSensors(response.data));
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);
@@ -22,13 +22,13 @@ const useMachine = () => {
       });
   }
 
-  function fetchMachinesOnly() {
+  function fetchSensorsOnly() {
     axios
-      .get('/api/machines', {
+      .get('/api/sensors', {
         headers: authHeader(),
       })
       .then((response) => {
-        dispatch(loadMachines(response.data));
+        dispatch(loadSensors(response.data));
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);
@@ -36,28 +36,25 @@ const useMachine = () => {
       });
   }
 
-  function fetchMachineById(id) {
+  function fetchSensorById(sensorId) {
     axios
-      .get(`/api/machines/${id}?populate=sensors`, {
+      .get(`/api/sensors/${sensorId}?populate=machine`, {
         headers: authHeader(),
       })
       .then((response) => {
-        if (response) {
-          dispatch(displayMachine(response.data));
-          history.push('/individual-machine');
-        }
+        dispatch(displaySensor(response.data));
+        history.push('/individual-sensor');
       })
       .catch((error) => {
-        console.error('Error fetching data: ', error);
         console.log(error);
       });
   }
 
   return {
-    fetchMachinesWithSensors,
-    fetchMachinesOnly,
-    fetchMachineById,
+    fetchSensorsOnly,
+    fetchSensorsWithMachines,
+    fetchSensorById,
   };
 };
 
-export default useMachine;
+export default useSensor;
