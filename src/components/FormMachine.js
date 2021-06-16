@@ -14,15 +14,10 @@ import momentTZ from 'moment-timezone';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
-import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {
-  createMachine,
-  setAuthorized,
-  loadMachineTypes,
-} from '../actions/creator';
+import { createMachine, setAuthorized } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
-import authHeader from '../service/auth-header';
+import useMachine from '../hooks/useMachine';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -49,19 +44,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormMachine() {
+  const { fetchMachineTypes } = useMachine();
   const dispatch = useDispatch();
   const timeZonesList = momentTZ.tz.names();
   let structures = useSelector((state) => state.main.structures);
   const machineTypes = useSelector((state) => state.main.machineTypes);
   const classes = useStyles();
-  const { handleSubmit, control, reset } = useForm();
-  const [structure, setStructure] = useState(null);
-  const [timezone, setTimezone] = useState(null);
-  const [machineType, setMachineType] = useState(null);
+  const { handleSubmit, control, reset, setValue } = useForm();
   const [createdNewMachine, setCreatedNewMachine] = useState(false);
-  const [error, setError] = useState(false);
-  const [errorStructure, setErrorStructure] = useState(false);
-  const [errorMachineType, setErrorMachineType] = useState(false);
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -88,25 +78,6 @@ export default function FormMachine() {
     type: null,
     structure: null,
     sensors: [],
-    // updatedAt: '',
-    // id: '',
-    // createdAt: '',
-  };
-
-  const handleChangeStructure = (value) => {
-    setErrorStructure(false);
-    setStructure(value);
-  };
-
-  const handleChangeTimezone = (value) => {
-    setError(false);
-    setTimezone(value);
-  };
-
-  const handleChangeMachineType = (value) => {
-    console.log(value);
-    setErrorMachineType(false);
-    setMachineType(value);
   };
 
   // SNACK BAR DELETE NOTIFICATION
@@ -116,41 +87,14 @@ export default function FormMachine() {
     );
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, e) => {
     const newMachine = { ...initialValues, ...data };
-
-    if (!timezone) {
-      setError(true);
-      return;
-    }
-
-    if (!structure) {
-      setErrorStructure(true);
-      return;
-    }
-
-    if (!machineType) {
-      setErrorMachineType(true);
-      return;
-    }
-
-    newMachine.timezone = timezone;
-
-    const arrayStructure = structures.filter(
-      (selectedStructure) => structure === selectedStructure.name
-    );
-    newMachine.structure = arrayStructure.pop();
-
-    const arrayMachineType = machineTypes.filter(
-      (mType) => machineType === mType.name
-    );
-    newMachine.type = arrayMachineType.pop();
-
-    reset({ ...initialValues, timezone });
+    console.log(data);
+    reset({ ...initialValues });
+    e.target.reset();
     dispatch(createMachine(newMachine));
     setCreatedNewMachine(true);
     displayCreatedNewMachineNotification();
-    window.location.reload(false);
   };
 
   useEffect(() => {
@@ -158,21 +102,23 @@ export default function FormMachine() {
   }, [createdNewMachine]);
 
   useEffect(() => {
-    axios
-      .get('/api/machines/machine-types', {
-        headers: authHeader(),
-      })
-      .then((response) => {
-        dispatch(loadMachineTypes(response.data));
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error);
-        console.log(error);
-      });
+    fetchMachineTypes();
   }, []);
 
   const stringStructures = structures.map((structure) => structure.name);
   const stringMachineTypes = machineTypes.map((type) => type.name);
+
+  const active = [
+    {},
+    {
+      value: true,
+      label: 'Yes',
+    },
+    {
+      value: false,
+      label: 'No',
+    },
+  ];
 
   return (
     <Container component="main" maxWidth="xs">
@@ -227,6 +173,40 @@ export default function FormMachine() {
                   />
                 )}
                 rules={{ required: 'Name is required' }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Controller
+                name="isActive"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    name="isActive"
+                    variant="outlined"
+                    fullWidth
+                    id="isActive"
+                    select
+                    label="Active"
+                    value={value}
+                    SelectProps={{
+                      native: true,
+                    }}
+                    onChange={onChange}
+                    error={!!error}
+                    helperText={error ? error.message : null}
+                  >
+                    {active.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
+                )}
+                rules={{ required: 'Active is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -302,71 +282,108 @@ export default function FormMachine() {
               />
             </Grid>
             <Grid item xs={12}>
-              <Autocomplete
-                options={timeZonesList}
-                style={{ width: '100%' }}
-                onChange={(event, value) => handleChangeTimezone(value)}
-                onInputChange={() => {
-                  setError(false);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    error={error}
-                    id="outlined-error-helper-text"
-                    label={error ? 'Select timezone' : 'Select timezone'}
-                    helperText={error ? 'Timezone is required.' : ''}
+              <Controller
+                name="timezone"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={timeZonesList}
+                    getOptionLabel={(option) => option}
+                    onChange={(e, newValue) => {
+                      setValue('timezone', newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="timezone"
+                        variant="outlined"
+                        fullWidth
+                        id="timezone"
+                        label="Timezone"
+                        value={value}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
                   />
                 )}
+                rules={{ required: 'Timezone is required' }}
               />
             </Grid>
             <Grid item xs={12}>
-              <Autocomplete
-                options={stringStructures}
-                style={{ width: '100%' }}
-                onChange={(event, value) => handleChangeStructure(value)}
-                onInputChange={() => {
-                  setErrorStructure(false);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    error={errorStructure}
-                    id="outlined-error-helper-text"
-                    label={
-                      errorStructure ? 'Select structure' : 'Select structure'
-                    }
-                    helperText={errorStructure ? 'Structure is required.' : ''}
+              <Controller
+                name="type"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={machineTypes}
+                    getOptionLabel={(option) => option.name}
+                    onChange={(e, newValue) => {
+                      setValue('type', newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="type"
+                        variant="outlined"
+                        fullWidth
+                        id="type"
+                        label="Machine type"
+                        value={value}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
                   />
                 )}
+                rules={{ required: 'Machine type is required' }}
               />
             </Grid>
             <Grid item xs={12}>
-              <Autocomplete
-                options={stringMachineTypes}
-                style={{ width: '100%' }}
-                onChange={(event, value) => handleChangeMachineType(value)}
-                onInputChange={() => {
-                  setErrorMachineType(false);
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    error={errorMachineType}
-                    id="outlined-error-helper-text"
-                    label={
-                      errorMachineType
-                        ? 'Select machine type'
-                        : 'Select machine type'
-                    }
-                    helperText={
-                      errorStructure ? 'Machine type is required.' : ''
-                    }
+              <Controller
+                name="structure"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={structures}
+                    getOptionLabel={(option) => option.name}
+                    onChange={(e, newValue) => {
+                      setValue('structure', newValue);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="structure"
+                        variant="outlined"
+                        fullWidth
+                        id="structure"
+                        label="Structure"
+                        value={value}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
                   />
                 )}
+                rules={{ required: 'Structure is required' }}
               />
             </Grid>
           </Grid>

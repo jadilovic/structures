@@ -14,15 +14,10 @@ import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
-import axios from 'axios';
-import {
-  createSensor,
-  setAuthorized,
-  loadSensorTypes,
-} from '../actions/creator';
+import { createSensor, setAuthorized } from '../actions/creator';
 import useMachine from '../hooks/useMachine';
+import useSensor from '../hooks/useSensor';
 import { setSnackbar } from '../reducers/snackbarReducer';
-import authHeader from '../service/auth-header';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export default function FormSensor() {
   const dispatch = useDispatch();
   const { fetchMachinesOnly } = useMachine();
+  const { fetchSensorTypes } = useSensor();
   let machines = useSelector((state) => state.main.machines);
   const sensorTypes = useSelector((state) => state.main.sensorTypes);
   const classes = useStyles();
@@ -102,17 +98,7 @@ export default function FormSensor() {
   }, [createdNewSensor]);
 
   useEffect(() => {
-    axios
-      .get('/api/sensors/sensor-types', {
-        headers: authHeader(),
-      })
-      .then((response) => {
-        dispatch(loadSensorTypes(response.data));
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error);
-        console.log(error);
-      });
+    fetchSensorTypes();
     fetchMachinesOnly();
   }, []);
 

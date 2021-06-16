@@ -2,7 +2,11 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import authHeader from '../service/auth-header';
-import { loadSensors, displaySensor } from '../actions/creator';
+import {
+  loadSensors,
+  displaySensor,
+  loadSensorTypes,
+} from '../actions/creator';
 
 const useSensor = () => {
   const dispatch = useDispatch();
@@ -50,10 +54,25 @@ const useSensor = () => {
       });
   }
 
+  function fetchSensorTypes() {
+    axios
+      .get('/api/sensors/sensor-types', {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        dispatch(loadSensorTypes(response.data));
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }
+
   return {
     fetchSensorsOnly,
     fetchSensorsWithMachines,
     fetchSensorById,
+    fetchSensorTypes,
   };
 };
 

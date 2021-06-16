@@ -2,7 +2,11 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import authHeader from '../service/auth-header';
-import { displayMachine, loadMachines } from '../actions/creator';
+import {
+  displayMachine,
+  loadMachines,
+  loadMachineTypes,
+} from '../actions/creator';
 
 const useMachine = () => {
   const dispatch = useDispatch();
@@ -53,10 +57,25 @@ const useMachine = () => {
       });
   }
 
+  function fetchMachineTypes() {
+    axios
+      .get('/api/machines/machine-types', {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        dispatch(loadMachineTypes(response.data));
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }
+
   return {
     fetchMachinesWithSensors,
     fetchMachinesOnly,
     fetchMachineById,
+    fetchMachineTypes,
   };
 };
 

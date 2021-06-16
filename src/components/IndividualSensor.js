@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import {
   makeStyles,
   Table,
@@ -18,10 +17,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
-import authHeader from '../service/auth-header';
 import { CustomNoMachinesInSensorOverlay } from './NoRowsOverlay';
-import { setAuthorized, clearData, displayMachine } from '../actions/creator';
+import { setAuthorized, clearData } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
+import useMachine from '../hooks/useMachine';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -44,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 // UNDER CONSTRUCTION
 export default function IndividualSensorDisplay() {
+  const { fetchMachineById } = useMachine();
   let sensor = useSelector((state) => state.main.individualSensor);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -77,20 +77,9 @@ export default function IndividualSensorDisplay() {
     displayDeleteNotification();
   }
 
-  const displaySensorMachine = async (machine) => {
-    dispatch(clearData());
-    const response = await axios
-      .get(`/api/machines/${machine.id}?populate=sensors`, {
-        headers: authHeader(),
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    if (response) {
-      dispatch(displayMachine(response.data));
-      history.push('/individual-machine');
-    }
-  };
+  function displaySensorMachine(machine) {
+    fetchMachineById(machine.id);
+  }
 
   const machinesColumns = [
     {
