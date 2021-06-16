@@ -43,6 +43,7 @@ import IndividualSensor from '../components/IndividualSensor';
 import Login from './Login';
 import Error from './Error';
 import PrivateRoute from '../components/PrivateRoute';
+import FormSensor from '../components/FormSensor';
 
 const drawerWidth = 200;
 
@@ -324,6 +325,7 @@ const HeaderDrawer = (props) => {
               path="/individual-sensor"
               exact
             />
+            <PrivateRoute component={FormSensor} path="/form-sensor" exact />
             <Route component={Login} path="/login" />
             <Route component={Error} path="*" />
           </Switch>

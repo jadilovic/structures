@@ -22,6 +22,23 @@ export function useMachines() {
   }, []);
 }
 
+export function useAllMachines() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    axios
+      .get('/api/machines', {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        dispatch(loadMachines(response.data));
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }, []);
+}
+
 export async function useMachineById(id) {
   const dispatch = useDispatch();
   const history = useHistory();

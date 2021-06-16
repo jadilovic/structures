@@ -25,7 +25,7 @@ import {
 import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
 import authHeader from '../service/auth-header';
-import CustomNoRowsOverlay from './NoRowsOverlay';
+import { CustomMachinesRowsOverlay } from './NoRowsOverlay';
 import WithHook from '../hooks/WithHook';
 
 const useStyles = makeStyles((theme) => ({
@@ -221,7 +221,7 @@ export default function IndividualStructureDisplay() {
           >
             <DataGrid
               components={{
-                NoRowsOverlay: CustomNoRowsOverlay,
+                NoRowsOverlay: CustomMachinesRowsOverlay,
               }}
               size="small"
               aria-label="a dense table"

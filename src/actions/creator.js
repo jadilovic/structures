@@ -10,6 +10,7 @@ import {
   DELETE_MACHINE,
   LOAD_MACHINES,
   LOAD_MACHINE_TYPES,
+  LOAD_SENSOR_TYPES,
   CREATE_MACHINE,
   SET_AUTHORIZED,
   DISPLAY_SENSOR,
@@ -64,6 +65,10 @@ export function loadSensors(payload) {
 
 export function createSensor(payload) {
   return { type: CREATE_SENSOR, payload };
+}
+
+export function loadSensorTypes(payload) {
+  return { type: LOAD_SENSOR_TYPES, payload };
 }
 
 export function deleteStructure(payload) {

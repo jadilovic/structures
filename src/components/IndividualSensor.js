@@ -6,7 +6,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Paper,
   Grid,
@@ -20,7 +19,7 @@ import { useHistory } from 'react-router-dom';
 import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
 import authHeader from '../service/auth-header';
-import CustomNoRowsOverlay from './NoRowsOverlay';
+import { CustomNoMachinesInSensorOverlay } from './NoRowsOverlay';
 import { setAuthorized, clearData, displayMachine } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 
@@ -79,7 +78,6 @@ export default function IndividualSensorDisplay() {
   }
 
   const displaySensorMachine = async (machine) => {
-    console.log(machine.id);
     dispatch(clearData());
     const response = await axios
       .get(`/api/machines/${machine.id}?populate=sensors`, {
@@ -124,8 +122,6 @@ export default function IndividualSensorDisplay() {
     columns: machinesColumns,
     rows: [sensor.machine],
   };
-
-  console.log(sensor);
 
   return (
     <Grid container spacing={3}>
@@ -212,13 +208,12 @@ export default function IndividualSensorDisplay() {
           >
             <DataGrid
               components={{
-                NoRowsOverlay: CustomNoRowsOverlay,
+                NoRowsOverlay: CustomNoMachinesInSensorOverlay,
               }}
               size="small"
               aria-label="a dense table"
               {...machinesDataGrid}
               onRowClick={(props) => {
-                console.log(props.row);
                 displaySensorMachine(props.row);
               }}
               filterModel={{

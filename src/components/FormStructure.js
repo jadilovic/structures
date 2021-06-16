@@ -276,9 +276,9 @@ export default function FormStructure() {
                         helperText={error ? error.message : null}
                       />
                     )}
-                    rules={{ required: 'Timezone is required' }}
                   />
                 )}
+                rules={{ required: 'Timezone is required' }}
               />
             </Grid>
             <Grid item xs={12}>

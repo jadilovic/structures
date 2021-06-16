@@ -9,6 +9,7 @@ import {
   makeStyles,
   Container,
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
@@ -19,6 +20,7 @@ import {
   setAuthorized,
   loadSensorTypes,
 } from '../actions/creator';
+import { useAllMachines } from '../hooks/useMachine';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import authHeader from '../service/auth-header';
 
@@ -48,13 +50,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormSensor() {
   const dispatch = useDispatch();
+  useAllMachines();
   let machines = useSelector((state) => state.main.machines);
   const sensorTypes = useSelector((state) => state.main.sensorTypes);
   const classes = useStyles();
   const { handleSubmit, control, reset } = useForm();
-  const [machine, setMachine] = useState('');
-  const [isActive, setIsActive] = useState(false);
-  const [sensorType, setSensorType] = useState('');
   const [createdNewSensor, setCreatedNewSensor] = useState(false);
 
   if (_.isEmpty(machines)) {
@@ -79,18 +79,6 @@ export default function FormSensor() {
     machine: null,
   };
 
-  const handleChangeMachine = (event) => {
-    setMachine(event.target.value);
-  };
-
-  const handleChangeIsActive = (event) => {
-    setIsActive(event.target.value);
-  };
-
-  const handleChangeSensorType = (event) => {
-    setSensorType(event.target.value);
-  };
-
   // SNACK BAR DELETE NOTIFICATION
   const displayCreatedNewSensorNotification = () => {
     dispatch(
@@ -99,13 +87,8 @@ export default function FormSensor() {
   };
 
   const onSubmit = (data) => {
+    console.log(data);
     const newSensor = { ...initialValues, ...data };
-    newSensor.isActive = isActive;
-    newSensor.machine = machine;
-    const arraySensorType = sensorTypes.filter(
-      (sType) => sensorType === sType.id
-    );
-    newSensor.type = arraySensorType.pop();
     console.log(newSensor.type);
     console.log(newSensor);
     reset({ ...initialValues });
@@ -120,18 +103,29 @@ export default function FormSensor() {
 
   useEffect(() => {
     axios
-      .get('/api/machines/machine-types', {
+      .get('/api/sensors/sensor-types', {
         headers: authHeader(),
       })
       .then((response) => {
-        dispatch(loadMachineTypes(response.data));
-        console.log(response.data);
+        dispatch(loadSensorTypes(response.data));
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);
         console.log(error);
       });
   }, []);
+
+  const active = [
+    {},
+    {
+      value: true,
+      label: 'Yes',
+    },
+    {
+      value: false,
+      label: 'No',
+    },
+  ];
 
   return (
     <Container component="main" maxWidth="xs">
@@ -141,32 +135,13 @@ export default function FormSensor() {
           <BallotRoundedIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          Create New Machine
+          Create New Sensor
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Controller
-                name="businessId"
-                control={control}
-                defaultValue=""
-                render={({ field: { onChange, value } }) => (
-                  <TextField
-                    autoFocus
-                    name="businessId"
-                    variant="outlined"
-                    fullWidth
-                    id="businessId"
-                    label="Business ID"
-                    value={value}
-                    onChange={onChange}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="name"
+                name="sensorId"
                 control={control}
                 defaultValue=""
                 render={({
@@ -174,36 +149,85 @@ export default function FormSensor() {
                   fieldState: { error },
                 }) => (
                   <TextField
-                    name="name"
+                    autoFocus
+                    name="sensorId"
                     variant="outlined"
                     fullWidth
-                    id="name"
-                    label="Machine Name"
+                    id="sensorId"
+                    label="Sensor ID"
                     value={value}
                     onChange={onChange}
                     error={!!error}
                     helperText={error ? error.message : null}
                   />
                 )}
-                rules={{ required: 'Name is required' }}
+                rules={{ required: 'Sensor ID is required' }}
               />
             </Grid>
             <Grid item xs={12}>
               <Controller
-                name="description"
+                name="isActive"
                 control={control}
                 defaultValue=""
-                render={({ field: { onChange, value } }) => (
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
                   <TextField
-                    name="description"
+                    name="isActive"
                     variant="outlined"
                     fullWidth
-                    id="description"
-                    label="Description"
+                    id="isActive"
+                    select
+                    label="Active"
                     value={value}
+                    SelectProps={{
+                      native: true,
+                    }}
                     onChange={onChange}
+                    error={!!error}
+                    helperText={error ? error.message : null}
+                  >
+                    {active.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </TextField>
+                )}
+                rules={{ required: 'Active is required' }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Controller
+                name="type"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={sensorTypes}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="type"
+                        variant="outlined"
+                        fullWidth
+                        id="type"
+                        label="Sensor Type"
+                        value={value}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
                   />
                 )}
+                rules={{ required: 'Sensor type is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -226,99 +250,35 @@ export default function FormSensor() {
             </Grid>
             <Grid item xs={12}>
               <Controller
-                name="manufacturer"
+                name="machine"
                 control={control}
                 defaultValue=""
-                render={({ field: { onChange, value } }) => (
-                  <TextField
-                    name="manufacturer"
-                    variant="outlined"
-                    fullWidth
-                    id="manufacturer"
-                    label="Manufacturer"
-                    value={value}
-                    onChange={onChange}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={machines}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="machine"
+                        variant="outlined"
+                        fullWidth
+                        id="machine"
+                        label="Machine"
+                        value={value}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
                   />
                 )}
+                rules={{ required: 'Machine is required' }}
               />
-            </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="placeNumber"
-                control={control}
-                defaultValue=""
-                render={({ field: { onChange, value } }) => (
-                  <TextField
-                    name="placeNumber"
-                    variant="outlined"
-                    fullWidth
-                    id="placeNumber"
-                    label="Place Number"
-                    value={value}
-                    onChange={onChange}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={timezone}
-                onChange={handleChangeTimezone}
-                SelectProps={{
-                  native: true,
-                }}
-                helperText="Please select timezone"
-                variant="outlined"
-              >
-                {timeZonesList.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={structure}
-                onChange={handleChangeStructure}
-                SelectProps={{
-                  native: true,
-                }}
-                helperText="Please select structure"
-                variant="outlined"
-              >
-                {structures.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                id="outlined-select-currency-native"
-                fullWidth
-                select
-                value={machineType}
-                onChange={handleChangeMachineType}
-                SelectProps={{
-                  native: true,
-                }}
-                helperText="Please select machine type"
-                variant="outlined"
-              >
-                {machineTypes.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </TextField>
             </Grid>
           </Grid>
           <Button

@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import axios from 'axios';
-import CustomNoRowsOverlay from './NoRowsOverlay';
+import { CustomSensorsRowsOverlay } from './NoRowsOverlay';
 
 import authHeader from '../service/auth-header';
 import {
@@ -227,13 +227,12 @@ export default function IndividualMachineDisplay() {
           >
             <DataGrid
               components={{
-                NoRowsOverlay: CustomNoRowsOverlay,
+                NoRowsOverlay: CustomSensorsRowsOverlay,
               }}
               size="small"
               aria-label="a dense table"
               {...sensorsDataGrid}
               onRowClick={(props) => {
-                console.log(props.row);
                 displaySensorRow(props.row.id);
               }}
               filterModel={{

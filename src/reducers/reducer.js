@@ -17,6 +17,7 @@ import {
   DISPLAY_SENSOR,
   CREATE_SENSOR,
   DELETE_MACHINE,
+  LOAD_SENSOR_TYPES,
 } from '../constants/action-types';
 import authHeader from '../service/auth-header';
 
@@ -27,6 +28,7 @@ const initialState = {
   machineTypes: [],
   individualMachine: {},
   sensors: [],
+  sensorTypes: [],
   isAuth: false,
   loading: true,
   error: null,
@@ -119,7 +121,7 @@ function RootReducer(state = initialState, action) {
         console.log('There was an error!', error);
       });
   } else if (action.type === CREATE_SENSOR) {
-    // CREATING MACHINE IN API
+    // CREATING SENSOR IN API
     axios
       .post('/api/sensors', action.payload, {
         headers: authHeader(),
@@ -143,6 +145,13 @@ function RootReducer(state = initialState, action) {
     return {
       ...state,
       individualSensor: action.payload,
+    };
+  } else if (action.type === LOAD_SENSOR_TYPES) {
+    // SAVING DOWNLOADED API SENSOR TYPES DATA IN STORE
+    return {
+      ...state,
+      sensorTypes: action.payload,
+      loading: false,
     };
   } else if (action.type === CLEAR_DATA) {
     // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
