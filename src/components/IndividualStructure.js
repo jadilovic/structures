@@ -103,7 +103,7 @@ export default function IndividualStructureDisplay() {
 
   const machinesDataGrid = {
     columns: machinesColumns,
-    rows: structure.machines,
+    rows: structure?.machines,
   };
 
   return (
@@ -116,55 +116,55 @@ export default function IndividualStructureDisplay() {
                 <TableCell variant="head" component="th" scope="row">
                   Structure Name:
                 </TableCell>
-                <TableCell>{structure.name}</TableCell>
+                <TableCell>{structure?.name}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   City:
                 </TableCell>
-                <TableCell>{structure.city}</TableCell>
+                <TableCell>{structure?.city}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Country:
                 </TableCell>
-                <TableCell>{structure.country}</TableCell>
+                <TableCell>{structure?.country}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Description:
                 </TableCell>
-                <TableCell>{structure.description}</TableCell>
+                <TableCell>{structure?.description}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Timezone:
                 </TableCell>
-                <TableCell>{structure.timezone}</TableCell>
+                <TableCell>{structure?.timezone}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Business ID:
                 </TableCell>
-                <TableCell>{structure.businessId}</TableCell>
+                <TableCell>{structure?.businessId}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Created at:
                 </TableCell>
-                <TableCell>{structure.createdAt}</TableCell>
+                <TableCell>{structure?.createdAt}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Active:
                 </TableCell>
-                <TableCell>{structure.isActive ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{structure?.isActive ? 'Yes' : 'No'}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Parent Structure:
                 </TableCell>
-                <TableCell>{structure.structure.name}</TableCell>
+                <TableCell>{structure?.structure?.name ?? 'None'}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -209,7 +209,6 @@ export default function IndividualStructureDisplay() {
               aria-label="a dense table"
               {...machinesDataGrid}
               onRowClick={(props) => {
-                console.log(props.row);
                 displayMachineRow(props.row);
               }}
               filterModel={{

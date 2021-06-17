@@ -18,16 +18,16 @@ import {
   Button,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import MachinesIcon from '@material-ui/icons/SettingsApplicationsOutlined';
-import SensorsIcon from '@material-ui/icons/DeviceHub';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import {
   faIndustry,
   faFolderPlus,
-  faCalendarPlus,
-  faPlusSquare,
+  faPlus,
+  faPlusCircle,
+  faCog,
+  faDrawPolygon,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, Switch, Route } from 'react-router-dom';
@@ -45,7 +45,7 @@ import Error from './Error';
 import PrivateRoute from '../components/PrivateRoute';
 import FormSensor from '../components/FormSensor';
 
-const drawerWidth = 200;
+const drawerWidth = 220;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -127,9 +127,9 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
   icons: {
-    paddingRight: '5px',
-    fontSize: '30px',
-    color: 'rgb(0, 123, 255)',
+    alignItems: 'center',
+    fontSize: '24px',
+    color: 'rgb(105, 105, 105)',
   },
 }));
 const HeaderDrawer = (props) => {
@@ -174,30 +174,22 @@ const HeaderDrawer = (props) => {
     {
       title: 'Machines',
       pageURL: '/machines-table',
-      icon: (
-        <MachinesIcon
-          style={{
-            fontSize: '35px',
-            paddingRight: '7px',
-            color: 'rgb(0, 123, 255)',
-          }}
-        />
-      ),
+      icon: <FontAwesomeIcon icon={faCog} className={classes.icons} />,
     },
     {
       title: 'Create Machine',
       pageURL: '/form-machine',
-      icon: <FontAwesomeIcon icon={faPlusSquare} className={classes.icons} />,
+      icon: <FontAwesomeIcon icon={faPlus} className={classes.icons} />,
     },
     {
       title: 'Sensors',
       pageURL: '/sensors-table',
-      icon: <SensorsIcon className={classes.icons} />,
+      icon: <FontAwesomeIcon icon={faDrawPolygon} className={classes.icons} />,
     },
     {
       title: 'Create Sensor',
       pageURL: '/form-sensor',
-      icon: <FontAwesomeIcon icon={faCalendarPlus} className={classes.icons} />,
+      icon: <FontAwesomeIcon icon={faPlusCircle} className={classes.icons} />,
     },
   ];
 
@@ -212,7 +204,7 @@ const HeaderDrawer = (props) => {
               key={title}
               onClick={() => handleDrawerCloseAfterSelection(pageURL)}
             >
-              <ListItemIcon> {icon}</ListItemIcon>
+              <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText primary={title} />
             </ListItem>
             <Divider />

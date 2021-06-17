@@ -105,9 +105,6 @@ export default function FormMachine() {
     fetchMachineTypes();
   }, []);
 
-  const stringStructures = structures.map((structure) => structure.name);
-  const stringMachineTypes = machineTypes.map((type) => type.name);
-
   const active = [
     {},
     {

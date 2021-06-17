@@ -16,6 +16,7 @@ import {
   LOAD_SENSORS,
   DISPLAY_SENSOR,
   CREATE_SENSOR,
+  DELETE_SENSOR,
   DELETE_MACHINE,
   LOAD_SENSOR_TYPES,
 } from '../constants/action-types';
@@ -133,6 +134,18 @@ function RootReducer(state = initialState, action) {
       .catch((error) => {
         console.log('ERROR CRATING SENSOR');
         console.log(error.response.data);
+      });
+  } else if (action.type === DELETE_SENSOR) {
+    console.log('DELETE SENSOR');
+    axios
+      .delete(`/api/sensors/${action.payload}`, {
+        headers: authHeader(),
+      })
+      .then(() => {
+        console.log('Delete of sensor successful');
+      })
+      .catch((error) => {
+        console.log('There was an error!', error);
       });
   } else if (action.type === LOAD_SENSORS) {
     // SAVING DOWNLOADED API SENSORS DATA IN STORE

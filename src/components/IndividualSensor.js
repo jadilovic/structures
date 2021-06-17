@@ -9,22 +9,18 @@ import {
   Paper,
   Grid,
   Button,
-  Snackbar,
+  Card,
+  CardActions,
+  CardActionArea,
 } from '@material-ui/core';
-import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import MuiAlert from '@material-ui/lab/Alert';
 import _ from 'lodash';
-import { CustomNoMachinesInSensorOverlay } from './NoRowsOverlay';
-import { setAuthorized, clearData } from '../actions/creator';
+import { setAuthorized, clearData, deleteSensor } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 import useMachine from '../hooks/useMachine';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { setSnackbar } from '../reducers/snackbarReducer';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -49,19 +45,6 @@ export default function IndividualSensorDisplay() {
   const history = useHistory();
   const classes = useStyles();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [openDeleteNotification, setOpenDeleteNotification] = useState(false);
-
-  const displayDeleteNotification = () => {
-    setOpenDeleteNotification(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenDeleteNotification(false);
-    history.push('/sensors-table');
-  };
 
   if (_.isEmpty(sensor)) {
     const sensorData = localStorage.getItem('sensor-data');
@@ -71,63 +54,32 @@ export default function IndividualSensorDisplay() {
     localStorage.setItem('sensor-data', JSON.stringify(sensor));
   }
 
-  function deleteIndividualSensor(sensorId) {
-    dispatch(clearData());
-    // dispatch(deleteSensor(sensorId));
-    displayDeleteNotification();
-  }
-
   function displaySensorMachine(machine) {
     fetchMachineById(machine.id);
   }
 
-  const machinesColumns = [
-    {
-      field: 'name',
-      headerName: 'Name',
-      flex: 1,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      flex: 1,
-    },
-    {
-      field: 'alias',
-      headerName: 'Alias',
-      flex: 1,
-    },
-    {
-      field: 'type',
-      headerName: 'Machine Type',
-      valueGetter: (params) => params.row.type.name,
-      flex: 1,
-    },
-  ];
-
-  const userScreenHeight = window.innerHeight;
-
-  const machinesDataGrid = {
-    columns: machinesColumns,
-    rows: [sensor.machine],
+  // SNACK BAR DELETE NOTIFICATION
+  const displayDeleteNotification = () => {
+    dispatch(
+      setSnackbar(
+        true,
+        'success',
+        'Selected sensor has been successfully deleted!'
+      )
+    );
+    history.push('/sensors-table');
   };
+
+  function deleteIndividualSensor(sensorId) {
+    dispatch(clearData());
+    dispatch(deleteSensor(sensorId));
+    displayDeleteNotification();
+  }
+
+  const machineInSensor = sensor.machine ? sensor.machine : {};
 
   return (
     <Grid container spacing={3}>
-      {openDeleteNotification && (
-        <div className={classes.root}>
-          <Snackbar
-            open={openDeleteNotification}
-            autoHideDuration={6000}
-            onClose={handleClose}
-          >
-            <Alert onClose={handleClose} severity="success">
-              You have successfuly deleted selected sensor! You will now be
-              returned to the Sensors page.
-            </Alert>
-          </Snackbar>
-        </div>
-      )}
       <Grid item xs={6}>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
@@ -160,7 +112,9 @@ export default function IndividualSensorDisplay() {
                 <TableCell component="th" scope="row">
                   Machine:
                 </TableCell>
-                <TableCell>{sensor.machine.name}</TableCell>
+                <TableCell>
+                  {sensor?.machine?.name ?? 'This sensor has NO machine'}
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -187,37 +141,57 @@ export default function IndividualSensorDisplay() {
         </div>
       </Grid>
       <Grid item xs={6}>
-        <TableContainer component={Paper}>
-          <div
-            style={{
-              height: userScreenHeight - 112,
-              width: '100%',
-              cursor: 'pointer',
+        <Card className={classes.root}>
+          <CardActionArea
+            onClick={() => {
+              displaySensorMachine(machineInSensor);
             }}
           >
-            <DataGrid
-              components={{
-                NoRowsOverlay: CustomNoMachinesInSensorOverlay,
-              }}
-              size="small"
-              aria-label="a dense table"
-              {...machinesDataGrid}
-              onRowClick={(props) => {
-                displaySensorMachine(props.row);
-              }}
-              filterModel={{
-                items: [
-                  {
-                    columnField: 'description',
-                    operatorValue: 'contains',
-                    value: '',
-                  },
-                ],
-              }}
-              localeText
-            />
-          </div>
-        </TableContainer>
+            <CardActions>
+              <Button
+                fullWidth
+                color="primary"
+                onClick={() => {
+                  displaySensorMachine(machineInSensor);
+                }}
+              >
+                {machineInSensor ? 'Go to machine' : ''}
+              </Button>
+            </CardActions>
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="simple table">
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Status:
+                    </TableCell>
+                    <TableCell>
+                      {machineInSensor?.isActive ? 'Active' : 'Not Active'}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Alias:
+                    </TableCell>
+                    <TableCell>{machineInSensor?.alias}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Machine Type:
+                    </TableCell>
+                    <TableCell>{machineInSensor?.type?.name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      Business ID:
+                    </TableCell>
+                    <TableCell>{machineInSensor?.businessId}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardActionArea>
+        </Card>
       </Grid>
     </Grid>
   );
