@@ -10,7 +10,7 @@ import {
   Container,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
+import ListAltIcon from '@material-ui/icons/ListAlt';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
@@ -50,8 +50,7 @@ export default function FormSensor() {
   let machines = useSelector((state) => state.main.machines);
   const sensorTypes = useSelector((state) => state.main.sensorTypes);
   const classes = useStyles();
-  const { handleSubmit, control, reset } = useForm();
-  const [createdNewSensor, setCreatedNewSensor] = useState(false);
+  const { handleSubmit, control, reset, setValue } = useForm();
 
   if (_.isEmpty(machines)) {
     const structuresData = localStorage.getItem('machines-data');
@@ -82,22 +81,19 @@ export default function FormSensor() {
     );
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, e) => {
     console.log(data);
     const newSensor = { ...initialValues, ...data };
     console.log(newSensor.type);
-    console.log(newSensor);
+    console.log(newSensor.machine);
     reset({ ...initialValues });
+    e.target.reset();
     dispatch(createSensor(newSensor));
-    setCreatedNewSensor(true);
     displayCreatedNewSensorNotification();
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [createdNewSensor]);
-
-  useEffect(() => {
     fetchSensorTypes();
     fetchMachinesOnly();
   }, []);
@@ -119,7 +115,7 @@ export default function FormSensor() {
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar variant="rounded" className={classes.rounded}>
-          <BallotRoundedIcon />
+          <ListAltIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
           Create New Sensor
@@ -197,6 +193,9 @@ export default function FormSensor() {
                   <Autocomplete
                     options={sensorTypes}
                     getOptionLabel={(option) => option.name}
+                    onChange={(e, newValue) => {
+                      setValue('type', newValue);
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -247,6 +246,9 @@ export default function FormSensor() {
                   <Autocomplete
                     options={machines}
                     getOptionLabel={(option) => option.name}
+                    onChange={(e, newValue) => {
+                      setValue('machine', newValue);
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}

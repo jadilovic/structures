@@ -22,7 +22,7 @@ export default function SensorsTable() {
   const sensorsData = useSelector((state) => state.main.sensors);
   const loading = useSelector((state) => state.main.loading);
   const history = useHistory();
-
+  console.log(sensorsData);
   const sensorsColumns = [
     {
       field: 'sensorId',

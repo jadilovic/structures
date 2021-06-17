@@ -14,7 +14,7 @@ const useMachine = () => {
 
   function fetchMachinesWithSensors() {
     axios
-      .get('/api/machines?populate=sensors', {
+      .get('/api/machines?populate=sensors structure', {
         headers: authHeader(),
       })
       .then((response) => {
@@ -42,7 +42,7 @@ const useMachine = () => {
 
   function fetchMachineById(id) {
     axios
-      .get(`/api/machines/${id}?populate=sensors`, {
+      .get(`/api/machines/${id}?populate=sensors structure`, {
         headers: authHeader(),
       })
       .then((response) => {

@@ -164,7 +164,7 @@ export default function IndividualStructureDisplay() {
                 <TableCell component="th" scope="row">
                   Parent Structure:
                 </TableCell>
-                <TableCell>{structure.structure}</TableCell>
+                <TableCell>{structure.structure.name}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

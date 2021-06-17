@@ -20,6 +20,20 @@ const useStructure = () => {
       });
   }
 
+  function fetchStructuresWithMachinesParentStructure() {
+    axios
+      .get('/api/structures?populate=machines structure', {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        dispatch(loadStructures(response.data));
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }
+
   function fetchStructuresOnly() {
     axios
       .get('/api/structures', {
@@ -34,9 +48,23 @@ const useStructure = () => {
       });
   }
 
+  function fetchStructureById(id) {
+    const structure = axios
+      .get(`/api/structures/${id}`, {
+        headers: authHeader(),
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+    return structure;
+  }
+
   return {
     fetchStructuresOnly,
     fetchStructuresWithMachines,
+    fetchStructuresWithMachinesParentStructure,
+    fetchStructureById,
   };
 };
 

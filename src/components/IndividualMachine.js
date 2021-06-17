@@ -171,7 +171,7 @@ export default function IndividualMachineDisplay() {
                 <TableCell component="th" scope="row">
                   Structure:
                 </TableCell>
-                <TableCell>{machine.structure}</TableCell>
+                <TableCell>{machine.structure.name}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

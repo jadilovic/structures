@@ -128,6 +128,7 @@ function RootReducer(state = initialState, action) {
       })
       .then(() => {
         console.log('CREATED SENSOR');
+        console.log(action.payload);
       })
       .catch((error) => {
         console.log('ERROR CRATING SENSOR');
