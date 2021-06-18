@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { createStructure, setAuthorized } from '../actions/creator';
+import { setAuthorized } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useStructure from '../hooks/useStructure';
 
@@ -43,13 +43,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FormStructure() {
+export default function UpdateStructure() {
   const timeZonesList = momentTZ.tz.names();
-  const { fetchStructuresOnly } = useStructure();
+  const { fetchStructuresOnly, updateStructure } = useStructure();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);
+  let structureUpdate = useSelector((state) => state.main.individualStructure);
+
   const classes = useStyles();
-  const { handleSubmit, control, reset, setValue } = useForm();
+  const { handleSubmit, control, setValue } = useForm();
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -59,43 +61,37 @@ export default function FormStructure() {
     localStorage.setItem('structures-data', JSON.stringify(structures));
   }
 
-  const initialValues = {
-    businessId: '',
-    name: '',
-    description: '',
-    city: '',
-    country: '',
-    timezone: '',
-    isActive: false,
-    sortIndex: 0,
-    structure: null,
-    structures: [],
-    machines: [],
-  };
+  if (_.isEmpty(structureUpdate)) {
+    const structureData = localStorage.getItem('structure-update');
+    structureUpdate = JSON.parse(structureData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('structure-update', JSON.stringify(structureUpdate));
+  }
 
-  // SNACK BAR DELETE NOTIFICATION
-  const displayCreatedNewStructureNotification = () => {
+  // SNACK BAR UPDATE NOTIFICATION
+  const displayUpdatedStructureNotification = () => {
     dispatch(
       setSnackbar(
         true,
         'success',
-        'New structure has been successfully created!'
+        'The structure has been successfully updated!'
       )
     );
   };
 
   const onSubmit = (data, e) => {
-    const newStructure = { ...initialValues, ...data };
-    reset({ ...initialValues });
-    e.target.reset();
-    dispatch(createStructure(newStructure));
-    displayCreatedNewStructureNotification();
+    const newStructureUpdate = { ...structureUpdate, ...data };
+    updateStructure(newStructureUpdate);
+    displayUpdatedStructureNotification();
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchStructuresOnly();
   }, []);
+
+  console.log(structureUpdate);
 
   const active = [
     {},
@@ -117,7 +113,7 @@ export default function FormStructure() {
           <AssignmentIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          Create New Structure
+          Update Existing Structure
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
@@ -125,7 +121,10 @@ export default function FormStructure() {
               <Controller
                 name="businessId"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue(
+                  'businessId',
+                  structureUpdate.businessId
+                )}
                 render={({ field: { onChange, value } }) => (
                   <TextField
                     autoFocus
@@ -144,7 +143,7 @@ export default function FormStructure() {
               <Controller
                 name="name"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue('name', structureUpdate.name)}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -168,7 +167,10 @@ export default function FormStructure() {
               <Controller
                 name="description"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue(
+                  'description',
+                  structureUpdate.description
+                )}
                 render={({ field: { onChange, value } }) => (
                   <TextField
                     name="description"
@@ -186,7 +188,7 @@ export default function FormStructure() {
               <Controller
                 name="city"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue('city', structureUpdate.city)}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -210,7 +212,7 @@ export default function FormStructure() {
               <Controller
                 name="country"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue('country', structureUpdate.country)}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -235,7 +237,7 @@ export default function FormStructure() {
               <Controller
                 name="timezone"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue('timezone', structureUpdate.timezone)}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -270,7 +272,7 @@ export default function FormStructure() {
               <Controller
                 name="structure"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue('structure', structureUpdate.structure)}
                 render={({ field: { onChange, value } }) => (
                   <Autocomplete
                     options={structures}
@@ -299,7 +301,7 @@ export default function FormStructure() {
               <Controller
                 name="isActive"
                 control={control}
-                defaultValue=""
+                defaultValue={setValue('isActive', structureUpdate.isActive)}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },

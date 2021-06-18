@@ -13,6 +13,7 @@ import {
 import { DataGrid } from '@material-ui/data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import { deleteStructure, clearData, setAuthorized } from '../actions/creator';
@@ -20,10 +21,11 @@ import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
 import { CustomMachinesRowsOverlay } from './NoRowsOverlay';
 import useMachine from '../hooks/useMachine';
+import useStructure from '../hooks/useStructure';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    margin: theme.spacing(3),
+    margin: theme.spacing(1),
   },
   root: {
     width: '100%',
@@ -38,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualStructureDisplay() {
   const { fetchMachineById } = useMachine();
+  const { fetchStructureByIdToUpdate } = useStructure();
   let structure = useSelector((state) => state.main.individualStructure);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -73,6 +76,11 @@ export default function IndividualStructureDisplay() {
     dispatch(clearData());
     dispatch(deleteStructure(structureId));
     displayDeleteNotification();
+  }
+
+  function updateIndividualStructure(structureId) {
+    dispatch(clearData());
+    fetchStructureByIdToUpdate(structureId);
   }
 
   const machinesColumns = [
@@ -170,6 +178,18 @@ export default function IndividualStructureDisplay() {
           </Table>
         </TableContainer>
         <div>
+          <Button
+            aria-label="update"
+            variant="contained"
+            color="inherit"
+            className={classes.button}
+            startIcon={<RefreshIcon />}
+            onClick={() => {
+              updateIndividualStructure(structure.id);
+            }}
+          >
+            Update Structure
+          </Button>
           <Button
             aria-label="delete"
             variant="contained"

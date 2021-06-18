@@ -40,6 +40,7 @@ import IndividualStructure from '../components/IndividualStructure';
 import IndividualMachine from '../components/IndividualMachine';
 import SensorsTable from '../components/SensorsTable';
 import IndividualSensor from '../components/IndividualSensor';
+import UpdateStructure from '../components/UpdateStructure';
 import Login from './Login';
 import Error from './Error';
 import PrivateRoute from '../components/PrivateRoute';
@@ -318,6 +319,11 @@ const HeaderDrawer = (props) => {
               exact
             />
             <PrivateRoute component={FormSensor} path="/form-sensor" exact />
+            <PrivateRoute
+              component={UpdateStructure}
+              path="/update-structure"
+              exact
+            />
             <Route component={Login} path="/login" />
             <Route component={Error} path="*" />
           </Switch>

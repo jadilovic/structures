@@ -38,7 +38,6 @@ const initialState = {
 function RootReducer(state = initialState, action) {
   if (action.type === CREATE_STRUCTURE) {
     // CREATING STRUCTURE IN API
-    console.log(action.payload);
     axios
       .post('/api/structures', action.payload, {
         headers: authHeader(),
@@ -97,7 +96,6 @@ function RootReducer(state = initialState, action) {
     };
   } else if (action.type === CREATE_MACHINE) {
     // CREATING MACHINE IN API
-    console.log(action.payload);
     axios
       .post('/api/machines', action.payload, {
         headers: authHeader(),
@@ -110,7 +108,6 @@ function RootReducer(state = initialState, action) {
         console.log(error.response.data);
       });
   } else if (action.type === DELETE_MACHINE) {
-    console.log('DELETE MACHINE');
     axios
       .delete(`/api/machines/${action.payload}`, {
         headers: authHeader(),
@@ -136,7 +133,6 @@ function RootReducer(state = initialState, action) {
         console.log(error.response.data);
       });
   } else if (action.type === DELETE_SENSOR) {
-    console.log('DELETE SENSOR');
     axios
       .delete(`/api/sensors/${action.payload}`, {
         headers: authHeader(),
