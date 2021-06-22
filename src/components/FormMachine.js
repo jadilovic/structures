@@ -49,16 +49,18 @@ export default function FormMachine() {
   const { fetchSensorsOnly } = useSensor();
   const dispatch = useDispatch();
   const timeZonesList = momentTZ.tz.names();
-  // let structures = useSelector((state) => state.main.structures);
+  let structures = useSelector((state) => state.main.structures);
   const machineTypes = useSelector((state) => state.main.machineTypes);
   const sensorsList = useSelector((state) => state.main.sensors);
   let selectedMachineToEdit = useSelector(
     (state) => state.main.individualMachine
   );
   const classes = useStyles();
-  const { handleSubmit, control, reset, setValue, clearErrors, register } =
-    useForm();
-  /*
+  console.log(selectedMachineToEdit);
+  const { handleSubmit, control, reset, setValue, clearErrors } = useForm({
+    defaultValues: selectedMachineToEdit,
+  });
+
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
     structures = JSON.parse(structuresData);
@@ -66,7 +68,7 @@ export default function FormMachine() {
   } else {
     localStorage.setItem('structures-data', JSON.stringify(structures));
   }
-*/
+
   if (_.isEmpty(selectedMachineToEdit)) {
     const machineData = localStorage.getItem('machine-edit');
     selectedMachineToEdit = JSON.parse(machineData);
@@ -102,12 +104,19 @@ export default function FormMachine() {
   };
 
   const onSubmit = (data, e) => {
-    const newMachine = { ...initialValues, ...data };
-    newMachine.isActive = data.isActive.statusValue;
-    newMachine.sensors = [data.sensors];
+    if (selectedMachineToEdit) {
+      const editedMachine = { ...selectedMachineToEdit, ...data };
+      console.log(editedMachine);
+    } else {
+      const newMachine = { ...initialValues, ...data };
+      newMachine.isActive = data.isActive.statusValue;
+      newMachine.sensors = [data.sensors];
+
+      console.log(newMachine);
+    }
+    console.log(data);
     reset({ ...initialValues });
     e.target.reset();
-    console.log(newMachine);
     // (createMachine(newMachine));
     displayCreatedNewMachineNotification();
   };
@@ -150,9 +159,6 @@ export default function FormMachine() {
               <Controller
                 name="businessId"
                 control={control}
-                defaultValue={
-                  selectedMachineToEdit ? selectedMachineToEdit.businessId : ''
-                }
                 render={({ field: { onChange, value } }) => (
                   <TextField
                     autoFocus
@@ -171,9 +177,6 @@ export default function FormMachine() {
               <Controller
                 name="name"
                 control={control}
-                defaultValue={
-                  selectedMachineToEdit ? selectedMachineToEdit.name : ''
-                }
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
