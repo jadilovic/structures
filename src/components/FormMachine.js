@@ -373,7 +373,6 @@ export default function FormMachine() {
                 rules={{ required: 'Machine type is required' }}
               />
             </Grid>
-            {/*
             <Grid item xs={12}>
               <Controller
                 name="structure"
@@ -409,7 +408,6 @@ export default function FormMachine() {
                 rules={{ required: 'Structure is required' }}
               />
             </Grid>
-              */}
             <Grid item xs={12}>
               <Controller
                 name="sensors"
