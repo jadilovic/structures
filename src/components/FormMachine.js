@@ -18,6 +18,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { createMachine, setAuthorized } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useMachine from '../hooks/useMachine';
+import useSensor from '../hooks/useSensor';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -45,20 +46,33 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormMachine() {
   const { fetchMachineTypes } = useMachine();
+  const { fetchSensorsOnly } = useSensor();
   const dispatch = useDispatch();
   const timeZonesList = momentTZ.tz.names();
-  let structures = useSelector((state) => state.main.structures);
+  // let structures = useSelector((state) => state.main.structures);
   const machineTypes = useSelector((state) => state.main.machineTypes);
+  const sensorsList = useSelector((state) => state.main.sensors);
+  let selectedMachineToEdit = useSelector(
+    (state) => state.main.individualMachine
+  );
   const classes = useStyles();
-  const { handleSubmit, control, reset, setValue } = useForm();
-  const [createdNewMachine, setCreatedNewMachine] = useState(false);
-
+  const { handleSubmit, control, reset, setValue, clearErrors, register } =
+    useForm();
+  /*
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
     structures = JSON.parse(structuresData);
     dispatch(setAuthorized(true));
   } else {
     localStorage.setItem('structures-data', JSON.stringify(structures));
+  }
+*/
+  if (_.isEmpty(selectedMachineToEdit)) {
+    const machineData = localStorage.getItem('machine-edit');
+    selectedMachineToEdit = JSON.parse(machineData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('machine-edit', JSON.stringify(selectedMachineToEdit));
   }
 
   const initialValues = {
@@ -89,33 +103,36 @@ export default function FormMachine() {
 
   const onSubmit = (data, e) => {
     const newMachine = { ...initialValues, ...data };
-    console.log(data);
+    newMachine.isActive = data.isActive.statusValue;
+    newMachine.sensors = [data.sensors];
     reset({ ...initialValues });
     e.target.reset();
-    dispatch(createMachine(newMachine));
-    setCreatedNewMachine(true);
+    console.log(newMachine);
+    // (createMachine(newMachine));
     displayCreatedNewMachineNotification();
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [createdNewMachine]);
-
-  useEffect(() => {
     fetchMachineTypes();
+    fetchSensorsOnly();
   }, []);
 
-  const active = [
-    {},
+  const isActiveOptions = [
     {
-      value: true,
-      label: 'Yes',
+      statusValue: true,
+      statusLabel: 'Yes',
     },
     {
-      value: false,
-      label: 'No',
+      statusValue: false,
+      statusLabel: 'No',
     },
   ];
+
+  console.log(selectedMachineToEdit);
+  // console.log(structures);
+  console.log(machineTypes);
+  console.log(sensorsList);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -125,7 +142,7 @@ export default function FormMachine() {
           <BallotRoundedIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          Create New Machine
+          {selectedMachineToEdit ? 'Edit Machine' : 'Create New Machine'}
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
@@ -133,7 +150,9 @@ export default function FormMachine() {
               <Controller
                 name="businessId"
                 control={control}
-                defaultValue=""
+                defaultValue={
+                  selectedMachineToEdit ? selectedMachineToEdit.businessId : ''
+                }
                 render={({ field: { onChange, value } }) => (
                   <TextField
                     autoFocus
@@ -152,7 +171,9 @@ export default function FormMachine() {
               <Controller
                 name="name"
                 control={control}
-                defaultValue=""
+                defaultValue={
+                  selectedMachineToEdit ? selectedMachineToEdit.name : ''
+                }
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -181,29 +202,30 @@ export default function FormMachine() {
                   field: { onChange, value },
                   fieldState: { error },
                 }) => (
-                  <TextField
-                    name="isActive"
-                    variant="outlined"
-                    fullWidth
-                    id="isActive"
-                    select
-                    label="Active"
-                    value={value}
-                    SelectProps={{
-                      native: true,
+                  <Autocomplete
+                    options={isActiveOptions}
+                    getOptionLabel={(option) => option.statusLabel}
+                    onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('isActive');
+                      setValue('isActive', newValue);
                     }}
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
-                  >
-                    {active.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
+                    value={value}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="isActive"
+                        variant="outlined"
+                        fullWidth
+                        id="isActive"
+                        label="Active"
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  />
                 )}
-                rules={{ required: 'Active is required' }}
+                rules={{ required: 'Active status is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -291,8 +313,10 @@ export default function FormMachine() {
                     options={timeZonesList}
                     getOptionLabel={(option) => option}
                     onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('timezone');
                       setValue('timezone', newValue);
                     }}
+                    value={value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -302,8 +326,6 @@ export default function FormMachine() {
                         fullWidth
                         id="timezone"
                         label="Timezone"
-                        value={value}
-                        onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
                       />
@@ -326,8 +348,10 @@ export default function FormMachine() {
                     options={machineTypes}
                     getOptionLabel={(option) => option.name}
                     onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('type');
                       setValue('type', newValue);
                     }}
+                    value={value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -337,8 +361,6 @@ export default function FormMachine() {
                         fullWidth
                         id="type"
                         label="Machine type"
-                        value={value}
-                        onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
                       />
@@ -348,6 +370,7 @@ export default function FormMachine() {
                 rules={{ required: 'Machine type is required' }}
               />
             </Grid>
+            {/*
             <Grid item xs={12}>
               <Controller
                 name="structure"
@@ -361,8 +384,10 @@ export default function FormMachine() {
                     options={structures}
                     getOptionLabel={(option) => option.name}
                     onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('structure');
                       setValue('structure', newValue);
                     }}
+                    value={value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -372,8 +397,6 @@ export default function FormMachine() {
                         fullWidth
                         id="structure"
                         label="Structure"
-                        value={value}
-                        onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
                       />
@@ -381,6 +404,42 @@ export default function FormMachine() {
                   />
                 )}
                 rules={{ required: 'Structure is required' }}
+              />
+            </Grid>
+              */}
+            <Grid item xs={12}>
+              <Controller
+                name="sensors"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={sensorsList}
+                    getOptionLabel={(option) => option.sensorId}
+                    onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('sensors');
+                      setValue('sensors', newValue);
+                    }}
+                    value={value}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="sensors"
+                        variant="outlined"
+                        fullWidth
+                        id="sensors"
+                        label="Sensors"
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  />
+                )}
+                rules={{ required: 'Sensor is required' }}
               />
             </Grid>
           </Grid>

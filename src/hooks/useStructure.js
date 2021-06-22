@@ -70,7 +70,7 @@ const useStructure = () => {
       .then((response) => {
         if (response) {
           dispatch(displayStructure(response.data));
-          history.push('/update-structure');
+          history.push('/form-structure');
         }
       })
       .catch((error) => {
@@ -79,18 +79,18 @@ const useStructure = () => {
       });
   }
 
-  function updateStructure(update) {
+  function editStructure(edit) {
     axios
-      .put('/api/structures', update, {
+      .put('/api/structures', edit, {
         headers: authHeader(),
       })
       .then(() => {
-        console.log('UPDATED STRUCTURE');
-        dispatch(displayStructure(update));
+        console.log('EDITED STRUCTURE');
+        dispatch(displayStructure(edit));
         history.push('/individual-structure');
       })
       .catch((error) => {
-        console.log('ERROR UPDATING STRUCTURE');
+        console.log('ERROR EDITING STRUCTURE');
         console.log(error.response.data);
       });
   }
@@ -101,7 +101,7 @@ const useStructure = () => {
     fetchStructuresWithMachinesParentStructure,
     fetchStructureById,
     fetchStructureByIdToUpdate,
-    updateStructure,
+    editStructure,
   };
 };
 

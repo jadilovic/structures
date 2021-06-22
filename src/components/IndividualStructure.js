@@ -13,7 +13,7 @@ import {
 import { DataGrid } from '@material-ui/data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
-import RefreshIcon from '@material-ui/icons/Refresh';
+import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import { deleteStructure, clearData, setAuthorized } from '../actions/creator';
@@ -78,11 +78,12 @@ export default function IndividualStructureDisplay() {
     displayDeleteNotification();
   }
 
+  /*
   function updateIndividualStructure(structureId) {
     dispatch(clearData());
     fetchStructureByIdToUpdate(structureId);
   }
-
+*/
   const machinesColumns = [
     {
       field: 'name',
@@ -183,12 +184,12 @@ export default function IndividualStructureDisplay() {
             variant="contained"
             color="inherit"
             className={classes.button}
-            startIcon={<RefreshIcon />}
+            startIcon={<EditIcon />}
             onClick={() => {
-              updateIndividualStructure(structure.id);
+              history.push('/form-structure');
             }}
           >
-            Update Structure
+            Edit Structure
           </Button>
           <Button
             aria-label="delete"

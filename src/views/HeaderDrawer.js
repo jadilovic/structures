@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import {
   makeStyles,
@@ -27,7 +27,7 @@ import {
   faPlus,
   faPlusCircle,
   faCog,
-  faDrawPolygon,
+  faAtom,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, Switch, Route } from 'react-router-dom';
@@ -40,7 +40,6 @@ import IndividualStructure from '../components/IndividualStructure';
 import IndividualMachine from '../components/IndividualMachine';
 import SensorsTable from '../components/SensorsTable';
 import IndividualSensor from '../components/IndividualSensor';
-import UpdateStructure from '../components/UpdateStructure';
 import Login from './Login';
 import Error from './Error';
 import PrivateRoute from '../components/PrivateRoute';
@@ -151,11 +150,13 @@ const HeaderDrawer = (props) => {
 
   const handleDrawerCloseAfterSelection = (pageURL) => {
     handleDrawerClose();
+    dispatch(clearData());
+    localStorage.removeItem('machine-edit');
     history.push(pageURL);
   };
 
   function logout() {
-    localStorage.removeItem('user');
+    localStorage.clear();
     dispatch(setAuthorized(false));
     dispatch(clearData());
     history.push('/login');
@@ -185,7 +186,7 @@ const HeaderDrawer = (props) => {
     {
       title: 'Sensors',
       pageURL: '/sensors-table',
-      icon: <FontAwesomeIcon icon={faDrawPolygon} className={classes.icons} />,
+      icon: <FontAwesomeIcon icon={faAtom} className={classes.icons} />,
     },
     {
       title: 'Create Sensor',
@@ -293,6 +294,7 @@ const HeaderDrawer = (props) => {
               exact
             />
             <PrivateRoute component={FormMachine} path="/form-machine" exact />
+            <PrivateRoute component={FormMachine} path="/edit-machine" exact />
             <PrivateRoute
               component={MachinesTable}
               path="/machines-table"
@@ -319,11 +321,6 @@ const HeaderDrawer = (props) => {
               exact
             />
             <PrivateRoute component={FormSensor} path="/form-sensor" exact />
-            <PrivateRoute
-              component={UpdateStructure}
-              path="/update-structure"
-              exact
-            />
             <Route component={Login} path="/login" />
             <Route component={Error} path="*" />
           </Switch>

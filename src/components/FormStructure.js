@@ -45,11 +45,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormStructure() {
   const timeZonesList = momentTZ.tz.names();
-  const { fetchStructuresOnly } = useStructure();
+  const { fetchStructuresOnly, editStructure } = useStructure();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);
+  let structureEdit = useSelector((state) => state.main.individualStructure);
+
   const classes = useStyles();
-  const { handleSubmit, control, reset, setValue } = useForm();
+  const { handleSubmit, control, reset, setValue, clearErrors } = useForm();
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -59,7 +61,15 @@ export default function FormStructure() {
     localStorage.setItem('structures-data', JSON.stringify(structures));
   }
 
-  const initialValues = {
+  if (_.isEmpty(structureEdit)) {
+    const structureData = localStorage.getItem('structure-edit');
+    structureEdit = JSON.parse(structureData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('structure-edit', JSON.stringify(structureEdit));
+  }
+
+  let initialValues = {
     businessId: '',
     name: '',
     description: '',
@@ -73,7 +83,11 @@ export default function FormStructure() {
     machines: [],
   };
 
-  // SNACK BAR DELETE NOTIFICATION
+  if (structureEdit) {
+    initialValues = { ...structureEdit };
+  }
+
+  // SNACK BAR NEW STRUCTURE NOTIFICATION
   const displayCreatedNewStructureNotification = () => {
     dispatch(
       setSnackbar(
@@ -84,12 +98,32 @@ export default function FormStructure() {
     );
   };
 
+  // SNACK BAR NEW STRUCTURE NOTIFICATION
+  const displayEditedStructureNotification = () => {
+    dispatch(
+      setSnackbar(
+        true,
+        'success',
+        'New structure has been successfully edited!'
+      )
+    );
+  };
+
   const onSubmit = (data, e) => {
+    console.log(data.isActive.statusValue);
     const newStructure = { ...initialValues, ...data };
+    newStructure.isActive = data.isActive.statusValue;
     reset({ ...initialValues });
     e.target.reset();
-    dispatch(createStructure(newStructure));
-    displayCreatedNewStructureNotification();
+    if (structureEdit) {
+      //  editStructure(newStructure);
+      console.log(structureEdit);
+      displayEditedStructureNotification();
+    } else {
+      // dispatch(createStructure(newStructure));
+      console.log(newStructure);
+      displayCreatedNewStructureNotification();
+    }
   };
 
   useEffect(() => {
@@ -97,15 +131,14 @@ export default function FormStructure() {
     fetchStructuresOnly();
   }, []);
 
-  const active = [
-    {},
+  const isActiveOptions = [
     {
-      value: true,
-      label: 'Yes',
+      statusValue: true,
+      statusLabel: 'Yes',
     },
     {
-      value: false,
-      label: 'No',
+      statusValue: false,
+      statusLabel: 'No',
     },
   ];
 
@@ -117,7 +150,7 @@ export default function FormStructure() {
           <AssignmentIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          Create New Structure
+          {structureEdit ? 'Edit Structure' : 'Create New Structure'}
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
@@ -125,7 +158,11 @@ export default function FormStructure() {
               <Controller
                 name="businessId"
                 control={control}
-                defaultValue=""
+                defaultValue={
+                  structureEdit
+                    ? setValue('businessId', structureEdit.businessId)
+                    : ''
+                }
                 render={({ field: { onChange, value } }) => (
                   <TextField
                     autoFocus
@@ -244,8 +281,10 @@ export default function FormStructure() {
                     options={timeZonesList}
                     getOptionLabel={(option) => option}
                     onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('timezone');
                       setValue('timezone', newValue);
                     }}
+                    value={value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -255,8 +294,6 @@ export default function FormStructure() {
                         fullWidth
                         id="timezone"
                         label="Timezone"
-                        value={value}
-                        onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
                       />
@@ -266,6 +303,7 @@ export default function FormStructure() {
                 rules={{ required: 'Timezone is required' }}
               />
             </Grid>
+            {/*
             <Grid item xs={12}>
               <Controller
                 name="structure"
@@ -278,6 +316,7 @@ export default function FormStructure() {
                     onChange={(e, newValue) => {
                       setValue('structure', newValue);
                     }}
+                    value={value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -287,14 +326,50 @@ export default function FormStructure() {
                         fullWidth
                         id="structure"
                         label="Structure"
-                        value={value}
-                        onChange={onChange}
                       />
                     )}
                   />
                 )}
               />
             </Grid>
+              */}
+
+            <Grid item xs={12}>
+              <Controller
+                name="isActive"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    options={isActiveOptions}
+                    getOptionLabel={(option) => option.statusLabel}
+                    onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('isActive');
+                      setValue('isActive', newValue);
+                    }}
+                    value={value}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="isActive"
+                        variant="outlined"
+                        fullWidth
+                        id="isActive"
+                        label="Active"
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  />
+                )}
+                rules={{ required: 'Active status is required' }}
+              />
+            </Grid>
+            {/*
             <Grid item xs={12}>
               <Controller
                 name="isActive"
@@ -329,6 +404,7 @@ export default function FormStructure() {
                 rules={{ required: 'Active is required' }}
               />
             </Grid>
+              */}
           </Grid>
           <Button
             type="submit"

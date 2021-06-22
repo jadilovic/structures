@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
@@ -23,7 +24,7 @@ import useSensor from '../hooks/useSensor';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    margin: theme.spacing(3),
+    margin: theme.spacing(1),
   },
   root: {
     width: '100%',
@@ -177,6 +178,18 @@ export default function IndividualMachineDisplay() {
           </Table>
         </TableContainer>
         <div>
+          <Button
+            aria-label="update"
+            variant="contained"
+            color="inherit"
+            className={classes.button}
+            startIcon={<EditIcon />}
+            onClick={() => {
+              history.push('/edit-machine');
+            }}
+          >
+            Edit Machine
+          </Button>
           <Button
             aria-label="delete"
             variant="contained"
