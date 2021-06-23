@@ -17,7 +17,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
 import { CustomSensorsRowsOverlay } from './NoRowsOverlay';
-import { setAuthorized, deleteMachine, clearData } from '../actions/creator';
+import {
+  setAuthorized,
+  deleteMachine,
+  clearData,
+  changeEdit,
+} from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useSensor from '../hooks/useSensor';
@@ -45,6 +50,7 @@ export default function IndividualMachineDisplay() {
   const classes = useStyles();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  console.log(machine);
   if (_.isEmpty(machine)) {
     const machineData = localStorage.getItem('machine-data');
     machine = JSON.parse(machineData);
@@ -73,6 +79,11 @@ export default function IndividualMachineDisplay() {
 
   function displaySensorRow(sensorId) {
     fetchSensorById(sensorId);
+  }
+
+  function editSelectedMachine() {
+    dispatch(changeEdit(true));
+    history.push('/edit-machine');
   }
 
   const sensorColumns = [
@@ -184,9 +195,7 @@ export default function IndividualMachineDisplay() {
             color="inherit"
             className={classes.button}
             startIcon={<EditIcon />}
-            onClick={() => {
-              history.push('/edit-machine');
-            }}
+            onClick={() => editSelectedMachine()}
           >
             Edit Machine
           </Button>

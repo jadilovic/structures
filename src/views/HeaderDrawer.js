@@ -31,7 +31,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, Switch, Route } from 'react-router-dom';
-import { clearData, setAuthorized } from '../actions/creator';
+import {
+  changeEdit,
+  clearData,
+  removeMachine,
+  setAuthorized,
+} from '../actions/creator';
 import StructuresTable from '../components/StructuresTable';
 import FormStructure from '../components/FormStructure';
 import FormMachine from '../components/FormMachine';
@@ -150,9 +155,11 @@ const HeaderDrawer = (props) => {
 
   const handleDrawerCloseAfterSelection = (pageURL) => {
     handleDrawerClose();
-    dispatch(clearData());
-    localStorage.removeItem('machine-edit');
+    dispatch(changeEdit(false));
+    dispatch(removeMachine());
+    console.log('TEST');
     history.push(pageURL);
+    // window.location.reload();
   };
 
   function logout() {

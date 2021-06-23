@@ -19,6 +19,8 @@ import {
   DELETE_SENSOR,
   DELETE_MACHINE,
   LOAD_SENSOR_TYPES,
+  EDIT_FORM,
+  REMOVE_MACHINE,
 } from '../constants/action-types';
 import authHeader from '../service/auth-header';
 
@@ -33,6 +35,7 @@ const initialState = {
   isAuth: false,
   loading: true,
   error: null,
+  edit: false,
 };
 
 function RootReducer(state = initialState, action) {
@@ -163,6 +166,20 @@ function RootReducer(state = initialState, action) {
       sensorTypes: action.payload,
       loading: false,
     };
+  } else if (action.type === EDIT_FORM) {
+    // SAVING DOWNLOADED API SENSOR TYPES DATA IN STORE
+    console.log('REDUCER TEST');
+    return {
+      ...state,
+      edit: action.payload,
+    };
+  } else if (action.type === REMOVE_MACHINE) {
+    // EEMOVING INDIVIDUAL MACHINE FROM STORE
+    console.log('REDUCER TEST REMOVE MACHINE');
+    return {
+      ...state,
+      individualMachine: {},
+    };
   } else if (action.type === CLEAR_DATA) {
     // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
     return {
@@ -176,6 +193,7 @@ function RootReducer(state = initialState, action) {
       individualSensor: {},
       isAuth: true,
       loading: true,
+      edit: false,
     };
     // DELETING SELECTED STRUCTURE
   } else if (action.type === DELETE_STRUCTURE) {

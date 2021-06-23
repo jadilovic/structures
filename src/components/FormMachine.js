@@ -9,16 +9,23 @@ import {
   makeStyles,
   Container,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
 import momentTZ from 'moment-timezone';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { createMachine, setAuthorized } from '../actions/creator';
+import {
+  clearData,
+  createMachine,
+  setAuthorized,
+  displayMachine,
+} from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useMachine from '../hooks/useMachine';
 import useSensor from '../hooks/useSensor';
+import useStructure from '../hooks/useStructure';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,35 +54,18 @@ const useStyles = makeStyles((theme) => ({
 export default function FormMachine() {
   const { fetchMachineTypes } = useMachine();
   const { fetchSensorsOnly } = useSensor();
+  const { fetchStructuresOnly } = useStructure();
   const dispatch = useDispatch();
   const timeZonesList = momentTZ.tz.names();
   let structures = useSelector((state) => state.main.structures);
   const machineTypes = useSelector((state) => state.main.machineTypes);
   const sensorsList = useSelector((state) => state.main.sensors);
+  const isEdit = useSelector((state) => state.main.edit);
   let selectedMachineToEdit = useSelector(
     (state) => state.main.individualMachine
   );
   const classes = useStyles();
-  console.log(selectedMachineToEdit);
-  const { handleSubmit, control, reset, setValue, clearErrors } = useForm({
-    defaultValues: selectedMachineToEdit,
-  });
-
-  if (_.isEmpty(structures)) {
-    const structuresData = localStorage.getItem('structures-data');
-    structures = JSON.parse(structuresData);
-    dispatch(setAuthorized(true));
-  } else {
-    localStorage.setItem('structures-data', JSON.stringify(structures));
-  }
-
-  if (_.isEmpty(selectedMachineToEdit)) {
-    const machineData = localStorage.getItem('machine-edit');
-    selectedMachineToEdit = JSON.parse(machineData);
-    dispatch(setAuthorized(true));
-  } else {
-    localStorage.setItem('machine-edit', JSON.stringify(selectedMachineToEdit));
-  }
+  const history = useHistory();
 
   const initialValues = {
     name: '',
@@ -96,35 +86,91 @@ export default function FormMachine() {
     sensors: [],
   };
 
-  // SNACK BAR DELETE NOTIFICATION
+  console.log(isEdit);
+  if (isEdit) {
+    selectedMachineToEdit.isActive = selectedMachineToEdit.isActive
+      ? {
+          statusValue: true,
+          statusLabel: 'Yes',
+        }
+      : {
+          statusValue: false,
+          statusLabel: 'No',
+        };
+    console.log(selectedMachineToEdit.sensors[0]);
+    selectedMachineToEdit.sensors = { ...selectedMachineToEdit.sensors[0] };
+    if (_.isEmpty(selectedMachineToEdit)) {
+      const machineData = localStorage.getItem('machine-edit');
+      selectedMachineToEdit = JSON.parse(machineData);
+      dispatch(setAuthorized(true));
+    } else {
+      localStorage.setItem(
+        'machine-edit',
+        JSON.stringify(selectedMachineToEdit)
+      );
+    }
+  } else {
+    selectedMachineToEdit = initialValues;
+  }
+
+  const { handleSubmit, control, reset, setValue, clearErrors } = useForm({
+    defaultValues: selectedMachineToEdit,
+  });
+
+  console.log(selectedMachineToEdit);
+
+  if (_.isEmpty(structures)) {
+    const structuresData = localStorage.getItem('structures-data');
+    structures = JSON.parse(structuresData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('structures-data', JSON.stringify(structures));
+  }
+
+  // SNACK BAR CREATED NOTIFICATION
   const displayCreatedNewMachineNotification = () => {
     dispatch(
       setSnackbar(true, 'success', 'New machine has been successfully created!')
     );
   };
 
+  // SNACK BAR EDITED NOTIFICATION
+  const displayEditedMachineNotification = () => {
+    dispatch(
+      setSnackbar(true, 'success', 'Machine has been successfully edited!')
+    );
+  };
+
   const onSubmit = (data, e) => {
-    if (selectedMachineToEdit) {
+    if (isEdit) {
       const editedMachine = { ...selectedMachineToEdit, ...data };
+      editedMachine.isActive = data.isActive.statusValue;
+      editedMachine.sensors = [data.sensors];
+      console.log(editedMachine.isActive);
+      console.log(editedMachine.sensors);
       console.log(editedMachine);
+      displayEditedMachineNotification();
+      dispatch(clearData());
+      dispatch(displayMachine(editedMachine));
+      history.push('/individual-machine');
     } else {
       const newMachine = { ...initialValues, ...data };
       newMachine.isActive = data.isActive.statusValue;
       newMachine.sensors = [data.sensors];
-
       console.log(newMachine);
+      dispatch(createMachine(newMachine));
+      displayCreatedNewMachineNotification();
     }
     console.log(data);
     reset({ ...initialValues });
     e.target.reset();
-    // (createMachine(newMachine));
-    displayCreatedNewMachineNotification();
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchMachineTypes();
     fetchSensorsOnly();
+    fetchStructuresOnly();
   }, []);
 
   const isActiveOptions = [
@@ -139,7 +185,7 @@ export default function FormMachine() {
   ];
 
   console.log(selectedMachineToEdit);
-  // console.log(structures);
+  console.log(structures);
   console.log(machineTypes);
   console.log(sensorsList);
 
@@ -151,7 +197,7 @@ export default function FormMachine() {
           <BallotRoundedIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          {selectedMachineToEdit ? 'Edit Machine' : 'Create New Machine'}
+          {isEdit ? 'Edit Machine' : 'Create New Machine'}
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
@@ -451,7 +497,7 @@ export default function FormMachine() {
             color="primary"
             className={classes.submit}
           >
-            Submit
+            {isEdit ? 'Save' : 'Submit'}
           </Button>
         </form>
       </div>

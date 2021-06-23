@@ -18,6 +18,8 @@ import {
   CREATE_SENSOR,
   LOAD_INDIVIDUAL_MACHINE,
   DELETE_SENSOR,
+  EDIT_FORM,
+  REMOVE_MACHINE,
 } from '../constants/action-types';
 
 export function setAuthorized(payload) {
@@ -82,6 +84,14 @@ export function deleteMachine(payload) {
 
 export function deleteSensor(payload) {
   return { type: DELETE_SENSOR, payload };
+}
+
+export function changeEdit(payload) {
+  return { type: EDIT_FORM, payload };
+}
+
+export function removeMachine() {
+  return { type: REMOVE_MACHINE };
 }
 
 export function clearData() {
