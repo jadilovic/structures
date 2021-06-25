@@ -33,6 +33,7 @@ const useSensor = () => {
       })
       .then((response) => {
         dispatch(loadSensors(response.data));
+        history.push('/edit-machine');
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);

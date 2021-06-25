@@ -64,6 +64,7 @@ export default function FormMachine() {
   let selectedMachineToEdit = useSelector(
     (state) => state.main.individualMachine
   );
+  console.log(selectedMachineToEdit);
   const classes = useStyles();
 
   const initialValues = {
@@ -180,7 +181,12 @@ export default function FormMachine() {
     },
   ];
 
+  console.log(selectedMachineToEdit);
   console.log(sensorsList);
+  console.log(timeZonesList);
+  console.log(structures);
+  console.log(machineTypes);
+  console.log(isEdit);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -447,7 +453,8 @@ export default function FormMachine() {
                 rules={{ required: 'Structure is required' }}
               />
             </Grid>
-            <Grid item xs={12}>
+            {/*
+<Grid item xs={12}>
               <Controller
                 name="sensors"
                 control={control}
@@ -482,22 +489,45 @@ export default function FormMachine() {
                 rules={{ required: 'Sensor is required' }}
               />
             </Grid>
-            <Autocomplete
-              multiple
-              id="tags-outlined"
-              options={sensorsList}
-              getOptionLabel={(option) => console.log(option)}
-              defaultValue={[sensorsList[13]]}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="filterSelectedOptions"
-                  placeholder="Favorites"
-                />
-              )}
-            />
+              */}
+            <Grid item xs={12}>
+              <Controller
+                name="sensors"
+                control={control}
+                defaultValue=""
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Autocomplete
+                    multiple
+                    id="tags-outlined"
+                    options={sensorsList}
+                    getOptionLabel={(option) => option.sensorId}
+                    onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('sensors');
+                      setValue('sensors', newValue);
+                    }}
+                    value={value}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        name="sensors"
+                        variant="outlined"
+                        placeholder="Input"
+                        fullWidth
+                        id="sensors"
+                        label="Sensors"
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  />
+                )}
+                rules={{ required: 'Sensor is required' }}
+              />
+            </Grid>
           </Grid>
           <Button
             type="submit"
