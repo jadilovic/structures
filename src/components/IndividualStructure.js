@@ -16,7 +16,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
-import { deleteStructure, clearData, setAuthorized } from '../actions/creator';
+import {
+  deleteStructure,
+  clearData,
+  setAuthorized,
+  changeEdit,
+} from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
 import { CustomMachinesRowsOverlay } from './NoRowsOverlay';
@@ -40,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualStructureDisplay() {
   const { fetchMachineById } = useMachine();
-  const { fetchStructureByIdToUpdate } = useStructure();
+  const { fetchStructureById } = useStructure();
   let structure = useSelector((state) => state.main.individualStructure);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -78,12 +83,12 @@ export default function IndividualStructureDisplay() {
     displayDeleteNotification();
   }
 
-  /*
-  function updateIndividualStructure(structureId) {
-    dispatch(clearData());
-    fetchStructureByIdToUpdate(structureId);
+  function editSelectedStructure(structureId) {
+    dispatch(changeEdit(true));
+    fetchStructureById(structureId);
+    history.push('/edit-structure');
   }
-*/
+
   const machinesColumns = [
     {
       field: 'name',
@@ -185,9 +190,7 @@ export default function IndividualStructureDisplay() {
             color="inherit"
             className={classes.button}
             startIcon={<EditIcon />}
-            onClick={() => {
-              history.push('/form-structure');
-            }}
+            onClick={() => editSelectedStructure(structure.id)}
           >
             Edit Structure
           </Button>

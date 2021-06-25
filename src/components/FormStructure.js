@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { createStructure, setAuthorized } from '../actions/creator';
+import { createStructure, setAuthorized, clearData } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useStructure from '../hooks/useStructure';
 
@@ -48,28 +48,13 @@ export default function FormStructure() {
   const { fetchStructuresOnly, editStructure } = useStructure();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);
-  let structureEdit = useSelector((state) => state.main.individualStructure);
-
+  const isEdit = useSelector((state) => state.main.edit);
+  let selectedStructureToEdit = useSelector(
+    (state) => state.main.individualStructure
+  );
   const classes = useStyles();
-  const { handleSubmit, control, reset, setValue, clearErrors } = useForm();
 
-  if (_.isEmpty(structures)) {
-    const structuresData = localStorage.getItem('structures-data');
-    structures = JSON.parse(structuresData);
-    dispatch(setAuthorized(true));
-  } else {
-    localStorage.setItem('structures-data', JSON.stringify(structures));
-  }
-
-  if (_.isEmpty(structureEdit)) {
-    const structureData = localStorage.getItem('structure-edit');
-    structureEdit = JSON.parse(structureData);
-    dispatch(setAuthorized(true));
-  } else {
-    localStorage.setItem('structure-edit', JSON.stringify(structureEdit));
-  }
-
-  let initialValues = {
+  const initialValues = {
     businessId: '',
     name: '',
     description: '',
@@ -83,8 +68,41 @@ export default function FormStructure() {
     machines: [],
   };
 
-  if (structureEdit) {
-    initialValues = { ...structureEdit };
+  console.log(isEdit);
+  if (isEdit) {
+    selectedStructureToEdit.isActive = selectedStructureToEdit.isActive
+      ? {
+          statusValue: true,
+          statusLabel: 'Yes',
+        }
+      : {
+          statusValue: false,
+          statusLabel: 'No',
+        };
+    if (_.isEmpty(selectedStructureToEdit)) {
+      const structureData = localStorage.getItem('structure-edit');
+      selectedStructureToEdit = JSON.parse(structureData);
+      dispatch(setAuthorized(true));
+    } else {
+      localStorage.setItem(
+        'structure-edit',
+        JSON.stringify(selectedStructureToEdit)
+      );
+    }
+  } else {
+    selectedStructureToEdit = initialValues;
+  }
+
+  const { handleSubmit, control, reset, setValue, clearErrors } = useForm({
+    defaultValues: selectedStructureToEdit,
+  });
+
+  if (_.isEmpty(structures)) {
+    const structuresData = localStorage.getItem('structures-data');
+    structures = JSON.parse(structuresData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('structures-data', JSON.stringify(structures));
   }
 
   // SNACK BAR NEW STRUCTURE NOTIFICATION
@@ -98,32 +116,35 @@ export default function FormStructure() {
     );
   };
 
-  // SNACK BAR NEW STRUCTURE NOTIFICATION
+  // SNACK BAR EDITED STRUCTURE NOTIFICATION
   const displayEditedStructureNotification = () => {
     dispatch(
       setSnackbar(
         true,
         'success',
-        'New structure has been successfully edited!'
+        'Selected structure has been successfully edited!'
       )
     );
   };
 
   const onSubmit = (data, e) => {
-    console.log(data.isActive.statusValue);
-    const newStructure = { ...initialValues, ...data };
-    newStructure.isActive = data.isActive.statusValue;
-    reset({ ...initialValues });
-    e.target.reset();
-    if (structureEdit) {
-      //  editStructure(newStructure);
-      console.log(structureEdit);
+    if (isEdit) {
+      const editedStructure = { ...selectedStructureToEdit, ...data };
+      editedStructure.isActive = data.isActive.statusValue;
       displayEditedStructureNotification();
+      console.log(editedStructure);
+      // dispatch(clearData());
+      dispatch(editStructure(editedStructure));
     } else {
-      // dispatch(createStructure(newStructure));
+      const newStructure = { ...initialValues, ...data };
+      newStructure.isActive = data.isActive.statusValue;
       console.log(newStructure);
+      dispatch(createStructure(newStructure));
       displayCreatedNewStructureNotification();
     }
+    console.log(data);
+    reset({ ...initialValues });
+    e.target.reset();
   };
 
   useEffect(() => {
@@ -150,7 +171,7 @@ export default function FormStructure() {
           <AssignmentIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          {structureEdit ? 'Edit Structure' : 'Create New Structure'}
+          {isEdit ? 'Edit Structure' : 'Create New Structure'}
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
@@ -158,11 +179,6 @@ export default function FormStructure() {
               <Controller
                 name="businessId"
                 control={control}
-                defaultValue={
-                  structureEdit
-                    ? setValue('businessId', structureEdit.businessId)
-                    : ''
-                }
                 render={({ field: { onChange, value } }) => (
                   <TextField
                     autoFocus
@@ -303,7 +319,6 @@ export default function FormStructure() {
                 rules={{ required: 'Timezone is required' }}
               />
             </Grid>
-            {/*
             <Grid item xs={12}>
               <Controller
                 name="structure"
@@ -312,7 +327,7 @@ export default function FormStructure() {
                 render={({ field: { onChange, value } }) => (
                   <Autocomplete
                     options={structures}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) => option?.name}
                     onChange={(e, newValue) => {
                       setValue('structure', newValue);
                     }}
@@ -332,8 +347,6 @@ export default function FormStructure() {
                 )}
               />
             </Grid>
-              */}
-
             <Grid item xs={12}>
               <Controller
                 name="isActive"
@@ -345,7 +358,7 @@ export default function FormStructure() {
                 }) => (
                   <Autocomplete
                     options={isActiveOptions}
-                    getOptionLabel={(option) => option.statusLabel}
+                    getOptionLabel={(option) => option?.statusLabel}
                     onChange={(e, newValue) => {
                       if (newValue !== value) clearErrors('isActive');
                       setValue('isActive', newValue);
@@ -369,42 +382,6 @@ export default function FormStructure() {
                 rules={{ required: 'Active status is required' }}
               />
             </Grid>
-            {/*
-            <Grid item xs={12}>
-              <Controller
-                name="isActive"
-                control={control}
-                defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <TextField
-                    name="isActive"
-                    variant="outlined"
-                    fullWidth
-                    id="isActive"
-                    select
-                    label="Active"
-                    value={value}
-                    SelectProps={{
-                      native: true,
-                    }}
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
-                  >
-                    {active.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
-                )}
-                rules={{ required: 'Active is required' }}
-              />
-            </Grid>
-              */}
           </Grid>
           <Button
             type="submit"

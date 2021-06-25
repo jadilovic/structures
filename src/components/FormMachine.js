@@ -8,8 +8,8 @@ import {
   Typography,
   makeStyles,
   Container,
+  Chip,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
 import momentTZ from 'moment-timezone';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FormMachine() {
-  const { fetchMachineTypes } = useMachine();
+  const { fetchMachineTypes, editMachine } = useMachine();
   const { fetchSensorsOnly } = useSensor();
   const { fetchStructuresOnly } = useStructure();
   const dispatch = useDispatch();
@@ -65,7 +65,6 @@ export default function FormMachine() {
     (state) => state.main.individualMachine
   );
   const classes = useStyles();
-  const history = useHistory();
 
   const initialValues = {
     name: '',
@@ -87,6 +86,7 @@ export default function FormMachine() {
   };
 
   console.log(isEdit);
+  console.log(selectedMachineToEdit);
   if (isEdit) {
     selectedMachineToEdit.isActive = selectedMachineToEdit.isActive
       ? {
@@ -97,8 +97,7 @@ export default function FormMachine() {
           statusValue: false,
           statusLabel: 'No',
         };
-    console.log(selectedMachineToEdit.sensors[0]);
-    selectedMachineToEdit.sensors = { ...selectedMachineToEdit.sensors[0] };
+    selectedMachineToEdit.sensors = [{ ...selectedMachineToEdit.sensors[0] }];
     if (_.isEmpty(selectedMachineToEdit)) {
       const machineData = localStorage.getItem('machine-edit');
       selectedMachineToEdit = JSON.parse(machineData);
@@ -145,14 +144,11 @@ export default function FormMachine() {
     if (isEdit) {
       const editedMachine = { ...selectedMachineToEdit, ...data };
       editedMachine.isActive = data.isActive.statusValue;
-      editedMachine.sensors = [data.sensors];
-      console.log(editedMachine.isActive);
-      console.log(editedMachine.sensors);
+      editedMachine.sensors = data.sensors;
       console.log(editedMachine);
       displayEditedMachineNotification();
       dispatch(clearData());
-      dispatch(displayMachine(editedMachine));
-      history.push('/individual-machine');
+      dispatch(editMachine(editedMachine));
     } else {
       const newMachine = { ...initialValues, ...data };
       newMachine.isActive = data.isActive.statusValue;
@@ -184,9 +180,6 @@ export default function FormMachine() {
     },
   ];
 
-  console.log(selectedMachineToEdit);
-  console.log(structures);
-  console.log(machineTypes);
   console.log(sensorsList);
 
   return (
@@ -253,7 +246,7 @@ export default function FormMachine() {
                 }) => (
                   <Autocomplete
                     options={isActiveOptions}
-                    getOptionLabel={(option) => option.statusLabel}
+                    getOptionLabel={(option) => option?.statusLabel}
                     onChange={(e, newValue) => {
                       if (newValue !== value) clearErrors('isActive');
                       setValue('isActive', newValue);
@@ -395,7 +388,7 @@ export default function FormMachine() {
                 }) => (
                   <Autocomplete
                     options={machineTypes}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) => option?.name}
                     onChange={(e, newValue) => {
                       if (newValue !== value) clearErrors('type');
                       setValue('type', newValue);
@@ -430,7 +423,7 @@ export default function FormMachine() {
                 }) => (
                   <Autocomplete
                     options={structures}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) => option?.name}
                     onChange={(e, newValue) => {
                       if (newValue !== value) clearErrors('structure');
                       setValue('structure', newValue);
@@ -465,10 +458,10 @@ export default function FormMachine() {
                 }) => (
                   <Autocomplete
                     options={sensorsList}
-                    getOptionLabel={(option) => option.sensorId}
+                    getOptionLabel={(option) => option[0]?.sensorId}
                     onChange={(e, newValue) => {
                       if (newValue !== value) clearErrors('sensors');
-                      setValue('sensors', newValue);
+                      setValue('sensors', [newValue]);
                     }}
                     value={value}
                     renderInput={(params) => (
@@ -489,6 +482,22 @@ export default function FormMachine() {
                 rules={{ required: 'Sensor is required' }}
               />
             </Grid>
+            <Autocomplete
+              multiple
+              id="tags-outlined"
+              options={sensorsList}
+              getOptionLabel={(option) => console.log(option)}
+              defaultValue={[sensorsList[13]]}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="filterSelectedOptions"
+                  placeholder="Favorites"
+                />
+              )}
+            />
           </Grid>
           <Button
             type="submit"

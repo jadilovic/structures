@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import {
   makeStyles,
@@ -31,12 +31,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter, Switch, Route } from 'react-router-dom';
-import {
-  changeEdit,
-  clearData,
-  removeMachine,
-  setAuthorized,
-} from '../actions/creator';
+import { changeEdit, clearData, setAuthorized } from '../actions/creator';
 import StructuresTable from '../components/StructuresTable';
 import FormStructure from '../components/FormStructure';
 import FormMachine from '../components/FormMachine';
@@ -156,10 +151,8 @@ const HeaderDrawer = (props) => {
   const handleDrawerCloseAfterSelection = (pageURL) => {
     handleDrawerClose();
     dispatch(changeEdit(false));
-    dispatch(removeMachine());
     console.log('TEST');
     history.push(pageURL);
-    // window.location.reload();
   };
 
   function logout() {
@@ -178,7 +171,15 @@ const HeaderDrawer = (props) => {
     {
       title: 'Create Structure',
       pageURL: '/form-structure',
-      icon: <FontAwesomeIcon icon={faFolderPlus} className={classes.icons} />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faFolderPlus}
+          className={classes.icons}
+          onClick={() => {
+            window.location.href = '/form-structure';
+          }}
+        />
+      ),
     },
     {
       title: 'Machines',
@@ -188,7 +189,15 @@ const HeaderDrawer = (props) => {
     {
       title: 'Create Machine',
       pageURL: '/form-machine',
-      icon: <FontAwesomeIcon icon={faPlus} className={classes.icons} />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faPlus}
+          className={classes.icons}
+          onClick={() => {
+            window.location.href = '/form-machine';
+          }}
+        />
+      ),
     },
     {
       title: 'Sensors',
@@ -298,6 +307,11 @@ const HeaderDrawer = (props) => {
             <PrivateRoute
               component={FormStructure}
               path="/form-structure"
+              exact
+            />
+            <PrivateRoute
+              component={FormStructure}
+              path="/edit-structure"
               exact
             />
             <PrivateRoute component={FormMachine} path="/form-machine" exact />

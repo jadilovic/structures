@@ -26,6 +26,7 @@ import {
 import ConfirmDialog from './ConfirmDialog';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useSensor from '../hooks/useSensor';
+import useMachine from '../hooks/useMachine';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualMachineDisplay() {
   const { fetchSensorById } = useSensor();
+  const { fetchMachineById } = useMachine();
   let machine = useSelector((state) => state.main.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -83,6 +85,7 @@ export default function IndividualMachineDisplay() {
 
   function editSelectedMachine() {
     dispatch(changeEdit(true));
+    // fetchMachineById(machineId);
     history.push('/edit-machine');
   }
 

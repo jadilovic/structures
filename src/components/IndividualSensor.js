@@ -56,6 +56,7 @@ export default function IndividualSensorDisplay() {
 
   function displaySensorMachine(machine) {
     fetchMachineById(machine.id);
+    history.push('/individual-machine');
   }
 
   // SNACK BAR DELETE NOTIFICATION

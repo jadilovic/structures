@@ -9,7 +9,7 @@ import useMachine from '../hooks/useMachine';
 
 export default function MachinesTable() {
   const dispatch = useDispatch();
-  const { fetchMachinesWithSensors } = useMachine();
+  const { fetchMachinesWithSensors, fetchMachineById } = useMachine();
 
   const userScreenHeight = window.innerHeight;
 
@@ -78,13 +78,14 @@ export default function MachinesTable() {
       flex: 1,
     },
   ];
-
+  console.log(machinesData);
   const machines = { columns: machinesColumns, rows: machinesData };
 
-  function displayMachineRow(data) {
+  function displayMachineRow(machineId) {
     dispatch(clearData());
-    dispatch(displayMachine(data));
-    history.push('/individual-machine');
+    fetchMachineById(machineId);
+    // dispatch(displayMachine(machineData));
+    // history.push('/individual-machine');
   }
 
   return (
@@ -105,7 +106,7 @@ export default function MachinesTable() {
           aria-label="a dense table"
           {...machines}
           onRowClick={(props) => {
-            displayMachineRow(props.row);
+            displayMachineRow(props.row.id);
           }}
           filterModel={{
             items: [

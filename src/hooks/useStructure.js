@@ -62,6 +62,7 @@ const useStructure = () => {
     return structure;
   }
 
+  /*
   function fetchStructureByIdToUpdate(id) {
     axios
       .get(`/api/structures/${id}?populate=machines structure`, {
@@ -78,15 +79,16 @@ const useStructure = () => {
         console.log(error);
       });
   }
+*/
 
-  function editStructure(edit) {
+  function editStructure(editedStructure) {
     axios
-      .put('/api/structures', edit, {
+      .put('/api/structures', editedStructure, {
         headers: authHeader(),
       })
       .then(() => {
         console.log('EDITED STRUCTURE');
-        dispatch(displayStructure(edit));
+        dispatch(displayStructure(editedStructure));
         history.push('/individual-structure');
       })
       .catch((error) => {
@@ -100,7 +102,7 @@ const useStructure = () => {
     fetchStructuresWithMachines,
     fetchStructuresWithMachinesParentStructure,
     fetchStructureById,
-    fetchStructureByIdToUpdate,
+    // fetchStructureByIdToUpdate,
     editStructure,
   };
 };

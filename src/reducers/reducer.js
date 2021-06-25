@@ -167,7 +167,7 @@ function RootReducer(state = initialState, action) {
       loading: false,
     };
   } else if (action.type === EDIT_FORM) {
-    // SAVING DOWNLOADED API SENSOR TYPES DATA IN STORE
+    // SAVING EDIT VALUE TO STORE
     console.log('REDUCER TEST');
     return {
       ...state,

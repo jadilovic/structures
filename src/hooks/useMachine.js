@@ -71,11 +71,28 @@ const useMachine = () => {
       });
   }
 
+  function editMachine(editedMachine) {
+    axios
+      .put('/api/machines', editedMachine, {
+        headers: authHeader(),
+      })
+      .then(() => {
+        console.log('EDITED MACHINE');
+        dispatch(displayMachine(editedMachine));
+        history.push('/individual-machine');
+      })
+      .catch((error) => {
+        console.log('ERROR EDITING MACHINE');
+        console.log(error.response.data);
+      });
+  }
+
   return {
     fetchMachinesWithSensors,
     fetchMachinesOnly,
     fetchMachineById,
     fetchMachineTypes,
+    editMachine,
   };
 };
 
