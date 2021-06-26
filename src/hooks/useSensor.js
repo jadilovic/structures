@@ -62,10 +62,27 @@ const useSensor = () => {
       })
       .then((response) => {
         dispatch(loadSensorTypes(response.data));
+        history.push('/edit-sensor');
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);
         console.log(error);
+      });
+  }
+
+  function editSensor(editedSensor) {
+    axios
+      .put('/api/sensors', editedSensor, {
+        headers: authHeader(),
+      })
+      .then(() => {
+        console.log('EDITED SENSOR');
+        dispatch(displaySensor(editedSensor));
+        history.push('/individual-sensor');
+      })
+      .catch((error) => {
+        console.log('ERROR EDITING SENSOR');
+        console.log(error.response.data);
       });
   }
 
@@ -74,6 +91,7 @@ const useSensor = () => {
     fetchSensorsWithMachines,
     fetchSensorById,
     fetchSensorTypes,
+    editSensor,
   };
 };
 

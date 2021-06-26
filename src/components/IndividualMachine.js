@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualMachineDisplay() {
   const { fetchSensorById, fetchSensorsOnly } = useSensor();
-  const { fetchMachineById, fetchMachineTypes } = useMachine();
+  const { fetchMachineTypes } = useMachine();
   const { fetchStructuresOnly } = useStructure();
   let machine = useSelector((state) => state.main.individualMachine);
   const dispatch = useDispatch();
@@ -90,8 +90,6 @@ export default function IndividualMachineDisplay() {
     fetchStructuresOnly();
     fetchMachineTypes();
     fetchSensorsOnly();
-    // fetchMachineById(machineId);
-    // history.push('/edit-machine');
   }
 
   const sensorColumns = [
@@ -124,7 +122,7 @@ export default function IndividualMachineDisplay() {
 
   const sensorsDataGrid = {
     columns: sensorColumns,
-    rows: machine.sensors,
+    rows: machine?.sensors,
   };
 
   return (

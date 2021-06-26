@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from '@material-ui/core';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
-import { clearData, displayMachine } from '../actions/creator';
+import { clearData } from '../actions/creator';
 import useMachine from '../hooks/useMachine';
 
 export default function MachinesTable() {
@@ -21,7 +20,6 @@ export default function MachinesTable() {
 
   const machinesData = useSelector((state) => state.main.machines);
   const loading = useSelector((state) => state.main.loading);
-  const history = useHistory();
 
   const machinesColumns = [
     {
@@ -84,8 +82,6 @@ export default function MachinesTable() {
   function displayMachineRow(machineId) {
     dispatch(clearData());
     fetchMachineById(machineId);
-    // dispatch(displayMachine(machineData));
-    // history.push('/individual-machine');
   }
 
   return (

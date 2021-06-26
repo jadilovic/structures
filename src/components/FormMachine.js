@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Avatar,
   Button,
@@ -8,7 +8,6 @@ import {
   Typography,
   makeStyles,
   Container,
-  Chip,
 } from '@material-ui/core';
 import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
 import momentTZ from 'moment-timezone';
@@ -16,12 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {
-  clearData,
-  createMachine,
-  setAuthorized,
-  displayMachine,
-} from '../actions/creator';
+import { clearData, createMachine, setAuthorized } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useMachine from '../hooks/useMachine';
 import useSensor from '../hooks/useSensor';
@@ -64,7 +58,6 @@ export default function FormMachine() {
   let selectedMachineToEdit = useSelector(
     (state) => state.main.individualMachine
   );
-  console.log(selectedMachineToEdit);
   const classes = useStyles();
 
   const initialValues = {
@@ -86,8 +79,14 @@ export default function FormMachine() {
     sensors: [],
   };
 
-  console.log(isEdit);
-  console.log(selectedMachineToEdit);
+  if (_.isEmpty(selectedMachineToEdit)) {
+    const machineData = localStorage.getItem('machine-edit');
+    selectedMachineToEdit = JSON.parse(machineData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('machine-edit', JSON.stringify(selectedMachineToEdit));
+  }
+
   if (isEdit) {
     selectedMachineToEdit.isActive = selectedMachineToEdit.isActive
       ? {
@@ -99,16 +98,6 @@ export default function FormMachine() {
           statusLabel: 'No',
         };
     selectedMachineToEdit.sensors = [{ ...selectedMachineToEdit.sensors[0] }];
-    if (_.isEmpty(selectedMachineToEdit)) {
-      const machineData = localStorage.getItem('machine-edit');
-      selectedMachineToEdit = JSON.parse(machineData);
-      dispatch(setAuthorized(true));
-    } else {
-      localStorage.setItem(
-        'machine-edit',
-        JSON.stringify(selectedMachineToEdit)
-      );
-    }
   } else {
     selectedMachineToEdit = initialValues;
   }
@@ -116,8 +105,6 @@ export default function FormMachine() {
   const { handleSubmit, control, reset, setValue, clearErrors } = useForm({
     defaultValues: selectedMachineToEdit,
   });
-
-  console.log(selectedMachineToEdit);
 
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
@@ -146,19 +133,16 @@ export default function FormMachine() {
       const editedMachine = { ...selectedMachineToEdit, ...data };
       editedMachine.isActive = data.isActive.statusValue;
       editedMachine.sensors = data.sensors;
-      console.log(editedMachine);
       displayEditedMachineNotification();
       dispatch(clearData());
       dispatch(editMachine(editedMachine));
     } else {
       const newMachine = { ...initialValues, ...data };
       newMachine.isActive = data.isActive.statusValue;
-      newMachine.sensors = [data.sensors];
-      console.log(newMachine);
+      newMachine.sensors = data.sensors;
       dispatch(createMachine(newMachine));
       displayCreatedNewMachineNotification();
     }
-    console.log(data);
     reset({ ...initialValues });
     e.target.reset();
   };
@@ -180,13 +164,6 @@ export default function FormMachine() {
       statusLabel: 'No',
     },
   ];
-
-  console.log(selectedMachineToEdit);
-  console.log(sensorsList);
-  console.log(timeZonesList);
-  console.log(structures);
-  console.log(machineTypes);
-  console.log(isEdit);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -453,43 +430,6 @@ export default function FormMachine() {
                 rules={{ required: 'Structure is required' }}
               />
             </Grid>
-            {/*
-<Grid item xs={12}>
-              <Controller
-                name="sensors"
-                control={control}
-                defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <Autocomplete
-                    options={sensorsList}
-                    getOptionLabel={(option) => option[0]?.sensorId}
-                    onChange={(e, newValue) => {
-                      if (newValue !== value) clearErrors('sensors');
-                      setValue('sensors', [newValue]);
-                    }}
-                    value={value}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="Input"
-                        name="sensors"
-                        variant="outlined"
-                        fullWidth
-                        id="sensors"
-                        label="Sensors"
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    )}
-                  />
-                )}
-                rules={{ required: 'Sensor is required' }}
-              />
-            </Grid>
-              */}
             <Grid item xs={12}>
               <Controller
                 name="sensors"

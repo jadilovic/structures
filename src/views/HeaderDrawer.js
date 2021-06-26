@@ -151,7 +151,6 @@ const HeaderDrawer = (props) => {
   const handleDrawerCloseAfterSelection = (pageURL) => {
     handleDrawerClose();
     dispatch(changeEdit(false));
-    console.log('TEST');
     history.push(pageURL);
   };
 
@@ -207,7 +206,15 @@ const HeaderDrawer = (props) => {
     {
       title: 'Create Sensor',
       pageURL: '/form-sensor',
-      icon: <FontAwesomeIcon icon={faPlusCircle} className={classes.icons} />,
+      icon: (
+        <FontAwesomeIcon
+          icon={faPlusCircle}
+          className={classes.icons}
+          onClick={() => {
+            window.location.href = '/form-sensor';
+          }}
+        />
+      ),
     },
   ];
 
@@ -342,6 +349,7 @@ const HeaderDrawer = (props) => {
               exact
             />
             <PrivateRoute component={FormSensor} path="/form-sensor" exact />
+            <PrivateRoute component={FormSensor} path="/edit-sensor" exact />
             <Route component={Login} path="/login" />
             <Route component={Error} path="*" />
           </Switch>

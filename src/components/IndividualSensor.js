@@ -14,17 +14,24 @@ import {
   CardActionArea,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _ from 'lodash';
-import { setAuthorized, clearData, deleteSensor } from '../actions/creator';
+import {
+  setAuthorized,
+  clearData,
+  deleteSensor,
+  changeEdit,
+} from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 import useMachine from '../hooks/useMachine';
+import useSensor from '../hooks/useSensor';
 import { setSnackbar } from '../reducers/snackbarReducer';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    margin: theme.spacing(3),
+    margin: theme.spacing(1),
   },
   root: {
     width: '100%',
@@ -40,6 +47,8 @@ const useStyles = makeStyles((theme) => ({
 // UNDER CONSTRUCTION
 export default function IndividualSensorDisplay() {
   const { fetchMachineById } = useMachine();
+  const { fetchSensorTypes } = useSensor();
+
   let sensor = useSelector((state) => state.main.individualSensor);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -54,9 +63,29 @@ export default function IndividualSensorDisplay() {
     localStorage.setItem('sensor-data', JSON.stringify(sensor));
   }
 
+  function editSelectedSensor() {
+    dispatch(changeEdit(true));
+    fetchSensorTypes();
+  }
+
+  // SNACK BAR NO MACHINE NOTIFICATION
+  const displayNoMachineNotification = () => {
+    dispatch(
+      setSnackbar(
+        true,
+        'info',
+        'This sensor has not be assigned to any machine!'
+      )
+    );
+  };
+
   function displaySensorMachine(machine) {
-    fetchMachineById(machine.id);
-    history.push('/individual-machine');
+    if (!_.isEmpty(machine)) {
+      dispatch(clearData());
+      fetchMachineById(machine.id);
+    } else {
+      displayNoMachineNotification();
+    }
   }
 
   // SNACK BAR DELETE NOTIFICATION
@@ -121,6 +150,19 @@ export default function IndividualSensorDisplay() {
           </Table>
         </TableContainer>
         <div>
+          <Button
+            style={{
+              minWidth: '175px',
+            }}
+            aria-label="update"
+            variant="contained"
+            color="inherit"
+            className={classes.button}
+            startIcon={<EditIcon />}
+            onClick={() => editSelectedSensor()}
+          >
+            Edit Sensor
+          </Button>
           <Button
             aria-label="delete"
             variant="contained"

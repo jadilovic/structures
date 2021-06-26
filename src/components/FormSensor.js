@@ -14,7 +14,7 @@ import ListAltIcon from '@material-ui/icons/ListAlt';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
-import { createSensor, setAuthorized } from '../actions/creator';
+import { createSensor, setAuthorized, clearData } from '../actions/creator';
 import useMachine from '../hooks/useMachine';
 import useSensor from '../hooks/useSensor';
 import { setSnackbar } from '../reducers/snackbarReducer';
@@ -45,20 +45,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormSensor() {
   const dispatch = useDispatch();
-  const { fetchMachinesOnly } = useMachine();
-  const { fetchSensorTypes } = useSensor();
-  let machines = useSelector((state) => state.main.machines);
-  const sensorTypes = useSelector((state) => state.main.sensorTypes);
+  const { editSensor, fetchSensorTypes } = useSensor();
+  let sensorTypes = useSelector((state) => state.main.sensorTypes);
   const classes = useStyles();
-  const { handleSubmit, control, reset, setValue } = useForm();
-
-  if (_.isEmpty(machines)) {
-    const structuresData = localStorage.getItem('machines-data');
-    machines = JSON.parse(structuresData);
-    dispatch(setAuthorized(true));
-  } else {
-    localStorage.setItem('machines-data', JSON.stringify(machines));
-  }
+  const isEdit = useSelector((state) => state.main.edit);
+  let selectedSensorToEdit = useSelector(
+    (state) => state.main.individualSensor
+  );
 
   const initialValues = {
     sensorId: '',
@@ -71,42 +64,83 @@ export default function FormSensor() {
     ssid: '',
     version: '',
     module: '',
-    machine: null,
   };
 
-  // SNACK BAR DELETE NOTIFICATION
+  if (isEdit) {
+    console.log(selectedSensorToEdit.isActive);
+    selectedSensorToEdit.isActive = selectedSensorToEdit.isActive
+      ? {
+          statusValue: true,
+          statusLabel: 'Yes',
+        }
+      : {
+          statusValue: false,
+          statusLabel: 'No',
+        };
+  } else {
+    selectedSensorToEdit = initialValues;
+  }
+
+  console.log(selectedSensorToEdit);
+
+  const { handleSubmit, control, reset, setValue, clearErrors } = useForm({
+    defaultValues: selectedSensorToEdit,
+  });
+
+  if (_.isEmpty(sensorTypes)) {
+    const sensorTypesData = localStorage.getItem('sensor-types-data');
+    sensorTypes = JSON.parse(sensorTypesData);
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('sensor-types-data', JSON.stringify(sensorTypes));
+  }
+
+  // SNACK BAR CREATED NEW SENSOR NOTIFICATION
   const displayCreatedNewSensorNotification = () => {
     dispatch(
       setSnackbar(true, 'success', 'New sensor has been successfully created!')
     );
   };
 
+  // SNACK BAR EDITED SENSOR NOTIFICATION
+  const displayEditedSensorNotification = () => {
+    dispatch(
+      setSnackbar(true, 'success', 'Sensor has been successfully edited!')
+    );
+  };
+
   const onSubmit = (data, e) => {
-    console.log(data);
-    const newSensor = { ...initialValues, ...data };
-    console.log(newSensor.type);
-    console.log(newSensor.machine);
+    if (isEdit) {
+      const editedSensor = { ...selectedSensorToEdit, ...data };
+      editedSensor.isActive = data.isActive.statusValue;
+      displayEditedSensorNotification();
+      dispatch(clearData());
+      console.log(editedSensor);
+      dispatch(editSensor(editedSensor));
+    } else {
+      const newSensor = { ...initialValues, ...data };
+      newSensor.isActive = data.isActive.statusValue;
+      console.log(newSensor);
+      dispatch(createSensor(newSensor));
+      displayCreatedNewSensorNotification();
+    }
     reset({ ...initialValues });
     e.target.reset();
-    dispatch(createSensor(newSensor));
-    displayCreatedNewSensorNotification();
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchSensorTypes();
-    fetchMachinesOnly();
   }, []);
 
-  const active = [
-    {},
+  const isActiveOptions = [
     {
-      value: true,
-      label: 'Yes',
+      statusValue: true,
+      statusLabel: 'Yes',
     },
     {
-      value: false,
-      label: 'No',
+      statusValue: false,
+      statusLabel: 'No',
     },
   ];
 
@@ -118,7 +152,7 @@ export default function FormSensor() {
           <ListAltIcon />
         </Avatar>
         <Typography component="h3" variant="h5">
-          Create New Sensor
+          {isEdit ? 'Edit Sensor' : 'Create New Sensor'}
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
@@ -156,29 +190,30 @@ export default function FormSensor() {
                   field: { onChange, value },
                   fieldState: { error },
                 }) => (
-                  <TextField
-                    name="isActive"
-                    variant="outlined"
-                    fullWidth
-                    id="isActive"
-                    select
-                    label="Active"
-                    value={value}
-                    SelectProps={{
-                      native: true,
+                  <Autocomplete
+                    options={isActiveOptions}
+                    getOptionLabel={(option) => option?.statusLabel}
+                    onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('isActive');
+                      setValue('isActive', newValue);
                     }}
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
-                  >
-                    {active.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
+                    value={value}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Input"
+                        name="isActive"
+                        variant="outlined"
+                        fullWidth
+                        id="isActive"
+                        label="Active"
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  />
                 )}
-                rules={{ required: 'Active is required' }}
+                rules={{ required: 'Active status is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -192,10 +227,12 @@ export default function FormSensor() {
                 }) => (
                   <Autocomplete
                     options={sensorTypes}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option) => option?.name}
                     onChange={(e, newValue) => {
+                      if (newValue !== value) clearErrors('type');
                       setValue('type', newValue);
                     }}
+                    value={value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -205,8 +242,6 @@ export default function FormSensor() {
                         fullWidth
                         id="type"
                         label="Sensor Type"
-                        value={value}
-                        onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
                       />
@@ -234,41 +269,6 @@ export default function FormSensor() {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="machine"
-                control={control}
-                defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <Autocomplete
-                    options={machines}
-                    getOptionLabel={(option) => option.name}
-                    onChange={(e, newValue) => {
-                      setValue('machine', newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="Input"
-                        name="machine"
-                        variant="outlined"
-                        fullWidth
-                        id="machine"
-                        label="Machine"
-                        value={value}
-                        onChange={onChange}
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    )}
-                  />
-                )}
-                rules={{ required: 'Machine is required' }}
-              />
-            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -277,7 +277,7 @@ export default function FormSensor() {
             color="primary"
             className={classes.submit}
           >
-            Submit
+            {isEdit ? 'Save' : 'Submit'}
           </Button>
         </form>
       </div>
