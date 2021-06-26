@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 export default function FormMachine() {
   const { fetchMachineTypes, editMachine } = useMachine();
   const { fetchSensorsOnly } = useSensor();
-  const { fetchStructuresOnly } = useStructure();
+  const { fetchStructures } = useStructure();
   const dispatch = useDispatch();
   const timeZonesList = momentTZ.tz.names();
   let structures = useSelector((state) => state.main.structures);
@@ -151,7 +151,7 @@ export default function FormMachine() {
     window.scrollTo(0, 0);
     fetchMachineTypes();
     fetchSensorsOnly();
-    fetchStructuresOnly();
+    fetchStructures();
   }, []);
 
   const isActiveOptions = [

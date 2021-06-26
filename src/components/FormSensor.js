@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import { createSensor, setAuthorized, clearData } from '../actions/creator';
-import useMachine from '../hooks/useMachine';
 import useSensor from '../hooks/useSensor';
 import { setSnackbar } from '../reducers/snackbarReducer';
 
@@ -67,7 +66,6 @@ export default function FormSensor() {
   };
 
   if (isEdit) {
-    console.log(selectedSensorToEdit.isActive);
     selectedSensorToEdit.isActive = selectedSensorToEdit.isActive
       ? {
           statusValue: true,
@@ -80,8 +78,6 @@ export default function FormSensor() {
   } else {
     selectedSensorToEdit = initialValues;
   }
-
-  console.log(selectedSensorToEdit);
 
   const { handleSubmit, control, reset, setValue, clearErrors } = useForm({
     defaultValues: selectedSensorToEdit,

@@ -129,7 +129,6 @@ function RootReducer(state = initialState, action) {
       })
       .then(() => {
         console.log('CREATED SENSOR');
-        console.log(action.payload);
       })
       .catch((error) => {
         console.log('ERROR CRATING SENSOR');
@@ -168,14 +167,12 @@ function RootReducer(state = initialState, action) {
     };
   } else if (action.type === EDIT_FORM) {
     // SAVING EDIT VALUE TO STORE
-    console.log('REDUCER TEST');
     return {
       ...state,
       edit: action.payload,
     };
   } else if (action.type === REMOVE_MACHINE) {
-    // EEMOVING INDIVIDUAL MACHINE FROM STORE
-    console.log('REDUCER TEST REMOVE MACHINE');
+    // REMOVING INDIVIDUAL MACHINE FROM STORE
     return {
       ...state,
       individualMachine: {},

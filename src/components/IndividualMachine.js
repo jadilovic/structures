@@ -47,14 +47,13 @@ const useStyles = makeStyles((theme) => ({
 export default function IndividualMachineDisplay() {
   const { fetchSensorById, fetchSensorsOnly } = useSensor();
   const { fetchMachineTypes } = useMachine();
-  const { fetchStructuresOnly } = useStructure();
+  const { fetchStructures } = useStructure();
   let machine = useSelector((state) => state.main.individualMachine);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  console.log(machine);
   if (_.isEmpty(machine)) {
     const machineData = localStorage.getItem('machine-data');
     machine = JSON.parse(machineData);
@@ -87,7 +86,7 @@ export default function IndividualMachineDisplay() {
 
   function editSelectedMachine() {
     dispatch(changeEdit(true));
-    fetchStructuresOnly();
+    fetchStructures();
     fetchMachineTypes();
     fetchSensorsOnly();
   }

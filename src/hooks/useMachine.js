@@ -40,6 +40,20 @@ const useMachine = () => {
       });
   }
 
+  function fetchMachineTypes() {
+    axios
+      .get('/api/machines/machine-types', {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        dispatch(loadMachineTypes(response.data));
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }
+
   function fetchMachineById(id) {
     axios
       .get(`/api/machines/${id}?populate=sensors structure`, {
@@ -57,27 +71,12 @@ const useMachine = () => {
       });
   }
 
-  function fetchMachineTypes() {
-    axios
-      .get('/api/machines/machine-types', {
-        headers: authHeader(),
-      })
-      .then((response) => {
-        dispatch(loadMachineTypes(response.data));
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error);
-        console.log(error);
-      });
-  }
-
   function editMachine(editedMachine) {
     axios
       .put('/api/machines', editedMachine, {
         headers: authHeader(),
       })
       .then(() => {
-        console.log('EDITED MACHINE');
         dispatch(displayMachine(editedMachine));
         history.push('/individual-machine');
       })

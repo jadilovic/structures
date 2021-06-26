@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UpdateStructure() {
   const timeZonesList = momentTZ.tz.names();
-  const { fetchStructuresOnly, editStructure } = useStructure();
+  const { fetchStructures, editStructure } = useStructure();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);
   let structureUpdate = useSelector((state) => state.main.individualStructure);
@@ -88,7 +88,7 @@ export default function UpdateStructure() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchStructuresOnly();
+    fetchStructures();
   }, []);
 
   console.log(structureUpdate);

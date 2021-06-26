@@ -76,7 +76,7 @@ export default function MachinesTable() {
       flex: 1,
     },
   ];
-  console.log(machinesData);
+
   const machines = { columns: machinesColumns, rows: machinesData };
 
   function displayMachineRow(machineId) {

@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StructuresTable() {
-  const { fetchStructuresWithMachinesParentStructure } = useStructure();
+  const { fetchStructures } = useStructure();
   const dispatch = useDispatch();
   const classes = useStyles();
   const userScreenHeight = window.innerHeight;
@@ -34,7 +34,7 @@ export default function StructuresTable() {
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
     dispatch(clearData());
-    fetchStructuresWithMachinesParentStructure();
+    fetchStructures('machines structure');
   }, []);
 
   const structuresData = useSelector((state) => state.main.structures);

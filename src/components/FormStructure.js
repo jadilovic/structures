@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormStructure() {
   const timeZonesList = momentTZ.tz.names();
-  const { fetchStructuresOnly, editStructure } = useStructure();
+  const { fetchStructures, editStructure } = useStructure();
   const dispatch = useDispatch();
   let structures = useSelector((state) => state.main.structures);
   const isEdit = useSelector((state) => state.main.edit);
@@ -68,7 +68,6 @@ export default function FormStructure() {
     machines: [],
   };
 
-  console.log(isEdit);
   if (isEdit) {
     selectedStructureToEdit.isActive = selectedStructureToEdit.isActive
       ? {
@@ -149,7 +148,7 @@ export default function FormStructure() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    fetchStructuresOnly();
+    fetchStructures();
   }, []);
 
   const isActiveOptions = [

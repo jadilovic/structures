@@ -26,7 +26,6 @@ import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
 import { CustomMachinesRowsOverlay } from './NoRowsOverlay';
 import useMachine from '../hooks/useMachine';
-import useStructure from '../hooks/useStructure';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -45,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualStructureDisplay() {
   const { fetchMachineById } = useMachine();
-  const { fetchStructureById } = useStructure();
   let structure = useSelector((state) => state.main.individualStructure);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -83,9 +81,8 @@ export default function IndividualStructureDisplay() {
     displayDeleteNotification();
   }
 
-  function editSelectedStructure(structureId) {
+  function editSelectedStructure() {
     dispatch(changeEdit(true));
-    fetchStructureById(structureId);
     history.push('/edit-structure');
   }
 
@@ -190,7 +187,7 @@ export default function IndividualStructureDisplay() {
             color="inherit"
             className={classes.button}
             startIcon={<EditIcon />}
-            onClick={() => editSelectedStructure(structure.id)}
+            onClick={() => editSelectedStructure()}
           >
             Edit Structure
           </Button>
