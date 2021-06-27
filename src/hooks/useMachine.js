@@ -26,20 +26,6 @@ const useMachine = () => {
       });
   }
 
-  function fetchMachinesOnly() {
-    axios
-      .get('/api/machines', {
-        headers: authHeader(),
-      })
-      .then((response) => {
-        dispatch(loadMachines(response.data));
-      })
-      .catch((error) => {
-        console.error('Error fetching data: ', error);
-        console.log(error);
-      });
-  }
-
   function fetchMachineTypes() {
     axios
       .get('/api/machines/machine-types', {
@@ -88,7 +74,6 @@ const useMachine = () => {
 
   return {
     fetchMachinesWithSensors,
-    fetchMachinesOnly,
     fetchMachineById,
     fetchMachineTypes,
     editMachine,

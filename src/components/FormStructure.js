@@ -131,17 +131,14 @@ export default function FormStructure() {
       const editedStructure = { ...selectedStructureToEdit, ...data };
       editedStructure.isActive = data.isActive.statusValue;
       displayEditedStructureNotification();
-      console.log(editedStructure);
       // dispatch(clearData());
       dispatch(editStructure(editedStructure));
     } else {
       const newStructure = { ...initialValues, ...data };
       newStructure.isActive = data.isActive.statusValue;
-      console.log(newStructure);
       dispatch(createStructure(newStructure));
       displayCreatedNewStructureNotification();
     }
-    console.log(data);
     reset({ ...initialValues });
     e.target.reset();
   };

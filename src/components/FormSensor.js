@@ -111,12 +111,10 @@ export default function FormSensor() {
       editedSensor.isActive = data.isActive.statusValue;
       displayEditedSensorNotification();
       dispatch(clearData());
-      console.log(editedSensor);
       dispatch(editSensor(editedSensor));
     } else {
       const newSensor = { ...initialValues, ...data };
       newSensor.isActive = data.isActive.statusValue;
-      console.log(newSensor);
       dispatch(createSensor(newSensor));
       displayCreatedNewSensorNotification();
     }
