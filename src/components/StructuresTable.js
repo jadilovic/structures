@@ -34,7 +34,7 @@ export default function StructuresTable() {
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
     dispatch(clearData());
-    fetchStructures('machines structure');
+    fetchStructures('machines');
   }, []);
 
   const structuresData = useSelector((state) => state.main.structures);

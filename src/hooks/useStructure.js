@@ -9,14 +9,12 @@ const useStructure = () => {
   const history = useHistory();
 
   function fetchStructures(elements = '') {
-    console.log(elements);
     axios
       .get(`/api/structures?populate=${elements}`, {
         headers: authHeader(),
       })
       .then((response) => {
         dispatch(loadStructures(response.data));
-        console.log(response.data);
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);
