@@ -3,6 +3,18 @@ import { DataGrid } from '@material-ui/data-grid';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, makeStyles } from '@material-ui/core';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import {
+  faIndustry,
+  faFolderPlus,
+  faPlus,
+  faPlusCircle,
+  faCog,
+  faAtom,
+} from '@fortawesome/free-solid-svg-icons';
+import Button from '@material-ui/core/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { displayStructure, clearData } from '../actions/creator';
 import useStructure from '../hooks/useStructure';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
@@ -22,6 +34,14 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+  },
+  root: {
+    '& > span': {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+    },
   },
 }));
 
@@ -70,7 +90,16 @@ export default function StructuresTable() {
     {
       field: 'isActive',
       headerName: 'Active',
-      valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      // valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      renderCell: (params) => (
+        <div>
+          {params.value ? (
+            <CheckCircleIcon className={classes.root} color="primary" />
+          ) : (
+            <RemoveCircleIcon className={classes.root} color="error" />
+          )}
+        </div>
+      ),
       flex: 1,
     },
   ];

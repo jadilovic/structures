@@ -8,6 +8,7 @@ import {
   Typography,
   makeStyles,
   Container,
+  Switch,
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import momentTZ from 'moment-timezone';
@@ -69,15 +70,6 @@ export default function FormStructure() {
   };
 
   if (isEdit) {
-    selectedStructureToEdit.isActive = selectedStructureToEdit.isActive
-      ? {
-          statusValue: true,
-          statusLabel: 'Yes',
-        }
-      : {
-          statusValue: false,
-          statusLabel: 'No',
-        };
     if (_.isEmpty(selectedStructureToEdit)) {
       const structureData = localStorage.getItem('structure-edit');
       selectedStructureToEdit = JSON.parse(structureData);
@@ -129,13 +121,11 @@ export default function FormStructure() {
   const onSubmit = (data, e) => {
     if (isEdit) {
       const editedStructure = { ...selectedStructureToEdit, ...data };
-      editedStructure.isActive = data.isActive.statusValue;
       displayEditedStructureNotification();
       // dispatch(clearData());
       dispatch(editStructure(editedStructure));
     } else {
       const newStructure = { ...initialValues, ...data };
-      newStructure.isActive = data.isActive.statusValue;
       dispatch(createStructure(newStructure));
       displayCreatedNewStructureNotification();
     }
@@ -147,17 +137,6 @@ export default function FormStructure() {
     window.scrollTo(0, 0);
     fetchStructures();
   }, []);
-
-  const isActiveOptions = [
-    {
-      statusValue: true,
-      statusLabel: 'Yes',
-    },
-    {
-      statusValue: false,
-      statusLabel: 'No',
-    },
-  ];
 
   return (
     <Container component="main" maxWidth="xs">
@@ -285,10 +264,7 @@ export default function FormStructure() {
                 name="timezone"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { value }, fieldState: { error } }) => (
                   <Autocomplete
                     options={timeZonesList}
                     getOptionLabel={(option) => option}
@@ -320,7 +296,7 @@ export default function FormStructure() {
                 name="structure"
                 control={control}
                 defaultValue=""
-                render={({ field: { onChange, value } }) => (
+                render={({ field: { value } }) => (
                   <Autocomplete
                     options={structures}
                     getOptionLabel={(option) => option?.name}
@@ -343,39 +319,31 @@ export default function FormStructure() {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid justify="center" item xs={12}>
               <Controller
                 name="isActive"
                 control={control}
-                defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <Autocomplete
-                    options={isActiveOptions}
-                    getOptionLabel={(option) => option?.statusLabel}
-                    onChange={(e, newValue) => {
-                      if (newValue !== value) clearErrors('isActive');
-                      setValue('isActive', newValue);
-                    }}
-                    value={value}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="Input"
-                        name="isActive"
-                        variant="outlined"
-                        fullWidth
-                        id="isActive"
-                        label="Active"
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    )}
-                  />
+                render={({ field }) => (
+                  <Typography align="center" component="div">
+                    <Grid
+                      justify="center"
+                      component="label"
+                      container
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Grid item>Not Active</Grid>
+                      <Grid justify="center" item>
+                        <Switch
+                          color="primary"
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          checked={field.value}
+                        />
+                      </Grid>
+                      <Grid item>Active</Grid>
+                    </Grid>
+                  </Typography>
                 )}
-                rules={{ required: 'Active status is required' }}
               />
             </Grid>
           </Grid>
@@ -386,7 +354,7 @@ export default function FormStructure() {
             color="primary"
             className={classes.submit}
           >
-            Submit
+            {isEdit ? 'Save' : 'Submit'}
           </Button>
         </form>
       </div>
