@@ -244,7 +244,6 @@ export default function FormStructure() {
                   fieldState: { error },
                 }) => (
                   <TextField
-                    placeholder="Input"
                     name="country"
                     variant="outlined"
                     fullWidth
@@ -276,7 +275,6 @@ export default function FormStructure() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder="Input"
                         name="timezone"
                         variant="outlined"
                         fullWidth
@@ -307,7 +305,6 @@ export default function FormStructure() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder="Input"
                         name="structure"
                         variant="outlined"
                         fullWidth

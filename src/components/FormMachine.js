@@ -8,6 +8,7 @@ import {
   Typography,
   makeStyles,
   Container,
+  Switch,
 } from '@material-ui/core';
 import BallotRoundedIcon from '@material-ui/icons/BallotRounded';
 import momentTZ from 'moment-timezone';
@@ -88,15 +89,6 @@ export default function FormMachine() {
   }
 
   if (isEdit) {
-    selectedMachineToEdit.isActive = selectedMachineToEdit.isActive
-      ? {
-          statusValue: true,
-          statusLabel: 'Yes',
-        }
-      : {
-          statusValue: false,
-          statusLabel: 'No',
-        };
     selectedMachineToEdit.sensors = [{ ...selectedMachineToEdit.sensors[0] }];
   } else {
     selectedMachineToEdit = initialValues;
@@ -131,14 +123,12 @@ export default function FormMachine() {
   const onSubmit = (data, e) => {
     if (isEdit) {
       const editedMachine = { ...selectedMachineToEdit, ...data };
-      editedMachine.isActive = data.isActive.statusValue;
       editedMachine.sensors = data.sensors;
       displayEditedMachineNotification();
       dispatch(clearData());
       dispatch(editMachine(editedMachine));
     } else {
       const newMachine = { ...initialValues, ...data };
-      newMachine.isActive = data.isActive.statusValue;
       newMachine.sensors = data.sensors;
       dispatch(createMachine(newMachine));
       displayCreatedNewMachineNotification();
@@ -153,17 +143,6 @@ export default function FormMachine() {
     fetchSensorsOnly();
     fetchStructures();
   }, []);
-
-  const isActiveOptions = [
-    {
-      statusValue: true,
-      statusLabel: 'Yes',
-    },
-    {
-      statusValue: false,
-      statusLabel: 'No',
-    },
-  ];
 
   return (
     <Container component="main" maxWidth="xs">
@@ -218,39 +197,31 @@ export default function FormMachine() {
                 rules={{ required: 'Name is required' }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid justify="center" item xs={12}>
               <Controller
                 name="isActive"
                 control={control}
-                defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <Autocomplete
-                    options={isActiveOptions}
-                    getOptionLabel={(option) => option?.statusLabel}
-                    onChange={(e, newValue) => {
-                      if (newValue !== value) clearErrors('isActive');
-                      setValue('isActive', newValue);
-                    }}
-                    value={value}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="Input"
-                        name="isActive"
-                        variant="outlined"
-                        fullWidth
-                        id="isActive"
-                        label="Active"
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    )}
-                  />
+                render={({ field }) => (
+                  <Typography align="center" component="div">
+                    <Grid
+                      justify="center"
+                      component="label"
+                      container
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Grid item>Not Active</Grid>
+                      <Grid justify="center" item>
+                        <Switch
+                          color="primary"
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          checked={field.value}
+                        />
+                      </Grid>
+                      <Grid item>Active</Grid>
+                    </Grid>
+                  </Typography>
                 )}
-                rules={{ required: 'Active status is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -330,10 +301,7 @@ export default function FormMachine() {
                 name="timezone"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { value }, fieldState: { error } }) => (
                   <Autocomplete
                     options={timeZonesList}
                     getOptionLabel={(option) => option}
@@ -345,7 +313,6 @@ export default function FormMachine() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder="Input"
                         name="timezone"
                         variant="outlined"
                         fullWidth
@@ -365,10 +332,7 @@ export default function FormMachine() {
                 name="type"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { value }, fieldState: { error } }) => (
                   <Autocomplete
                     options={machineTypes}
                     getOptionLabel={(option) => option?.name}
@@ -380,7 +344,6 @@ export default function FormMachine() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder="Input"
                         name="type"
                         variant="outlined"
                         fullWidth
@@ -400,10 +363,7 @@ export default function FormMachine() {
                 name="structure"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { value }, fieldState: { error } }) => (
                   <Autocomplete
                     options={structures}
                     getOptionLabel={(option) => option?.name}
@@ -415,7 +375,6 @@ export default function FormMachine() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder="Input"
                         name="structure"
                         variant="outlined"
                         fullWidth
@@ -435,10 +394,7 @@ export default function FormMachine() {
                 name="sensors"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { value }, fieldState: { error } }) => (
                   <Autocomplete
                     multiple
                     id="tags-outlined"
@@ -455,7 +411,6 @@ export default function FormMachine() {
                         {...params}
                         name="sensors"
                         variant="outlined"
-                        placeholder="Input"
                         fullWidth
                         id="sensors"
                         label="Sensors"

@@ -8,6 +8,7 @@ import {
   Typography,
   makeStyles,
   Container,
+  Switch,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ListAltIcon from '@material-ui/icons/ListAlt';
@@ -65,17 +66,7 @@ export default function FormSensor() {
     module: '',
   };
 
-  if (isEdit) {
-    selectedSensorToEdit.isActive = selectedSensorToEdit.isActive
-      ? {
-          statusValue: true,
-          statusLabel: 'Yes',
-        }
-      : {
-          statusValue: false,
-          statusLabel: 'No',
-        };
-  } else {
+  if (!isEdit) {
     selectedSensorToEdit = initialValues;
   }
 
@@ -108,13 +99,11 @@ export default function FormSensor() {
   const onSubmit = (data, e) => {
     if (isEdit) {
       const editedSensor = { ...selectedSensorToEdit, ...data };
-      editedSensor.isActive = data.isActive.statusValue;
       displayEditedSensorNotification();
       dispatch(clearData());
       dispatch(editSensor(editedSensor));
     } else {
       const newSensor = { ...initialValues, ...data };
-      newSensor.isActive = data.isActive.statusValue;
       dispatch(createSensor(newSensor));
       displayCreatedNewSensorNotification();
     }
@@ -126,17 +115,6 @@ export default function FormSensor() {
     window.scrollTo(0, 0);
     fetchSensorTypes();
   }, []);
-
-  const isActiveOptions = [
-    {
-      statusValue: true,
-      statusLabel: 'Yes',
-    },
-    {
-      statusValue: false,
-      statusLabel: 'No',
-    },
-  ];
 
   return (
     <Container component="main" maxWidth="xs">
@@ -175,39 +153,31 @@ export default function FormSensor() {
                 rules={{ required: 'Sensor ID is required' }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid justify="center" item xs={12}>
               <Controller
                 name="isActive"
                 control={control}
-                defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
-                  <Autocomplete
-                    options={isActiveOptions}
-                    getOptionLabel={(option) => option?.statusLabel}
-                    onChange={(e, newValue) => {
-                      if (newValue !== value) clearErrors('isActive');
-                      setValue('isActive', newValue);
-                    }}
-                    value={value}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        placeholder="Input"
-                        name="isActive"
-                        variant="outlined"
-                        fullWidth
-                        id="isActive"
-                        label="Active"
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    )}
-                  />
+                render={({ field }) => (
+                  <Typography align="center" component="div">
+                    <Grid
+                      justify="center"
+                      component="label"
+                      container
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Grid item>Not Active</Grid>
+                      <Grid justify="center" item>
+                        <Switch
+                          color="primary"
+                          onChange={(e) => field.onChange(e.target.checked)}
+                          checked={field.value}
+                        />
+                      </Grid>
+                      <Grid item>Active</Grid>
+                    </Grid>
+                  </Typography>
                 )}
-                rules={{ required: 'Active status is required' }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -215,10 +185,7 @@ export default function FormSensor() {
                 name="type"
                 control={control}
                 defaultValue=""
-                render={({
-                  field: { onChange, value },
-                  fieldState: { error },
-                }) => (
+                render={({ field: { value }, fieldState: { error } }) => (
                   <Autocomplete
                     options={sensorTypes}
                     getOptionLabel={(option) => option?.name}
@@ -230,7 +197,6 @@ export default function FormSensor() {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        placeholder="Input"
                         name="type"
                         variant="outlined"
                         fullWidth

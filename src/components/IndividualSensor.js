@@ -71,11 +71,7 @@ export default function IndividualSensorDisplay() {
   // SNACK BAR NO MACHINE NOTIFICATION
   const displayNoMachineNotification = () => {
     dispatch(
-      setSnackbar(
-        true,
-        'info',
-        'This sensor has not be assigned to any machine!'
-      )
+      setSnackbar(true, 'info', 'This sensor is not assigned to any machine!')
     );
   };
 
@@ -130,7 +126,7 @@ export default function IndividualSensorDisplay() {
                 <TableCell component="th" scope="row">
                   Alias:
                 </TableCell>
-                <TableCell>{sensor.alias}</TableCell>
+                <TableCell>{sensor?.alias ? sensor.alias : 'None'}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
@@ -216,19 +212,27 @@ export default function IndividualSensorDisplay() {
                     <TableCell component="th" scope="row">
                       Alias:
                     </TableCell>
-                    <TableCell>{machineInSensor?.alias}</TableCell>
+                    <TableCell>
+                      {machineInSensor?.alias ? machineInSensor.alias : 'None'}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">
                       Machine Type:
                     </TableCell>
-                    <TableCell>{machineInSensor?.type?.name}</TableCell>
+                    <TableCell>
+                      {machineInSensor?.type?.name || 'No Machine Type'}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">
                       Business ID:
                     </TableCell>
-                    <TableCell>{machineInSensor?.businessId}</TableCell>
+                    <TableCell>
+                      {machineInSensor?.businessId
+                        ? machineInSensor.businessId
+                        : 'None'}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

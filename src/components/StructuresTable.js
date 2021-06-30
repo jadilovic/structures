@@ -5,16 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, makeStyles } from '@material-ui/core';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import {
-  faIndustry,
-  faFolderPlus,
-  faPlus,
-  faPlusCircle,
-  faCog,
-  faAtom,
-} from '@fortawesome/free-solid-svg-icons';
-import Button from '@material-ui/core/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { displayStructure, clearData } from '../actions/creator';
 import useStructure from '../hooks/useStructure';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
@@ -34,14 +24,6 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-  },
-  root: {
-    '& > span': {
-      position: 'absolute',
-      left: '50%',
-      top: '50%',
-      transform: 'translate(-50%, -50%)',
-    },
   },
 }));
 
@@ -63,6 +45,12 @@ export default function StructuresTable() {
 
   const dataColumns = [
     {
+      field: 'businessId',
+      headerName: 'Business ID',
+      valueFormatter: (params) => params.value || '-',
+      flex: 1,
+    },
+    {
       field: 'name',
       headerName: 'Name',
       flex: 1,
@@ -70,6 +58,7 @@ export default function StructuresTable() {
     {
       field: 'description',
       headerName: 'Description',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
@@ -92,11 +81,17 @@ export default function StructuresTable() {
       headerName: 'Active',
       // valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
       renderCell: (params) => (
-        <div>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
           {params.value ? (
-            <CheckCircleIcon className={classes.root} color="primary" />
+            <CheckCircleIcon style={{ color: 'green' }} />
           ) : (
-            <RemoveCircleIcon className={classes.root} color="error" />
+            <RemoveCircleIcon color="error" />
           )}
         </div>
       ),

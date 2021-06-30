@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from '@material-ui/core';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
 import { clearData } from '../actions/creator';
 import useMachine from '../hooks/useMachine';
@@ -30,26 +32,31 @@ export default function MachinesTable() {
     {
       field: 'businessId',
       headerName: 'Business ID',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
       field: 'description',
       headerName: 'Description',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
       field: 'alias',
       headerName: 'Alias',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
       field: 'manufacturer',
       headerName: 'Manufacturer',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
       field: 'placeNumber',
       headerName: 'Place Number',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
@@ -72,7 +79,22 @@ export default function MachinesTable() {
     {
       field: 'isActive',
       headerName: 'Active',
-      valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      // valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      renderCell: (params) => (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          {params.value ? (
+            <CheckCircleIcon style={{ color: 'green' }} />
+          ) : (
+            <RemoveCircleIcon color="error" />
+          )}
+        </div>
+      ),
       flex: 1,
     },
   ];

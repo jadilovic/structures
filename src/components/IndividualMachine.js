@@ -106,6 +106,7 @@ export default function IndividualMachineDisplay() {
     {
       field: 'alias',
       headerName: 'Alias',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
@@ -146,31 +147,39 @@ export default function IndividualMachineDisplay() {
                 <TableCell component="th" scope="row">
                   Business ID:
                 </TableCell>
-                <TableCell>{machine.businessId}</TableCell>
+                <TableCell>
+                  {machine?.businessId ? machine.businessId : 'None'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Description:
                 </TableCell>
-                <TableCell>{machine.description}</TableCell>
+                <TableCell>
+                  {machine?.description ? machine.description : 'None'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Alias:
                 </TableCell>
-                <TableCell>{machine.alias}</TableCell>
+                <TableCell>{machine?.alias ? machine.alias : 'None'}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Place Number:
                 </TableCell>
-                <TableCell>{machine.placeNumber}</TableCell>
+                <TableCell>
+                  {machine?.placeNumber ? machine.placeNumber : 'None'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Manufacturer:
                 </TableCell>
-                <TableCell>{machine.manufacturer}</TableCell>
+                <TableCell>
+                  {machine?.manufacturer ? machine.manufacturer : 'None'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">

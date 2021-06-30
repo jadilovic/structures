@@ -3,6 +3,8 @@ import { DataGrid } from '@material-ui/data-grid';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from '@material-ui/core';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { clearData, displaySensor } from '../actions/creator';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
 import useSensor from '../hooks/useSensor';
@@ -31,12 +33,28 @@ export default function SensorsTable() {
     {
       field: 'isActive',
       headerName: 'Active',
-      valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      // valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      renderCell: (params) => (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          {params.value ? (
+            <CheckCircleIcon style={{ color: 'green' }} />
+          ) : (
+            <RemoveCircleIcon color="error" />
+          )}
+        </div>
+      ),
       flex: 1,
     },
     {
       field: 'alias',
       headerName: 'Alias',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {

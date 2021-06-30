@@ -95,11 +95,13 @@ export default function IndividualStructureDisplay() {
     {
       field: 'description',
       headerName: 'Description',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
       field: 'alias',
       headerName: 'Alias',
+      valueFormatter: (params) => params.value || '-',
       flex: 1,
     },
     {
@@ -116,8 +118,6 @@ export default function IndividualStructureDisplay() {
     columns: machinesColumns,
     rows: structure?.machines,
   };
-
-  console.log(structure);
 
   return (
     <Grid container spacing={3}>
@@ -147,7 +147,9 @@ export default function IndividualStructureDisplay() {
                 <TableCell component="th" scope="row">
                   Description:
                 </TableCell>
-                <TableCell>{structure?.description}</TableCell>
+                <TableCell>
+                  {structure?.description ? structure.description : 'None'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
@@ -159,12 +161,15 @@ export default function IndividualStructureDisplay() {
                 <TableCell component="th" scope="row">
                   Business ID:
                 </TableCell>
-                <TableCell>{structure?.businessId}</TableCell>
+                <TableCell>
+                  {structure?.businessId ? structure.businessId : 'None'}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">
                   Created at:
                 </TableCell>
+                {console.log(new Date(structure.createdAt))}
                 <TableCell>{structure?.createdAt}</TableCell>
               </TableRow>
               <TableRow>
