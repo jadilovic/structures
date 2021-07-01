@@ -151,7 +151,7 @@ const HeaderDrawer = (props) => {
   const handleDrawerCloseAfterSelection = (pageURL) => {
     handleDrawerClose();
     dispatch(changeEdit(false));
-    history.push(pageURL);
+    window.location.href = pageURL;
   };
 
   function logout() {
@@ -170,15 +170,7 @@ const HeaderDrawer = (props) => {
     {
       title: 'Create Structure',
       pageURL: '/form-structure',
-      icon: (
-        <FontAwesomeIcon
-          icon={faFolderPlus}
-          className={classes.icons}
-          onClick={() => {
-            window.location.href = '/form-structure';
-          }}
-        />
-      ),
+      icon: <FontAwesomeIcon icon={faFolderPlus} className={classes.icons} />,
     },
     {
       title: 'Machines',
@@ -188,15 +180,7 @@ const HeaderDrawer = (props) => {
     {
       title: 'Create Machine',
       pageURL: '/form-machine',
-      icon: (
-        <FontAwesomeIcon
-          icon={faPlus}
-          className={classes.icons}
-          onClick={() => {
-            window.location.href = '/form-machine';
-          }}
-        />
-      ),
+      icon: <FontAwesomeIcon icon={faPlus} className={classes.icons} />,
     },
     {
       title: 'Sensors',
@@ -206,15 +190,7 @@ const HeaderDrawer = (props) => {
     {
       title: 'Create Sensor',
       pageURL: '/form-sensor',
-      icon: (
-        <FontAwesomeIcon
-          icon={faPlusCircle}
-          className={classes.icons}
-          onClick={() => {
-            window.location.href = '/form-sensor';
-          }}
-        />
-      ),
+      icon: <FontAwesomeIcon icon={faPlusCircle} className={classes.icons} />,
     },
   ];
 
@@ -316,13 +292,7 @@ const HeaderDrawer = (props) => {
               path="/form-structure"
               exact
             />
-            <PrivateRoute
-              component={FormStructure}
-              path="/edit-structure"
-              exact
-            />
             <PrivateRoute component={FormMachine} path="/form-machine" exact />
-            <PrivateRoute component={FormMachine} path="/edit-machine" exact />
             <PrivateRoute
               component={MachinesTable}
               path="/machines-table"
@@ -349,7 +319,6 @@ const HeaderDrawer = (props) => {
               exact
             />
             <PrivateRoute component={FormSensor} path="/form-sensor" exact />
-            <PrivateRoute component={FormSensor} path="/edit-sensor" exact />
             <Route component={Login} path="/login" />
             <Route component={Error} path="*" />
           </Switch>

@@ -33,7 +33,8 @@ const useSensor = () => {
       })
       .then((response) => {
         dispatch(loadSensors(response.data));
-        history.push('/edit-machine');
+        console.log(response.data);
+        history.push('/form-machine');
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);
@@ -62,7 +63,7 @@ const useSensor = () => {
       })
       .then((response) => {
         dispatch(loadSensorTypes(response.data));
-        history.push('/edit-sensor');
+        history.push('/form-sensor');
       })
       .catch((error) => {
         console.error('Error fetching data: ', error);

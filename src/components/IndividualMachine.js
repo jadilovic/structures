@@ -22,6 +22,7 @@ import {
   deleteMachine,
   clearData,
   changeEdit,
+  displayMachine,
 } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 import { setSnackbar } from '../reducers/snackbarReducer';
@@ -57,6 +58,7 @@ export default function IndividualMachineDisplay() {
   if (_.isEmpty(machine)) {
     const machineData = localStorage.getItem('machine-data');
     machine = JSON.parse(machineData);
+    dispatch(displayMachine(machine));
     dispatch(setAuthorized(true));
   } else {
     localStorage.setItem('machine-data', JSON.stringify(machine));

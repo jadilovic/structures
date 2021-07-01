@@ -16,7 +16,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { clearData, createMachine, setAuthorized } from '../actions/creator';
+import {
+  changeEdit,
+  clearData,
+  createMachine,
+  setAuthorized,
+} from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useMachine from '../hooks/useMachine';
 import useSensor from '../hooks/useSensor';
@@ -79,14 +84,6 @@ export default function FormMachine() {
     structure: null,
     sensors: [],
   };
-
-  if (_.isEmpty(selectedMachineToEdit)) {
-    const machineData = localStorage.getItem('machine-edit');
-    selectedMachineToEdit = JSON.parse(machineData);
-    dispatch(setAuthorized(true));
-  } else {
-    localStorage.setItem('machine-edit', JSON.stringify(selectedMachineToEdit));
-  }
 
   if (isEdit) {
     selectedMachineToEdit.sensors = [{ ...selectedMachineToEdit.sensors[0] }];

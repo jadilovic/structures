@@ -16,7 +16,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import _ from 'lodash';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { createStructure, setAuthorized } from '../actions/creator';
+import {
+  createStructure,
+  setAuthorized,
+  clearData,
+  loadStructures,
+} from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import useStructure from '../hooks/useStructure';
 
@@ -69,18 +74,7 @@ export default function FormStructure() {
     machines: [],
   };
 
-  if (isEdit) {
-    if (_.isEmpty(selectedStructureToEdit)) {
-      const structureData = localStorage.getItem('structure-edit');
-      selectedStructureToEdit = JSON.parse(structureData);
-      dispatch(setAuthorized(true));
-    } else {
-      localStorage.setItem(
-        'structure-edit',
-        JSON.stringify(selectedStructureToEdit)
-      );
-    }
-  } else {
+  if (!isEdit) {
     selectedStructureToEdit = initialValues;
   }
 
@@ -91,6 +85,7 @@ export default function FormStructure() {
   if (_.isEmpty(structures)) {
     const structuresData = localStorage.getItem('structures-data');
     structures = JSON.parse(structuresData);
+    dispatch(loadStructures(structuresData));
     dispatch(setAuthorized(true));
   } else {
     localStorage.setItem('structures-data', JSON.stringify(structures));
@@ -121,11 +116,17 @@ export default function FormStructure() {
   const onSubmit = (data, e) => {
     if (isEdit) {
       const editedStructure = { ...selectedStructureToEdit, ...data };
+      editedStructure.structure = data.structure.id;
+      console.log(selectedStructureToEdit);
+      console.log(data);
+      console.log(editedStructure);
       displayEditedStructureNotification();
-      // dispatch(clearData());
+      dispatch(clearData());
       dispatch(editStructure(editedStructure));
     } else {
       const newStructure = { ...initialValues, ...data };
+      console.log(newStructure);
+      console.log(data);
       dispatch(createStructure(newStructure));
       displayCreatedNewStructureNotification();
     }

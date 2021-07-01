@@ -21,11 +21,14 @@ import {
   clearData,
   setAuthorized,
   changeEdit,
+  displayStructure,
+  loadStructures,
 } from '../actions/creator';
 import { setSnackbar } from '../reducers/snackbarReducer';
 import ConfirmDialog from './ConfirmDialog';
 import { CustomMachinesRowsOverlay } from './NoRowsOverlay';
 import useMachine from '../hooks/useMachine';
+import useDate from '../hooks/useDate';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -44,7 +47,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IndividualStructureDisplay() {
   const { fetchMachineById } = useMachine();
+  const { getStringDate } = useDate();
   let structure = useSelector((state) => state.main.individualStructure);
+  let structures = useSelector((state) => state.main.structures);
   const dispatch = useDispatch();
   const history = useHistory();
   const classes = useStyles();
@@ -54,9 +59,19 @@ export default function IndividualStructureDisplay() {
   if (_.isEmpty(structure)) {
     const structureData = localStorage.getItem('structure-data');
     structure = JSON.parse(structureData);
+    dispatch(displayStructure(structure));
     dispatch(setAuthorized(true));
   } else {
     localStorage.setItem('structure-data', JSON.stringify(structure));
+  }
+
+  if (_.isEmpty(structures)) {
+    const structuresData = localStorage.getItem('structures-data');
+    structures = JSON.parse(structuresData);
+    dispatch(loadStructures(structures));
+    dispatch(setAuthorized(true));
+  } else {
+    localStorage.setItem('structures-data', JSON.stringify(structures));
   }
 
   const displayMachineRow = (selectedMachine) => {
@@ -83,7 +98,7 @@ export default function IndividualStructureDisplay() {
 
   function editSelectedStructure() {
     dispatch(changeEdit(true));
-    history.push('/edit-structure');
+    history.push('/form-structure');
   }
 
   const machinesColumns = [
@@ -119,6 +134,8 @@ export default function IndividualStructureDisplay() {
     rows: structure?.machines,
   };
 
+  const dateString = getStringDate(structure.createdAt);
+  console.log(structure);
   return (
     <Grid container spacing={3}>
       <Grid item xs={6}>
@@ -169,8 +186,7 @@ export default function IndividualStructureDisplay() {
                 <TableCell component="th" scope="row">
                   Created at:
                 </TableCell>
-                {console.log(new Date(structure.createdAt))}
-                <TableCell>{structure?.createdAt}</TableCell>
+                <TableCell>{dateString}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">

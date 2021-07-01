@@ -23,6 +23,7 @@ import {
   clearData,
   deleteSensor,
   changeEdit,
+  displaySensor,
 } from '../actions/creator';
 import ConfirmDialog from './ConfirmDialog';
 import useMachine from '../hooks/useMachine';
@@ -58,6 +59,7 @@ export default function IndividualSensorDisplay() {
   if (_.isEmpty(sensor)) {
     const sensorData = localStorage.getItem('sensor-data');
     sensor = JSON.parse(sensorData);
+    dispatch(displaySensor(sensor));
     dispatch(setAuthorized(true));
   } else {
     localStorage.setItem('sensor-data', JSON.stringify(sensor));
@@ -76,11 +78,10 @@ export default function IndividualSensorDisplay() {
   };
 
   function displaySensorMachine(machine) {
-    if (!_.isEmpty(machine)) {
-      dispatch(clearData());
-      fetchMachineById(machine.id);
-    } else {
+    if (_.isEmpty(machine)) {
       displayNoMachineNotification();
+    } else {
+      fetchMachineById(machine.id);
     }
   }
 
