@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, makeStyles } from '@material-ui/core';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { displayStructure, clearData } from '../actions/creator';
+import { clearData } from '../actions/creator';
 import useStructure from '../hooks/useStructure';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
 
@@ -28,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function StructuresTable() {
-  const { fetchStructures } = useStructure();
+  const { fetchStructures, fetchStructureById } = useStructure();
   const dispatch = useDispatch();
   const classes = useStyles();
   const userScreenHeight = window.innerHeight;
@@ -41,7 +40,6 @@ export default function StructuresTable() {
 
   const structuresData = useSelector((state) => state.main.structures);
   const loading = useSelector((state) => state.main.loading);
-  const history = useHistory();
 
   const dataColumns = [
     {
@@ -102,8 +100,7 @@ export default function StructuresTable() {
   const structures = { columns: dataColumns, rows: structuresData };
 
   function displayStructureRow(data) {
-    dispatch(displayStructure(data));
-    history.push('/individual-structure');
+    fetchStructureById(data.id, 'structure machines structures');
   }
 
   return (

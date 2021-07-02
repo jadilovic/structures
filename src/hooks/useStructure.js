@@ -22,6 +22,24 @@ const useStructure = () => {
       });
   }
 
+  function fetchStructureById(id, elements = '') {
+    axios
+      .get(`/api/structures/${id}?populate=${elements}`, {
+        headers: authHeader(),
+      })
+      .then((response) => {
+        if (response) {
+          dispatch(displayStructure(response.data));
+          console.log(response.data);
+          history.push('/individual-structure');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data: ', error);
+        console.log(error);
+      });
+  }
+
   function editStructure(editedStructure) {
     axios
       .put('/api/structures', editedStructure, {
@@ -40,6 +58,7 @@ const useStructure = () => {
 
   return {
     fetchStructures,
+    fetchStructureById,
     editStructure,
   };
 };

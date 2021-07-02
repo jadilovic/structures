@@ -116,17 +116,10 @@ export default function FormStructure() {
   const onSubmit = (data, e) => {
     if (isEdit) {
       const editedStructure = { ...selectedStructureToEdit, ...data };
-      editedStructure.structure = data.structure.id;
-      console.log(selectedStructureToEdit);
-      console.log(data);
-      console.log(editedStructure);
       displayEditedStructureNotification();
-      dispatch(clearData());
       dispatch(editStructure(editedStructure));
     } else {
       const newStructure = { ...initialValues, ...data };
-      console.log(newStructure);
-      console.log(data);
       dispatch(createStructure(newStructure));
       displayCreatedNewStructureNotification();
     }

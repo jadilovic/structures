@@ -135,7 +135,7 @@ export default function IndividualStructureDisplay() {
   };
 
   const dateString = getStringDate(structure.createdAt);
-  console.log(structure);
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={6}>
