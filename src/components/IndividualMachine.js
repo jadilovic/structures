@@ -12,6 +12,8 @@ import {
 } from '@material-ui/core';
 import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -102,7 +104,22 @@ export default function IndividualMachineDisplay() {
     {
       field: 'isActive',
       headerName: 'Active',
-      valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      // valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
+      renderCell: (params) => (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          {params.value ? (
+            <CheckCircleIcon style={{ color: 'green' }} />
+          ) : (
+            <RemoveCircleIcon color="error" />
+          )}
+        </div>
+      ),
       flex: 1,
     },
     {
@@ -143,7 +160,13 @@ export default function IndividualMachineDisplay() {
                 <TableCell component="th" scope="row">
                   Active:
                 </TableCell>
-                <TableCell>{`${machine.isActive ? 'Yes' : 'No'}`}</TableCell>
+                <TableCell>
+                  {machine.isActive ? (
+                    <CheckCircleIcon style={{ color: 'green' }} />
+                  ) : (
+                    <RemoveCircleIcon color="error" />
+                  )}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">

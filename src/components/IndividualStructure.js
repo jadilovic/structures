@@ -10,6 +10,8 @@ import {
   Grid,
   Button,
 } from '@material-ui/core';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { DataGrid } from '@material-ui/data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -192,7 +194,13 @@ export default function IndividualStructureDisplay() {
                 <TableCell component="th" scope="row">
                   Active:
                 </TableCell>
-                <TableCell>{structure?.isActive ? 'Yes' : 'No'}</TableCell>
+                <TableCell>
+                  {structure.isActive ? (
+                    <CheckCircleIcon style={{ color: 'green' }} />
+                  ) : (
+                    <RemoveCircleIcon color="error" />
+                  )}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">

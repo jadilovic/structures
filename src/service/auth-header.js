@@ -3,17 +3,20 @@ import history from './history';
 
 export default function authHeader() {
   const user = JSON.parse(localStorage.getItem('user'));
+  let expirationTime;
 
-  const { exp } = jwtDecode(user.token);
-  const expirationTime = exp * 1000 - 604800000 + 3600000;
+  try {
+    const { exp } = jwtDecode(user.token);
+    expirationTime = exp * 1000 - 604800000 + 3600000;
+  } catch (error) {
+    localStorage.clear();
+    history.push('/login');
+  }
 
-  setInterval(() => {
-    if (Date.now() >= expirationTime) {
-      localStorage.clear();
-      history.push('/login');
-    }
-    return {};
-  }, 2000);
+  if (Date.now() >= expirationTime) {
+    localStorage.clear();
+    history.push('/login');
+  }
 
   if (user && user.token) {
     return { Authorization: `Bearer ${user.token}` };

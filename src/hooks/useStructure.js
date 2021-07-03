@@ -30,7 +30,6 @@ const useStructure = () => {
       .then((response) => {
         if (response) {
           dispatch(displayStructure(response.data));
-          console.log(response.data);
           history.push('/individual-structure');
         }
       })

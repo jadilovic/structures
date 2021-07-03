@@ -33,7 +33,6 @@ const useSensor = () => {
       })
       .then((response) => {
         dispatch(loadSensors(response.data));
-        console.log(response.data);
         history.push('/form-machine');
       })
       .catch((error) => {

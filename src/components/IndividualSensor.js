@@ -13,6 +13,8 @@ import {
   CardActions,
   CardActionArea,
 } from '@material-ui/core';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
@@ -121,7 +123,14 @@ export default function IndividualSensorDisplay() {
                 <TableCell component="th" scope="row">
                   Active:
                 </TableCell>
-                <TableCell>{`${sensor.isActive ? 'Yes' : 'No'}`}</TableCell>
+
+                <TableCell>
+                  {sensor.isActive ? (
+                    <CheckCircleIcon style={{ color: 'green' }} />
+                  ) : (
+                    <RemoveCircleIcon color="error" />
+                  )}
+                </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell component="th" scope="row">

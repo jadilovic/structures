@@ -31,6 +31,26 @@ export default function SensorsTable() {
       flex: 1,
     },
     {
+      field: 'alias',
+      headerName: 'Alias',
+      valueFormatter: (params) => params.value || '-',
+      flex: 1,
+    },
+    {
+      field: 'type',
+      headerName: 'Sensor Type',
+      valueGetter: (params) =>
+        params.row.type ? params.row.type.name : 'No Type',
+      flex: 1,
+    },
+    {
+      field: 'machine',
+      headerName: 'Machine',
+      valueGetter: (params) =>
+        params.row.machine ? params.row.machine.name : 'No machine',
+      flex: 1,
+    },
+    {
       field: 'isActive',
       headerName: 'Active',
       // valueFormatter: (params) => (params.value ? 'Yes' : 'No'),
@@ -49,26 +69,6 @@ export default function SensorsTable() {
           )}
         </div>
       ),
-      flex: 1,
-    },
-    {
-      field: 'alias',
-      headerName: 'Alias',
-      valueFormatter: (params) => params.value || '-',
-      flex: 1,
-    },
-    {
-      field: 'type',
-      headerName: 'Sensor Type',
-      valueGetter: (params) =>
-        params.row.type ? params.row.type.name : 'No Type',
-      flex: 1,
-    },
-    {
-      field: 'machine',
-      headerName: 'Machine',
-      valueGetter: (params) =>
-        params.row.machine ? params.row.machine.name : 'No machine',
       flex: 1,
     },
   ];
