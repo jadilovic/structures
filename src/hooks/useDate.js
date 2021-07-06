@@ -1,4 +1,5 @@
 const useDate = () => {
+  /*
   function getDayOfTheWeek(dayNumber) {
     let dayOfTheWeek = '';
     switch (dayNumber) {
@@ -73,39 +74,22 @@ const useDate = () => {
     }
     return monthOfTheYear;
   }
+*/
 
-  const locale = 'en';
+  const locale = navigator.language || navigator.userLanguage;
 
   function getStringDate(date) {
     const dateCreated = new Date(date);
-    console.log(dateCreated);
+    const time = dateCreated.toLocaleTimeString(locale, {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+    });
     const dayWeek = dateCreated.toLocaleDateString(locale, { weekday: 'long' });
     const dateString = `${dayWeek}, ${dateCreated.getDate()} ${dateCreated.toLocaleDateString(
       locale,
       { month: 'long' }
-    )}\n\n`;
-
-    const hour = dateCreated.getHours();
-    console.log(hour);
-
-    const time = dateCreated.toLocaleTimeString(locale, {
-      hour: 'numeric',
-      hour12: true,
-      minute: 'numeric',
-      second: 'numeric',
-    });
-    console.log(time);
-
-    const event = new Date(Date.UTC(date));
-
-    const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-
-    console.log(event.toLocaleDateString(undefined, options));
+    )} ${dateCreated.getFullYear()}, ${time}`;
 
     /*
     const weekDay = getDayOfTheWeek(dateCreated.getDay());
