@@ -151,6 +151,7 @@ const HeaderDrawer = (props) => {
   const handleDrawerCloseAfterSelection = (pageURL) => {
     handleDrawerClose();
     dispatch(changeEdit(false));
+    localStorage.removeItem('page-number');
     window.location.href = pageURL;
   };
 

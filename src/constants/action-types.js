@@ -20,3 +20,4 @@ export const LOAD_SENSOR_TYPES = 'LOAD_SENSOR_TYPES';
 export const DELETE_SENSOR = 'DELETE_SENSOR';
 export const EDIT_FORM = 'EDIT_FORM';
 export const REMOVE_MACHINE = 'REMOVE_MACHINE';
+export const SET_PAGE = 'SET_PAGE';

@@ -20,10 +20,16 @@ import {
   DELETE_SENSOR,
   EDIT_FORM,
   REMOVE_MACHINE,
+  SET_PAGE,
 } from '../constants/action-types';
 
 export function setAuthorized(payload) {
   return { type: SET_AUTHORIZED, payload };
+}
+
+export function setPage(payload) {
+  console.log('SET PAGE CREATOR');
+  return { type: SET_PAGE, payload };
 }
 
 export function createStructure(payload) {

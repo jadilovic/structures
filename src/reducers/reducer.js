@@ -10,6 +10,7 @@ import {
   LOAD_MACHINES,
   DISPLAY_MACHINE,
   SET_AUTHORIZED,
+  SET_PAGE,
   LOAD_INDIVIDUAL_MACHINE,
   LOAD_MACHINE_TYPES,
   CREATE_MACHINE,
@@ -36,6 +37,7 @@ const initialState = {
   loading: true,
   error: null,
   edit: false,
+  page: 0,
 };
 
 function RootReducer(state = initialState, action) {
@@ -57,6 +59,13 @@ function RootReducer(state = initialState, action) {
     return {
       ...state,
       isAuth: action.payload,
+    };
+  } else if (action.type === SET_PAGE) {
+    // SAVING PAGE IN STORE
+    console.log('SAVING IN THE REDUCER');
+    return {
+      ...state,
+      page: action.payload,
     };
   } else if (action.type === DISPLAY_STRUCTURE) {
     // DISPLAYING INDIVIDUAL STRUCTURE AND SAVING IN STORE

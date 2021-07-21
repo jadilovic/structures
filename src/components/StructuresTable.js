@@ -1,9 +1,15 @@
-import React, { useEffect } from 'react';
-import { DataGrid } from '@material-ui/data-grid';
+import React, { useEffect, useState } from 'react';
+import {
+  DataGrid,
+  GridRowIdGetter,
+  GridRowsProp,
+} from '@material-ui/data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, makeStyles } from '@material-ui/core';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import qs from 'qs';
+import { createBrowserHistory } from 'history';
 import { clearData } from '../actions/creator';
 import useStructure from '../hooks/useStructure';
 import CustomLoadingOverlay from './CustomLoadingOverlay';
@@ -30,16 +36,38 @@ export default function StructuresTable() {
   const { fetchStructures, fetchStructureById } = useStructure();
   const dispatch = useDispatch();
   const classes = useStyles();
+  const [page, setPage] = useState(0);
   const userScreenHeight = window.innerHeight;
+  const history = createBrowserHistory();
+
+  window.onpopstate = function (event) {
+    window.location.reload();
+  };
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
   useEffect(() => {
+    console.log('TEST');
     dispatch(clearData());
     fetchStructures('machines');
+    const filterParams = history.location.search.substr(1);
+    const filtersFromParams = qs.parse(filterParams);
+    if (filtersFromParams.page) {
+      setPage(Number(filtersFromParams.page));
+    }
   }, []);
+
+  useEffect(() => {
+    history.push(`?page=${page}`);
+  }, [page]);
+
+  function savePageNumber(pageNumber) {
+    console.log('SAVE PAGE TEST');
+    setPage(pageNumber);
+  }
 
   const structuresData = useSelector((state) => state.main.structures);
   const loading = useSelector((state) => state.main.loading);
+  const paginationPageNumber = useSelector((state) => state.main.page);
 
   const dataColumns = [
     {
@@ -100,8 +128,16 @@ export default function StructuresTable() {
   const structures = { columns: dataColumns, rows: structuresData };
 
   function displayStructureRow(data) {
+    console.log(window.scrollY);
     fetchStructureById(data.id, 'structure machines structures');
   }
+
+  const handleScroll = (e) => {
+    console.log();
+  };
+
+  // console.log(Number(localStorage.getItem('page-number')));
+  console.log(page);
 
   return (
     <Container maxWidth="lg">
@@ -120,6 +156,7 @@ export default function StructuresTable() {
           {...structures}
           className={classes.row}
           onRowClick={(props) => {
+            window.addEventListener('scroll', handleScroll);
             displayStructureRow(props.row);
           }}
           filterModel={{
@@ -131,6 +168,12 @@ export default function StructuresTable() {
               },
             ],
           }}
+          page={page}
+          onPageChange={(params) => {
+            console.log(params.page);
+            savePageNumber(params.page);
+          }}
+          pageSize={5}
         />
       </div>
     </Container>
