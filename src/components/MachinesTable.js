@@ -11,7 +11,7 @@ import useMachine from '../hooks/useMachine';
 export default function MachinesTable() {
   const dispatch = useDispatch();
   const { fetchMachinesWithSensors, fetchMachineById } = useMachine();
-
+  // const tableRowRef = useRef();
   const userScreenHeight = window.innerHeight;
 
   // CLEAR DATA IN STORE BEFORE LOADING NEW DATA FROM API
@@ -106,6 +106,9 @@ export default function MachinesTable() {
     fetchMachineById(machineId);
   }
 
+  // allow scrolling to the bottom of the container when a new message arrived.
+  // useEffect(() => tableRowRef.current.scrollIntoView({ behavior: 'smooth' }));
+  // console.log(tableRowRef.current);
   return (
     <Container maxWidth="lg">
       <div
@@ -135,6 +138,7 @@ export default function MachinesTable() {
               },
             ],
           }}
+          //  ref={tableRowRef}
         />
       </div>
     </Container>
